@@ -3,3 +3,9 @@
 *.tar
 *.zip
 *.bz2
+
+cscope.in.out
+cscope.out
+cscope.po.out
+tags
+
