@@ -1,0 +1,1 @@
+cmd_/home/sdb3/rw/home/dyn/ch341/ch341-i2c-spi-gpio/modules.order := {   echo /home/sdb3/rw/home/dyn/ch341/ch341-i2c-spi-gpio/ch341-buses.ko; :; } | awk '!x[$$0]++' - > /home/sdb3/rw/home/dyn/ch341/ch341-i2c-spi-gpio/modules.order
