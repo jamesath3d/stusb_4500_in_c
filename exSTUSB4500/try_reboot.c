@@ -48,11 +48,3 @@ if (write(file_i2c, buffer, length) != length)		//write() returns the number of 
     /* ERROR HANDLING: i2c transaction failed */
     printf("Failed to write to the i2c bus.\n");
 }
-//------------------------------
-// stusb4500_reset resets the STUSB4500. This also results in loss of
-// power to the entire board while STUSB4500 boots up again, effectively
-// resetting the uC as well.
-bool stusb4500_reset() {
-  enum { addr = 0x28 };
-  return i2c_reg_write(addr, 0x23, 0x01);
-} // stusb4500_reset
