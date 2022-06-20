@@ -1,1 +1,0 @@
-cmd_/home/sdb3/rw/home/dyn/ch341/ch341-i2c-spi-gpio/ch341-buses.ko := ld -r -m elf_x86_64 --build-id=sha1  -T arch/x86/module.lds -o /home/sdb3/rw/home/dyn/ch341/ch341-i2c-spi-gpio/ch341-buses.ko /home/sdb3/rw/home/dyn/ch341/ch341-i2c-spi-gpio/ch341-buses.o /home/sdb3/rw/home/dyn/ch341/ch341-i2c-spi-gpio/ch341-buses.mod.o;  true

@@ -1,1 +1,0 @@
-cmd_/home/sdb3/rw/home/dyn/ch341/ch341-i2c-spi-gpio/Module.symvers := sed 's/ko$$/o/' /home/sdb3/rw/home/dyn/ch341/ch341-i2c-spi-gpio/modules.order | scripts/mod/modpost -m    -o /home/sdb3/rw/home/dyn/ch341/ch341-i2c-spi-gpio/Module.symvers -e -i Module.symvers   -T -

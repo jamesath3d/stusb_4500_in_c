@@ -14,7 +14,7 @@ all:
 	test -f ch341-buses.unstrip.ko || ( \
 		/bin/cp -f ch341-buses.ko ch341-buses.unstrip.ko ; \
 		strip --strip-debug ch341-buses.ko )
-	@echo ; echo 'try : insmod ./ch341-buses.ko ' ; echo
+	@echo ; echo 'try : ' ; echo '     rmmod ch341-buses ; modprobe i2c-dev ; insmod ./ch341-buses.ko ' ; echo
 c clean:
 	make -C $(KERNEL_DIR) M=$(PWD) clean
 h help:
