@@ -1,2 +1,8 @@
 .*.cmd
 *.o
+Module.symvers
+ch341-buses.ko
+ch341-buses.mod
+ch341-buses.mod.c
+ch341-buses.unstrip.ko
+modules.order
