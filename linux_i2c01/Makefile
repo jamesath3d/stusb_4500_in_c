@@ -11,6 +11,9 @@ bin01=$(proj).$(KVERSION).bin
 $(bin01): $(src01)
 	gcc -o $@ $^
 
-all: $(bin01)
+a all: $(bin01)
+
+c clean :
+	rm -f $(bin01)
 
 
