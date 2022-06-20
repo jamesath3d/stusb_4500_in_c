@@ -20,5 +20,6 @@ bool stusb4500_reset() {
 } // stusb4500_reset
 
 int main( int ___argc, char ** ___argv ) {
-    return 0 ;
+    //return 0 ;
+    return stusb4500_reset() ;
 } // main
