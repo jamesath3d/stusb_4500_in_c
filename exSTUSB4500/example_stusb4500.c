@@ -22,14 +22,14 @@ void delay(uint16_t ms) {
     while (!(TCA0.SINGLE.INTFLAGS & TCA_SINGLE_OVF_bm)) {}
     TCA0.SINGLE.INTFLAGS = TCA_SINGLE_OVF_bm;
   }    
-}
+} // delay
 
 // i2c_init initializes the TWI interface for I2C
 void i2c_init() {
   TWI0.MBAUD = 255; // Use the slowest baud - we're in no rush
   TWI0.MCTRLA = TWI_ENABLE_bm;
   TWI0.MSTATUS = TWI_BUSSTATE_IDLE_gc;
-}
+} // i2c_init
 
 // i2c_tx returns true of transaction is successful, false otherwise.
 // An I2C transaction involves one of the following:
@@ -77,7 +77,7 @@ bool i2c_tx(uint8_t addr, uint8_t *w, uint8_t w_len, uint8_t *r, uint8_t r_len) 
   }
   TWI0.MCTRLB = TWI_MCMD_STOP_gc;
   return true;
-}
+} // i2c_tx
 
 // i2c_reg_write performs the following write I2C transaction:
 //   register address (reg), register value (d)
@@ -86,7 +86,7 @@ bool i2c_tx(uint8_t addr, uint8_t *w, uint8_t w_len, uint8_t *r, uint8_t r_len) 
 bool i2c_reg_write(uint8_t addr, uint8_t reg, uint8_t d) {
   uint8_t buf[] = {reg, d};
   return i2c_tx(addr, buf, 2, NULL, 0);
-}
+} // i2c_reg_write
 
 // crc16 returns the xmodem variant of CRC16 of the msg.
 uint16_t crc16(uint8_t *msg, uint8_t msglen)
@@ -96,7 +96,7 @@ uint16_t crc16(uint8_t *msg, uint8_t msglen)
     crc = _crc_xmodem_update(crc, *msg);
   }
   return crc;
-}
+} // crc16
 
 // rev_byte returns b with the bit-order reversed.
 uint8_t rev_byte(uint8_t b) {
@@ -104,7 +104,7 @@ uint8_t rev_byte(uint8_t b) {
   b = (b & 0xCC) >> 2 | (b & 0x33) << 2;
   b = (b & 0xAA) >> 1 | (b & 0x55) << 1;
   return b;
-}
+} // rev_byte
 
 // read_adc returns a value between 0-1023 from a single ADC reading.
 uint16_t read_adc() {
@@ -112,7 +112,7 @@ uint16_t read_adc() {
   while ((ADC0.INTFLAGS & ADC_RESRDY_bm) == 0);
   ADC0.INTFLAGS = ADC_RESRDY_bm;
   return ADC0.RES;
-}
+} // read_adc
 
 // wait_on_edge blocks until a change in signal level is detected and
 // then returns the time since last signal level change.
@@ -173,7 +173,7 @@ uint16_t wait_on_edge() {
   }    
   cur_level_time = cur_time;
   return pulse_len;
-}
+} // wait_on_edge
 
 // wait_on_peak returns the time between two rising edges or two falling
 // edges.
@@ -181,7 +181,7 @@ uint16_t wait_on_peak() {
   uint16_t t1 = wait_on_edge();
   uint16_t t2 = wait_on_edge();
   return t1 + t2;
-}
+} // wait_on_peak
 
 // read_packet blocks until a packet of the given length is successfully
 // read and the trailing crc is verified.
@@ -202,6 +202,7 @@ void read_packet(uint8_t packet[], uint16_t ptp_buffer[], uint8_t *ptp_next_bit_
         min = v;
       }
     }
+    //------------------------------------- read_packet
 
     uint16_t max_min_delta = max - min;
     uint16_t low_thresh = (max_min_delta * 35) / 100 + min;
@@ -226,6 +227,7 @@ void read_packet(uint8_t packet[], uint16_t ptp_buffer[], uint8_t *ptp_next_bit_
         success = 0;
         break;
       }
+      //------------------------------------- read_packet
       packet[i / 8] |= bit_value << (7 - (i % 8));
     }
     
@@ -238,7 +240,7 @@ void read_packet(uint8_t packet[], uint16_t ptp_buffer[], uint8_t *ptp_next_bit_
     }
     return;
   }
-}
+} // read_packet
 
 typedef struct {
   uint16_t v1; // Voltage for first preference - mapping in read_config()
@@ -303,6 +305,7 @@ bool stusb4500_flash(stusb4500_config cfg) {
   if (cfg.req_pd) {
     nvm[0x26] |= 0b1000;
   }
+  //------------------------------------- stusb4500_flash
   
   // STUSB4500 seems to pull down the SDA on reset and that messes
   // with internal state of the TWI. Therefore explicitly put the bus
@@ -325,6 +328,7 @@ bool stusb4500_flash(stusb4500_config cfg) {
   delay(20);
   if (!i2c_reg_write(addr, 0x97, 0x05)) return false;
   if (!i2c_reg_write(addr, 0x96, 0x50)) return false;
+  //------------------------------------- stusb4500_flash
   delay(20);
   for (uint8_t i = 0; i < 5; i++) {
     uint8_t buf[9] = {0x53};
@@ -343,7 +347,7 @@ bool stusb4500_flash(stusb4500_config cfg) {
   if (!i2c_reg_write(addr, 0x95, 0x00)) return false;
 
   return true;
-}
+} stusb4500_flash
 
 // stusb4500_reset resets the STUSB4500. This also results in loss of
 // power to the entire board while STUSB4500 boots up again, effectively
@@ -351,7 +355,7 @@ bool stusb4500_flash(stusb4500_config cfg) {
 bool stusb4500_reset() {
   enum { addr = 0x28 };
   return i2c_reg_write(addr, 0x23, 0x01);
-}
+} // stusb4500_reset
 
 void setup() {
   // Disable clock pre-scaler
@@ -367,6 +371,7 @@ void setup() {
   ADC0.MUXPOS = SENSOR_ADC_MUXPOS;
   ADC0.CTRLA = ADC_ENABLE_bm;
   
+  // ================================ setep
   // Configure notification pin
   NOTIFY_PORT.DIRSET = NOTIFY_PIN_BM;
   NOTIFY_PORT.OUTCLR = NOTIFY_PIN_BM;
@@ -382,7 +387,7 @@ void setup() {
   SENSOR_PULLUP_SRC_PORT.OUTSET = SENSOR_PULLUP_SRC_PIN_BM;
   
   i2c_init();
-}
+} // setep
 
 // notify notifies the user that programming is successfully completed
 // by flashing the green light on the top side of the board.
@@ -393,7 +398,7 @@ void notify() {
     NOTIFY_PORT.OUTCLR = NOTIFY_PIN_BM;
     delay(100);
   }
-}
+} // notify
 
 int main(void) {
   setup();
@@ -405,6 +410,6 @@ int main(void) {
     if (flash_success) {
       notify();
       stusb4500_reset();
-    }
-  }
-}
+    } // if
+  } // while
+} // main
