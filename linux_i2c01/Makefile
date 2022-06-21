@@ -3,7 +3,7 @@ PWD         := $(shell pwd)
 KVERSION    := $(shell uname -r)
 KERNEL_DIR  ?= /lib/modules/$(KVERSION)/build
 
-GccOpt:= -Werror -g -O3
+GccOpt:= -Wall -Werror -g -O3
 
 strip:=	strip --strip-debug 
 strip:=	strip --strip-unneeded
