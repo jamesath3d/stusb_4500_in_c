@@ -11,11 +11,26 @@
 //   c. a write followed by a read (where w_len > 0 and r_len > 0)
 // Data to be written is read from w. Data to be read is stored in r.
 #ifdef LinuxI2C
+int fh_i2c;
+
 bool i2c_tx2(uint8_t addr, uint8_t *w, uint8_t w_len, uint8_t *r, uint8_t r_len) {
+
+    ssize_t __len1 ;
+    ssize_t __len2 ;
+    uint8_t __buf[0x20] ;
+
+    __len1 = 0x20 ;
+    __len2 = read(fh_i2c, __buf, __len1) ;
+    printf( "read from i2c <%ld><0x%lx> bytes.\n", __len2, __len2 );
+
+    for ( int __ii = 0 ; __ii < __len1 ; __ii ++ ) {
+        printf( " %02x" , __buf[__ii] );
+    }
+    printf( "\n\n" );
+
     return true;
 } // i2c_tx2
 bool i2c_tx(uint8_t addr, uint8_t *w, uint8_t w_len, uint8_t *r, uint8_t r_len) {
-    int file_i2c;
     //int length;
     //unsigned char buffer[60] = {0};
 
@@ -26,7 +41,7 @@ bool i2c_tx(uint8_t addr, uint8_t *w, uint8_t w_len, uint8_t *r, uint8_t r_len) 
 
     //----- OPEN THE I2C BUS -----
     char *filename = (char*) LinuxI2C_device ;
-    if ((file_i2c = open(filename, O_RDWR)) < 0)
+    if ((fh_i2c = open(filename, O_RDWR)) < 0)
     {
         //ERROR HANDLING: you can check errno to see what went wrong
         printf("Failed to open the i2c bus <%s>\n", filename);
@@ -34,18 +49,18 @@ bool i2c_tx(uint8_t addr, uint8_t *w, uint8_t w_len, uint8_t *r, uint8_t r_len) 
     }
 
     int i2c_device_addr = LinuxI2C_i2cAddr ;        //<<<<<The I2C address of the slave
-    if (ioctl(file_i2c, I2C_SLAVE, i2c_device_addr) < 0)
+    if (ioctl(fh_i2c, I2C_SLAVE, i2c_device_addr) < 0)
     {
         printf("Failed to acquire bus access and/or talk to slave at i2c address <0x%x>.\n", i2c_device_addr );
         //ERROR HANDLING; you can check errno to see what went wrong
         return false;
     }
 
-    printf("Succeed open <%s> bus at i2c address <0x%x>, and get file handle <0x%x>.\n", filename, i2c_device_addr , file_i2c);
+    printf("Succeed open <%s> bus at i2c address <0x%x>, and get file handle <0x%x>.\n", filename, i2c_device_addr , fh_i2c);
 
     bool __rt1 = i2c_tx2(addr, w, w_len, r, r_len) ;
 
-    bool __rt2 = (0 == close( file_i2c ))?true:false;
+    bool __rt2 = (0 == close( fh_i2c ))?true:false;
 
     printf(" Function %s return <%d> <%d>\n", __func__ , __rt1, __rt2 );
 
