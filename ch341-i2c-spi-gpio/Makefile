@@ -2,6 +2,10 @@ PWD         := $(shell pwd)
 KVERSION    := $(shell uname -r)
 KERNEL_DIR  ?= /lib/modules/$(KVERSION)/build
 
+strip:= strip --strip-debug
+strip:= strip --strip-unneeded
+
+
 ko01:=ch341-buses.$(KVERSION).ko
 
 obj-m       := ch341-buses.o
@@ -15,7 +19,7 @@ all:
 	make -C $(KERNEL_DIR) M=$(PWD) modules
 	test -f ch341-buses.unstrip.ko || ( \
 		/bin/cp -f ch341-buses.ko ch341-buses.unstrip.ko ; \
-		strip --strip-debug ch341-buses.ko )
+		$(strip) ch341-buses.ko )
 	test -f $(ko01) || cp ch341-buses.ko $(ko01)
 	@echo ; echo 'try : ' ; echo '     rmmod ch341-buses ; modprobe i2c-dev ; insmod ./ch341-buses.ko ' ; echo
 c clean:

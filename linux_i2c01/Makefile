@@ -3,6 +3,10 @@ PWD         := $(shell pwd)
 KVERSION    := $(shell uname -r)
 KERNEL_DIR  ?= /lib/modules/$(KVERSION)/build
 
+GccOpt:= -Werror -g -O3
+
+strip:=	strip --strip-debug 
+strip:=	strip --strip-unneeded
 
 proj:=main_linux_i2c01
 mid:=\
@@ -12,11 +16,17 @@ src01=$(proj).c $(foreach aa1,$(mid),$(aa1).c)
 bin01=$(proj).$(KVERSION).bin
 
 $(bin01): $(src01)
-	gcc -o $@ $^
+	@echo
+	gcc $(GccOpt) -o $@ $^
+	cp $@ $@.unstrip.bin
+	$(strip) $@ 
+	ls -l $@*
 
 a all: $(bin01)
+	@echo
 
 c clean :
+	@echo
 	rm -f $(bin01)
 
 
