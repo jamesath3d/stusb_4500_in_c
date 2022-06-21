@@ -20,6 +20,7 @@ bool i2c_tx2(uint8_t addr, uint8_t *w, uint8_t w_len, uint8_t *r, uint8_t r_len)
     uint8_t __buf[0x20] ;
 
     __len1 = 0x20 ;
+    __len1 = 0x1 ;
     __len2 = read(fh_i2c, __buf, __len1) ;
     printf( "read from i2c <%ld><0x%lx> bytes.\n", __len2, __len2 );
 
