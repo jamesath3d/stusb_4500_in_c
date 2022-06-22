@@ -223,13 +223,15 @@ int main(int argc, char *argv[])
     }
     // ============================== ==== main
 
-    printf( " i2cbus   : %d 0x%x \n" , i2cbus     , i2cbus );
-    printf( " filename : <%s>    \n" , filename );
-    printf( " size     : %d 0x%x \n" , size     , size );
-    printf( " pec      : %d 0x%x \n" , pec      , pec  );
-    printf( " res      : %d 0x%x \n" , res      , res  );
-    printf( " address  : %d 0x%x \n" , address  , address );
-    printf( " daddress : %d 0x%x \n" , daddress , daddress );
+    if ( 0 ) {
+        printf( " i2cbus   : %d 0x%x \n" , i2cbus     , i2cbus );
+        printf( " filename : <%s>    \n" , filename );
+        printf( " size     : %d 0x%x \n" , size     , size );
+        printf( " pec      : %d 0x%x \n" , pec      , pec  );
+        printf( " res      : %d 0x%x \n" , res      , res  );
+        printf( " address  : %d 0x%x \n" , address  , address );
+        printf( " daddress : %d 0x%x \n" , daddress , daddress );
+    }
 
     file = open_i2c_dev(i2cbus, filename, sizeof(filename), 0);
     if (file < 0
@@ -265,6 +267,17 @@ int main(int argc, char *argv[])
     }
     close(file);
     // ============================== ==== main
+
+    if ( 1 ) {
+        printf( " i2cbus   : %d 0x%x \n" , i2cbus     , i2cbus );
+        printf( " filename : <%s>    \n" , filename );
+        printf( " size     : %d 0x%x \n" , size     , size );
+        printf( " pec      : %d 0x%x \n" , pec      , pec  );
+        printf( " res      : %d 0x%x \n" , res      , res  );
+        printf( " address  : %d 0x%x \n" , address  , address );
+        printf( " daddress : %d 0x%x \n" , daddress , daddress );
+    }
+
 
     if (res < 0) {
         fprintf(stderr, "Error: Read failed\n");
