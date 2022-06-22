@@ -4,7 +4,7 @@
 #define LinuxI2C_device "/dev/i2c-8"
 #define LinuxI2C_i2cAddr 0x28
 
-// i2c_tx returns true of transaction is successful, false otherwise.
+// i2c_tx1 returns true of transaction is successful, false otherwise.
 // An I2C transaction involves one of the following:
 //   a. a write (where w_len > 0 and r_len == 0)
 //   b. a read  (where w_len == 0 and r_len > 0)
@@ -12,14 +12,15 @@
 // Data to be written is read from w. Data to be read is stored in r.
 #ifdef LinuxI2C
 int fh_i2c;
-#define LLL 0x80
+//#define Rlen 0x80
+#define Rlen 0x01
 bool i2c_tx2(uint8_t addr, uint8_t *w, uint8_t w_len, uint8_t *r, uint8_t r_len) {
 
     ssize_t __len1 ;
     ssize_t __len2 ;
-    uint8_t __buf[LLL] ;
+    uint8_t __buf[Rlen] ;
 
-    __len1 = LLL ;
+    __len1 = Rlen ;
     //__len1 = 0x1 ;
     __len2 = read(fh_i2c, __buf, __len1) ;
     printf( "read from i2c <%ld><0x%lx> bytes.\n", __len2, __len2 );
@@ -34,7 +35,7 @@ bool i2c_tx2(uint8_t addr, uint8_t *w, uint8_t w_len, uint8_t *r, uint8_t r_len)
 
     return true;
 } // i2c_tx2
-bool i2c_tx(uint8_t addr, uint8_t *w, uint8_t w_len, uint8_t *r, uint8_t r_len) {
+bool i2c_tx1(uint8_t addr, uint8_t *w, uint8_t w_len, uint8_t *r, uint8_t r_len) {
     //int length;
     //unsigned char buffer[60] = {0};
 
@@ -70,11 +71,11 @@ bool i2c_tx(uint8_t addr, uint8_t *w, uint8_t w_len, uint8_t *r, uint8_t r_len) 
 
     return __rt1 && __rt2;
     //return true;
-} // i2c_tx
+} // i2c_tx1
 
 #else
 
-bool i2c_tx(uint8_t addr, uint8_t *w, uint8_t w_len, uint8_t *r, uint8_t r_len) {
+bool i2c_tx1(uint8_t addr, uint8_t *w, uint8_t w_len, uint8_t *r, uint8_t r_len) {
     if (w_len == 0 && r_len == 0) {
         return true;
     }
@@ -114,6 +115,6 @@ bool i2c_tx(uint8_t addr, uint8_t *w, uint8_t w_len, uint8_t *r, uint8_t r_len) 
     }
     TWI0.MCTRLB = TWI_MCMD_STOP_gc;
     return true;
-} // i2c_tx
+} // i2c_tx1
 
 #endif
