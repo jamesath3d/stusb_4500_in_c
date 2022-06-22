@@ -12,20 +12,23 @@
 // Data to be written is read from w. Data to be read is stored in r.
 #ifdef LinuxI2C
 int fh_i2c;
-
+#define LLL 0x80
 bool i2c_tx2(uint8_t addr, uint8_t *w, uint8_t w_len, uint8_t *r, uint8_t r_len) {
 
     ssize_t __len1 ;
     ssize_t __len2 ;
-    uint8_t __buf[0x20] ;
+    uint8_t __buf[LLL] ;
 
-    __len1 = 0x20 ;
-    __len1 = 0x1 ;
+    __len1 = LLL ;
+    //__len1 = 0x1 ;
     __len2 = read(fh_i2c, __buf, __len1) ;
     printf( "read from i2c <%ld><0x%lx> bytes.\n", __len2, __len2 );
 
     for ( int __ii = 0 ; __ii < __len1 ; __ii ++ ) {
         printf( " %02x" , __buf[__ii] );
+        if ( 0xf == ( __ii & 0xF )) {
+            printf( "\n" );
+        }
     }
     printf( "\n\n" );
 
