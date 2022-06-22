@@ -157,7 +157,7 @@ static int confirm(const char *filename, int address, int size, int daddress,
 int main(int argc, char *argv[])
 {
     char *end;
-    int res, i2cbus, address, size, file;
+    int res=0, i2cbus, address, size, file;
     int daddress;
     char filename[20];
     int pec = 0;
