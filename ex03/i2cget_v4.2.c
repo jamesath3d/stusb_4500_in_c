@@ -52,7 +52,7 @@ static void help(void)
     exit(1);
 } // help
 
-static int check_funcs(int file, int size, int daddress, int pec)
+static int check_funcs(int file, int size, int ___clientAddress , int pec)
 {
     unsigned long funcs;
 
@@ -69,7 +69,7 @@ static int check_funcs(int file, int size, int daddress, int pec)
                 fprintf(stderr, MISSING_FUNC_FMT, "SMBus receive byte");
                 return -1;
             }
-            if (daddress >= 0
+            if (___clientAddress  >= 0
                     && !(funcs & I2C_FUNC_SMBUS_WRITE_BYTE)) {
                 fprintf(stderr, MISSING_FUNC_FMT, "SMBus send byte");
                 return -1;
@@ -102,7 +102,7 @@ static int check_funcs(int file, int size, int daddress, int pec)
     return 0;
 } // check_funcs
 
-static int confirm(const char *filename, int address, int size, int daddress,
+static int confirm(const char *filename, int address, int size, int ___clientAddress ,
         int pec)
 {
     int dont = 0;
@@ -121,7 +121,7 @@ static int confirm(const char *filename, int address, int size, int daddress,
     }
     // ============================== ==== confirm
 
-    if (size == I2C_SMBUS_BYTE && daddress >= 0 && pec) {
+    if (size == I2C_SMBUS_BYTE && ___clientAddress  >= 0 && pec) {
         fprintf(stderr, "WARNING! All I2C chips and some SMBus chips "
                 "will interpret a write\nbyte command with PEC as a"
                 "write byte data command, effectively writing a\n"
@@ -131,12 +131,12 @@ static int confirm(const char *filename, int address, int size, int daddress,
 
     fprintf(stderr, "I will read from device file %s, chip "
             "address 0x%02x, ", filename, address);
-    if (daddress < 0)
+    if (___clientAddress  < 0)
         fprintf(stderr, "current data\naddress");
     else
-        fprintf(stderr, "data address\n0x%02x", daddress);
+        fprintf(stderr, "data address\n0x%02x", ___clientAddress );
     fprintf(stderr, ", using %s.\n",
-            size == I2C_SMBUS_BYTE ? (daddress < 0 ?
+            size == I2C_SMBUS_BYTE ? (___clientAddress  < 0 ?
                 "read byte" : "write byte/read byte") :
             size == I2C_SMBUS_BYTE_DATA ? "read byte data" :
             "read word data");
@@ -157,8 +157,8 @@ static int confirm(const char *filename, int address, int size, int daddress,
 int main(int argc, char *argv[])
 {
     char *end;
-    int res=0, i2cbus, address, size, file;
-    int daddress;
+    int res=0, i2cDevNO, __i2cClientAddress, size, file;
+    int __regAddress ;
     char filename[20];
     int pec = 0;
     int flags = 0;
@@ -189,25 +189,25 @@ int main(int argc, char *argv[])
     if (argc < flags + 3)
         help();
 
-    i2cbus = lookup_i2c_bus(argv[flags+1]);
-    if (i2cbus < 0)
+    i2cDevNO = lookup_i2c_bus(argv[flags+1]);
+    if (i2cDevNO < 0)
         help();
 
     // ============================== ==== main
-    address = parse_i2c_address(argv[flags+2], all_addrs);
-    if (address < 0)
+    __i2cClientAddress = parse_i2c_address(argv[flags+2], all_addrs);
+    if (__i2cClientAddress < 0)
         help();
 
     if (argc > flags + 3) {
         size = I2C_SMBUS_BYTE_DATA;
-        daddress = strtol(argv[flags+3], &end, 0);
-        if (*end || daddress < 0 || daddress > 0xff) {
-            fprintf(stderr, "Error: Data address invalid!\n");
+        __regAddress = strtol(argv[flags+3], &end, 0);
+        if (*end || __regAddress < 0 || __regAddress > 0xff) {
+            fprintf(stderr, "Error: Data __i2cClientAddress invalid!\n");
             help();
         }
     } else {
         size = I2C_SMBUS_BYTE;
-        daddress = -1;
+        __regAddress = -1;
     }
 
     if (argc > flags + 4) {
@@ -224,22 +224,22 @@ int main(int argc, char *argv[])
     // ============================== ==== main
 
     if ( 0 ) {
-        printf( " i2cbus   : %d 0x%x \n" , i2cbus     , i2cbus );
+        printf( " i2cDevNO   : %d 0x%x \n" , i2cDevNO     , i2cDevNO );
         printf( " filename : <%s>    \n" , filename );
         printf( " size     : %d 0x%x \n" , size     , size );
         printf( " pec      : %d 0x%x \n" , pec      , pec  );
         printf( " res      : %d 0x%x \n" , res      , res  );
-        printf( " address  : %d 0x%x \n" , address  , address );
-        printf( " daddress : %d 0x%x \n" , daddress , daddress );
+        printf( " __i2cClientAddress  : %d 0x%x \n" , __i2cClientAddress  , __i2cClientAddress );
+        printf( " __regAddress : %d 0x%x \n" , __regAddress , __regAddress );
     }
 
-    file = open_i2c_dev(i2cbus, filename, sizeof(filename), 0);
+    file = open_i2c_dev(i2cDevNO, filename, sizeof(filename), 0);
     if (file < 0
-            || check_funcs(file, size, daddress, pec)
-            || set_slave_addr(file, address, force))
+            || check_funcs(file, size, __regAddress, pec)
+            || set_slave_addr(file, __i2cClientAddress, force))
         exit(1);
 
-    if (!yes && !confirm(filename, address, size, daddress, pec))
+    if (!yes && !confirm(filename, __i2cClientAddress, size, __regAddress, pec))
         exit(0);
 
     if (pec && ioctl(file, I2C_PEC, 1) < 0) {
@@ -252,30 +252,30 @@ int main(int argc, char *argv[])
 
     switch (size) {
         case I2C_SMBUS_BYTE:
-            if (daddress >= 0) {
-                res = i2c_smbus_write_byte(file, daddress);
+            if (__regAddress >= 0) {
+                res = i2c_smbus_write_byte(file, __regAddress);
                 if (res < 0)
                     fprintf(stderr, "Warning - write failed\n");
             }
             res = i2c_smbus_read_byte(file);
             break;
         case I2C_SMBUS_WORD_DATA:
-            res = i2c_smbus_read_word_data(file, daddress);
+            res = i2c_smbus_read_word_data(file, __regAddress);
             break;
         default: /* I2C_SMBUS_BYTE_DATA */
-            res = i2c_smbus_read_byte_data(file, daddress);
+            res = i2c_smbus_read_byte_data(file, __regAddress);
     }
     close(file);
     // ============================== ==== main
 
     if ( 1 ) {
-        printf( " i2cbus   : %d 0x%x \n" , i2cbus     , i2cbus );
+        printf( " i2cDevNO   : %d 0x%x \n" , i2cDevNO     , i2cDevNO );
         printf( " filename : <%s>    \n" , filename );
         printf( " size     : %d 0x%x \n" , size     , size );
         printf( " pec      : %d 0x%x \n" , pec      , pec  );
         printf( " res      : %d 0x%x \n" , res      , res  );
-        printf( " address  : %d 0x%x \n" , address  , address );
-        printf( " daddress : %d 0x%x \n" , daddress , daddress );
+        printf( " __i2cClientAddress  : %d 0x%x \n" , __i2cClientAddress  , __i2cClientAddress );
+        printf( " __regAddress : %d 0x%x \n" , __regAddress , __regAddress );
     }
 
 
