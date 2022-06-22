@@ -52,12 +52,12 @@ static void help(void)
     exit(1);
 } // help
 
-static int check_funcs(int file, int size, int ___clientAddress , int pec)
+static int check_funcs(int ___fi_i2c, int size, int ___clientAddress , int pec)
 {
     unsigned long funcs;
 
     /* check adapter functionality */
-    if (ioctl(file, I2C_FUNCS, &funcs) < 0) {
+    if (ioctl(___fi_i2c, I2C_FUNCS, &funcs) < 0) {
         fprintf(stderr, "Error: Could not get the adapter "
                 "functionality matrix: %s\n", strerror(errno));
         return -1;
@@ -129,7 +129,7 @@ static int confirm(const char *filename, int address, int size, int ___clientAdd
         dont++;
     }
 
-    fprintf(stderr, "I will read from device file %s, chip "
+    fprintf(stderr, "I will read from device ___fi_i2c %s, chip "
             "address 0x%02x, ", filename, address);
     if (___clientAddress  < 0)
         fprintf(stderr, "current data\naddress");
@@ -157,7 +157,7 @@ static int confirm(const char *filename, int address, int size, int ___clientAdd
 int main(int argc, char *argv[])
 {
     char *end;
-    int res=0, i2cDevNO, __i2cClientAddress, size, file;
+    int res=0, i2cDevNO, __i2cClientAddress, size, __fi_i2c;
     int __regAddress ;
     char filename[20];
     int pec = 0;
@@ -233,19 +233,19 @@ int main(int argc, char *argv[])
         printf( " __regAddress : %d 0x%x \n" , __regAddress , __regAddress );
     }
 
-    file = open_i2c_dev(i2cDevNO, filename, sizeof(filename), 0);
-    if (file < 0
-            || check_funcs(file, size, __regAddress, pec)
-            || set_slave_addr(file, __i2cClientAddress, force))
+    __fi_i2c = open_i2c_dev(i2cDevNO, filename, sizeof(filename), 0);
+    if (__fi_i2c < 0
+            || check_funcs(__fi_i2c, size, __regAddress, pec)
+            || set_slave_addr(__fi_i2c, __i2cClientAddress, force))
         exit(1);
 
     if (!yes && !confirm(filename, __i2cClientAddress, size, __regAddress, pec))
         exit(0);
 
-    if (pec && ioctl(file, I2C_PEC, 1) < 0) {
+    if (pec && ioctl(__fi_i2c, I2C_PEC, 1) < 0) {
         fprintf(stderr, "Error: Could not set PEC: %s\n",
                 strerror(errno));
-        close(file);
+        close(__fi_i2c);
         exit(1);
     }
     // ============================== ==== main
@@ -253,19 +253,19 @@ int main(int argc, char *argv[])
     switch (size) {
         case I2C_SMBUS_BYTE: // 1
             if (__regAddress >= 0) {
-                res = i2c_smbus_write_byte(file, __regAddress);
+                res = i2c_smbus_write_byte(__fi_i2c, __regAddress);
                 if (res < 0)
                     fprintf(stderr, "Warning - write failed\n");
             }
-            res = i2c_smbus_read_byte(file);
+            res = i2c_smbus_read_byte(__fi_i2c);
             break;
         case I2C_SMBUS_WORD_DATA: // 3
-            res = i2c_smbus_read_word_data(file, __regAddress);
+            res = i2c_smbus_read_word_data(__fi_i2c, __regAddress);
             break;
         default: /* I2C_SMBUS_BYTE_DATA : 2 */
-            res = i2c_smbus_read_byte_data(file, __regAddress);
+            res = i2c_smbus_read_byte_data(__fi_i2c, __regAddress);
     }
-    close(file);
+    close(__fi_i2c);
     // ============================== ==== main
 
     if ( 1 ) {
