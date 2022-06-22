@@ -231,6 +231,16 @@ int main(int argc, char *argv[])
         printf( " res      : %d 0x%x \n" , res      , res  );
         printf( " __i2cClientAddress  : %d 0x%x \n" , __i2cClientAddress  , __i2cClientAddress );
         printf( " __regAddress : %d 0x%x \n" , __regAddress , __regAddress );
+        /*  
+__i2cBusNo   : 8 0x8 
+filename : </dev/i2c-8>    
+size     : 2 0x2 
+pec      : 0 0x0 
+res      : 17 0x11 
+__i2cClientAddress  : 40 0x28 
+__regAddress : 8 0x8 
+0x11
+*/
     }
 
     __fi_i2c = open_i2c_dev(__i2cBusNo, filename, sizeof(filename), 0);
