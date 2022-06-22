@@ -64,7 +64,7 @@ static int check_funcs(int file, int size, int ___clientAddress , int pec)
     }
 
     switch (size) {
-        case I2C_SMBUS_BYTE:
+        case I2C_SMBUS_BYTE: // 1
             if (!(funcs & I2C_FUNC_SMBUS_READ_BYTE)) {
                 fprintf(stderr, MISSING_FUNC_FMT, "SMBus receive byte");
                 return -1;
@@ -77,14 +77,14 @@ static int check_funcs(int file, int size, int ___clientAddress , int pec)
             break;
 
             // ============================== ==== check_funcs
-        case I2C_SMBUS_BYTE_DATA:
+        case I2C_SMBUS_BYTE_DATA: // 2
             if (!(funcs & I2C_FUNC_SMBUS_READ_BYTE_DATA)) {
                 fprintf(stderr, MISSING_FUNC_FMT, "SMBus read byte");
                 return -1;
             }
             break;
 
-        case I2C_SMBUS_WORD_DATA:
+        case I2C_SMBUS_WORD_DATA: // 3
             if (!(funcs & I2C_FUNC_SMBUS_READ_WORD_DATA)) {
                 fprintf(stderr, MISSING_FUNC_FMT, "SMBus read word");
                 return -1;
@@ -121,7 +121,7 @@ static int confirm(const char *filename, int address, int size, int ___clientAdd
     }
     // ============================== ==== confirm
 
-    if (size == I2C_SMBUS_BYTE && ___clientAddress  >= 0 && pec) {
+    if (size == I2C_SMBUS_BYTE && ___clientAddress  >= 0 && pec) { // 1
         fprintf(stderr, "WARNING! All I2C chips and some SMBus chips "
                 "will interpret a write\nbyte command with PEC as a"
                 "write byte data command, effectively writing a\n"
@@ -136,9 +136,9 @@ static int confirm(const char *filename, int address, int size, int ___clientAdd
     else
         fprintf(stderr, "data address\n0x%02x", ___clientAddress );
     fprintf(stderr, ", using %s.\n",
-            size == I2C_SMBUS_BYTE ? (___clientAddress  < 0 ?
+            size == I2C_SMBUS_BYTE ? (___clientAddress  < 0 ? // 1
                 "read byte" : "write byte/read byte") :
-            size == I2C_SMBUS_BYTE_DATA ? "read byte data" :
+            size == I2C_SMBUS_BYTE_DATA ? "read byte data" : // 2
             "read word data");
     // ============================== ==== confirm
     if (pec)
@@ -199,22 +199,22 @@ int main(int argc, char *argv[])
         help();
 
     if (argc > flags + 3) {
-        size = I2C_SMBUS_BYTE_DATA;
+        size = I2C_SMBUS_BYTE_DATA; // 2
         __regAddress = strtol(argv[flags+3], &end, 0);
         if (*end || __regAddress < 0 || __regAddress > 0xff) {
             fprintf(stderr, "Error: Data __i2cClientAddress invalid!\n");
             help();
         }
     } else {
-        size = I2C_SMBUS_BYTE;
+        size = I2C_SMBUS_BYTE; // 1
         __regAddress = -1;
     }
 
     if (argc > flags + 4) {
         switch (argv[flags+4][0]) {
-            case 'b': size = I2C_SMBUS_BYTE_DATA; break;
-            case 'w': size = I2C_SMBUS_WORD_DATA; break;
-            case 'c': size = I2C_SMBUS_BYTE; break;
+            case 'b': size = I2C_SMBUS_BYTE_DATA; break; // 2
+            case 'w': size = I2C_SMBUS_WORD_DATA; break; // 3
+            case 'c': size = I2C_SMBUS_BYTE; break; // 1
             default:
                       fprintf(stderr, "Error: Invalid mode!\n");
                       help();
@@ -251,7 +251,7 @@ int main(int argc, char *argv[])
     // ============================== ==== main
 
     switch (size) {
-        case I2C_SMBUS_BYTE:
+        case I2C_SMBUS_BYTE: // 1
             if (__regAddress >= 0) {
                 res = i2c_smbus_write_byte(file, __regAddress);
                 if (res < 0)
@@ -259,10 +259,10 @@ int main(int argc, char *argv[])
             }
             res = i2c_smbus_read_byte(file);
             break;
-        case I2C_SMBUS_WORD_DATA:
+        case I2C_SMBUS_WORD_DATA: // 3
             res = i2c_smbus_read_word_data(file, __regAddress);
             break;
-        default: /* I2C_SMBUS_BYTE_DATA */
+        default: /* I2C_SMBUS_BYTE_DATA : 2 */
             res = i2c_smbus_read_byte_data(file, __regAddress);
     }
     close(file);
@@ -284,7 +284,7 @@ int main(int argc, char *argv[])
         exit(2);
     }
 
-    printf("0x%0*x\n", size == I2C_SMBUS_WORD_DATA ? 4 : 2, res);
+    printf("0x%0*x\n", size == I2C_SMBUS_WORD_DATA ? 4 : 2, res); // 3
 
     exit(0);
 } // main
