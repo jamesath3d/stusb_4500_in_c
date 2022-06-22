@@ -157,7 +157,7 @@ static int confirm(const char *filename, int address, int size, int ___clientAdd
 int main(int argc, char *argv[])
 {
     char *end;
-    int res=0, i2cDevNO, __i2cClientAddress, size, __fi_i2c;
+    int res=0, __i2cBusNo, __i2cClientAddress, size, __fi_i2c;
     int __regAddress ;
     char filename[20];
     int pec = 0;
@@ -189,8 +189,8 @@ int main(int argc, char *argv[])
     if (argc < flags + 3)
         help();
 
-    i2cDevNO = lookup_i2c_bus(argv[flags+1]);
-    if (i2cDevNO < 0)
+    __i2cBusNo = lookup_i2c_bus(argv[flags+1]);
+    if (__i2cBusNo < 0)
         help();
 
     // ============================== ==== main
@@ -224,7 +224,7 @@ int main(int argc, char *argv[])
     // ============================== ==== main
 
     if ( 0 ) {
-        printf( " i2cDevNO   : %d 0x%x \n" , i2cDevNO     , i2cDevNO );
+        printf( " __i2cBusNo   : %d 0x%x \n" , __i2cBusNo     , __i2cBusNo );
         printf( " filename : <%s>    \n" , filename );
         printf( " size     : %d 0x%x \n" , size     , size );
         printf( " pec      : %d 0x%x \n" , pec      , pec  );
@@ -233,7 +233,7 @@ int main(int argc, char *argv[])
         printf( " __regAddress : %d 0x%x \n" , __regAddress , __regAddress );
     }
 
-    __fi_i2c = open_i2c_dev(i2cDevNO, filename, sizeof(filename), 0);
+    __fi_i2c = open_i2c_dev(__i2cBusNo, filename, sizeof(filename), 0);
     if (__fi_i2c < 0
             || check_funcs(__fi_i2c, size, __regAddress, pec)
             || set_slave_addr(__fi_i2c, __i2cClientAddress, force))
@@ -269,7 +269,7 @@ int main(int argc, char *argv[])
     // ============================== ==== main
 
     if ( 1 ) {
-        printf( " i2cDevNO   : %d 0x%x \n" , i2cDevNO     , i2cDevNO );
+        printf( " __i2cBusNo   : %d 0x%x \n" , __i2cBusNo     , __i2cBusNo );
         printf( " filename : <%s>    \n" , filename );
         printf( " size     : %d 0x%x \n" , size     , size );
         printf( " pec      : %d 0x%x \n" , pec      , pec  );
