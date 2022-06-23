@@ -10,6 +10,14 @@
 #include <stdbool.h>            // bool
 #include <stdint.h>             // uint8_t
 
+struct STUSB4500_ST {
+    uint8_t     i2cBusNo ;
+    char        i2cBusName[256] ;
+    int         i2cBusFD ;
+    uint8_t     i2cClientAddress ;
+} ;
+extern struct STUSB4500_ST _stusb4500_St;
+
 #include "i2c_bus_init.h"
 #include "i2c_tx.h"
 #include "i2c_reg_write.h"

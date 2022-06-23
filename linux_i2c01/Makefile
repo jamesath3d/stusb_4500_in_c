@@ -31,5 +31,6 @@ c clean :
 	rm -f $(bin01)
 
 r run : $(bin01)
+	@echo
 	./$(bin01)
 
