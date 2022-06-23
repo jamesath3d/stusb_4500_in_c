@@ -9,7 +9,7 @@
 #ifndef  I2C_REG_WRITE_H__
 #define  I2C_REG_WRITE_H__
 
-bool i2c_reg_write(uint8_t addr, uint8_t reg, uint8_t d) ;
+bool i2c_reg_write(uint8_t ___i2cClientAddr, uint8_t __i2cRegAddr, uint8_t d) ;
 
 #endif
 
