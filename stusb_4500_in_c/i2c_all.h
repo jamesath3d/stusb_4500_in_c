@@ -14,7 +14,7 @@ struct STUSB4500_ST {
     uint8_t     i2cBusNo ;
     char        i2cBusName[256] ;
     int         i2cBusFD ;
-    uint8_t     i2cClientAddress ;
+    uint8_t     i2cClientAddr ;
     uint8_t     wBuf[80];
     uint8_t     rBuf[80];
     uint8_t     wLEN ;
