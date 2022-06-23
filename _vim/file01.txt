@@ -1,5 +1,7 @@
 ../tesT02/Makefile
 Makefile.env
+../tesT02/Makefile
+Makefile.env
 ex03/i2cbusses_v4.2.c
 ex03/i2cget_v4.2.c
 ex03/smbus_v4.2.c
@@ -9,11 +11,9 @@ exSTUSB4500/try_reboot.c
 i2c-tools/lib/smbus.c
 i2c-tools/tools/i2cbusses.c
 i2c-tools/tools/i2cget.c
-linux_i2c01/main_linux_i2c01.c
 linux_i2c01/Makefile
-Makefile.env
+linux_i2c01/main_linux_i2c01.c
 stusb_4500_in_c/i2c_reg_write.c
 stusb_4500_in_c/i2c_reg_write.h
 stusb_4500_in_c/i2c_tx.c
 stusb_4500_in_c/i2c_tx.h
-../tesT02/Makefile
