@@ -6,15 +6,15 @@
 
 // i2c_tx1 returns true of transaction is successful, false otherwise.
 // An I2C transaction involves one of the following:
-//   a. a write (where w_len > 0 and r_len == 0)
-//   b. a read  (where w_len == 0 and r_len > 0)
-//   c. a write followed by a read (where w_len > 0 and r_len > 0)
+//   a. a write (where wLen > 0 and rLen == 0)
+//   b. a read  (where wLen == 0 and rLen > 0)
+//   c. a write followed by a read (where wLen > 0 and rLen > 0)
 // Data to be written is read from w. Data to be read is stored in r.
 #ifdef LinuxI2C
 int _fi_i2c;
 //#define Rlen 0x80
 #define Rlen 0x01
-bool i2c_tx2(uint8_t ___i2cClientAddr, uint8_t *w, uint8_t w_len, uint8_t *r, uint8_t r_len) {
+bool i2c_tx2(uint8_t ___i2cClientAddr, uint8_t *w, uint8_t ___wLen, uint8_t *r, uint8_t ___rLen) {
 
     ssize_t __len1 ;
     ssize_t __len2 ;
@@ -35,12 +35,12 @@ bool i2c_tx2(uint8_t ___i2cClientAddr, uint8_t *w, uint8_t w_len, uint8_t *r, ui
 
     return true;
 } // i2c_tx2
-bool i2c_tx1(uint8_t ___i2cClientAddr, uint8_t *w, uint8_t w_len, uint8_t *r, uint8_t r_len) {
+bool i2c_tx1(uint8_t ___i2cClientAddr, uint8_t *___wBuf, uint8_t ___wLen, uint8_t *___rBuf, uint8_t ___rLen) {
     //int length;
     //unsigned char buffer[60] = {0};
 
 
-    if (w_len == 0 && r_len == 0) { // no read, no write, so nothing need to be done.
+    if (___wLen == 0 && ___rLen == 0) { // no read, no write, so nothing need to be done.
         return true;
     }
 
@@ -63,7 +63,7 @@ bool i2c_tx1(uint8_t ___i2cClientAddr, uint8_t *w, uint8_t w_len, uint8_t *r, ui
 
     printf("Succeed open <%s> bus at i2c address <0x%x>, and get file handle <0x%x>.\n", filename, i2c_device_addr , _fi_i2c);
 
-    bool __rt1 = i2c_tx2(___i2cClientAddr, w, w_len, r, r_len) ;
+    bool __rt1 = i2c_tx2(___i2cClientAddr, ___wBuf, ___wLen, ___rBuf, ___rLen) ;
 
     bool __rt2 = (0 == close( _fi_i2c ))?true:false;
 
@@ -75,7 +75,7 @@ bool i2c_tx1(uint8_t ___i2cClientAddr, uint8_t *w, uint8_t w_len, uint8_t *r, ui
 
 #else
 
-bool i2c_tx1(uint8_t ___i2cClientAddr, uint8_t *w, uint8_t w_len, uint8_t *r, uint8_t r_len) {
+bool i2c_tx0(uint8_t ___i2cClientAddr, uint8_t *w, uint8_t w_len, uint8_t *r, uint8_t r_len) {
     if (w_len == 0 && r_len == 0) {
         return true;
     }
@@ -115,6 +115,6 @@ bool i2c_tx1(uint8_t ___i2cClientAddr, uint8_t *w, uint8_t w_len, uint8_t *r, ui
     }
     TWI0.MCTRLB = TWI_MCMD_STOP_gc;
     return true;
-} // i2c_tx1
+} // i2c_tx0
 
 #endif

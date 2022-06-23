@@ -16,7 +16,10 @@
 // resetting the uC as well.
 bool stusb4500_reset() {
     enum { addr = 0x28 };
-    return i2c_reg_write(addr, 0x23, 0x01);
+
+    i2c_reg_write_one_byte(addr, 0x23, 0x01);
+
+    return true ;
 } // stusb4500_reset
 
 int main( int ___argc, char ** ___argv ) {
