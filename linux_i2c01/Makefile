@@ -30,6 +30,6 @@ c clean :
 	@echo
 	rm -f $(bin01)
 
-r run :
+r run : $(bin01)
 	./$(bin01)
 
