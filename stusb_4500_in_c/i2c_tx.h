@@ -4,7 +4,7 @@
 
 #include "i2c_all.h"
 
-bool _i2c_tx1(uint8_t *w, uint8_t w_len, uint8_t *r, uint8_t r_len) ;
+bool _i2c_tx1(STUSB4500_ST * __st45LP);
 
 #endif
 

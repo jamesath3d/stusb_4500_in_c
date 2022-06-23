@@ -12,25 +12,25 @@
 
 //#define Rlen 0x80
 #define Rlen 0x01
-bool _i2c_tx2(int ___fi_i2c, uint8_t *___wBuf, uint8_t ___wLen, uint8_t *___rBuf, uint8_t ___rLen) {
+bool _i2c_tx2(STUSB4500_ST * __st45LP){
     ssize_t __wLen ;
     ssize_t __rLen ;
     ssize_t __wRT ;
     ssize_t __rRT ;
 
-    if ( ___wLen == 0 && ___rLen == 0) {
+    if ( __st45LP->wLEN == 0 && __st45LP->rLEN == 0) {
         return true;
     }
-    if ( ___wLen > 0) {
-        __wLen = ___wLen ;
-        __wRT = write(___fi_i2c, ___wBuf, __wLen) ;
+    if ( __st45LP->wLEN > 0) {
+        __wLen = __st45LP->wLEN ;
+        __wRT = write( __st45LP->i2cBusFD, __st45LP->wBuf, __wLen) ;
         if ( __wRT != __wLen ) {
             printf( " 883918181 : write error <%ld> vs <%ld> \n", __wLen , __wRT );
         }
     }
-    if ( ___rLen > 0) {
-        __rLen = ___rLen ;
-        __rRT = read(___fi_i2c, ___rBuf, __rLen) ;
+    if ( __st45LP->rLEN > 0) {
+        __rLen = __st45LP->rLEN ;
+        __rRT = read(__st45LP->i2cBusFD, __st45LP->rBuf, __rLen) ;
         if ( __rRT != __rLen ) {
             printf( " 883918183 : read error <%ld> vs <%ld> \n", __rLen , __rRT );
         }
@@ -40,40 +40,27 @@ bool _i2c_tx2(int ___fi_i2c, uint8_t *___wBuf, uint8_t ___wLen, uint8_t *___rBuf
     return true ;
 } // _i2c_tx2
 
-bool _i2c_tx1(uint8_t *___wBuf, uint8_t ___wLen, uint8_t *___rBuf, uint8_t ___rLen) {
+bool _i2c_tx1(STUSB4500_ST * __st45LP){
     //int length;
     //unsigned char buffer[60] = {0};
     //int __fi_i2c;
 
 
-    if (___wLen == 0 && ___rLen == 0) { // no read, no write, so nothing need to be done.
+    if (__st45LP->wLEN == 0 && __st45LP->rLEN == 0) { // no read, no write, so nothing need to be done.
         return true;
     }
 
     //----- OPEN THE I2C BUS -----
-    if ((_stusb4500_St.i2cBusFD = _i2c_bus_open()) < 0)
+    if ((__st45LP->i2cBusFD = _i2c_bus_open(__st45LP)) < 0)
     {
         //ERROR HANDLING: you can check errno to see what went wrong
         printf(" 831919911 :  Failed to open the i2c bus. \n\n" );
         return false;
     }
 
-    /*
-       int i2c_device_addr = LinuxI2C_i2cAddr ;        //<<<<<The I2C address of the slave
-       if (ioctl(_stusb4500_St.i2cBusFD, I2C_SLAVE, i2c_device_addr) < 0)
-       {
-       printf("Failed to acquire bus access and/or talk to slave at i2c address <0x%x>.\n", i2c_device_addr );
-    //ERROR HANDLING; you can check errno to see what went wrong
-    return false;
-    }
+    bool __rt1 = _i2c_tx2(__st45LP);
 
-    printf("Succeed open <%s> bus at i2c address <0x%x>, and get file handle <0x%x>.\n", 
-            filename, i2c_device_addr , _stusb4500_St.i2cBusFD);
-    */
-
-    bool __rt1 = _i2c_tx2(_stusb4500_St.i2cBusFD, ___wBuf, ___wLen, ___rBuf, ___rLen) ;
-
-    bool __rt2 = (0 == close( _stusb4500_St.i2cBusFD ))?true:false;
+    bool __rt2 = (0 == close( __st45LP->i2cBusFD ))?true:false;
 
     printf(" Function %s return <%d> <%d>\n", __func__ , __rt1, __rt2 );
 
