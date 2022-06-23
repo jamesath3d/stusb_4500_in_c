@@ -18,6 +18,7 @@ bool stusb4500_reset() {
     enum { addr = 0x28 };
 
     i2c_reg_write_one_byte(addr, 0x23, 0x01);
+    // i2c_tx1(___i2cClientAddr, __buf, 2, NULL, 0);
 
     return true ;
 } // stusb4500_reset
