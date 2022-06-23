@@ -25,14 +25,18 @@ bool _i2c_tx2(STUSB4500_ST * __st45LP){
         __wLen = __st45LP->wLEN ;
         __wRT = write( __st45LP->i2cBusFD, __st45LP->wBuf, __wLen) ;
         if ( __wRT != __wLen ) {
-            printf( " 883918181 : write error <%ld> vs <%ld> \n", __wLen , __wRT );
+            printf( " 883918181 : write error   <%ld> vs <%ld> \n", __wLen , __wRT );
+        } else {
+            printf( " 883918182 : write succeed <%ld> vs <%ld> \n", __wLen , __wRT );
         }
     }
     if ( __st45LP->rLEN > 0) {
         __rLen = __st45LP->rLEN ;
         __rRT = read(__st45LP->i2cBusFD, __st45LP->rBuf, __rLen) ;
         if ( __rRT != __rLen ) {
-            printf( " 883918183 : read error <%ld> vs <%ld> \n", __rLen , __rRT );
+            printf( " 883918183 : read error   <%ld> vs <%ld> \n", __rLen , __rRT );
+        } else {
+            printf( " 883918184 : read succeed <%ld> vs <%ld> \n", __rLen , __rRT );
         }
 
     }
