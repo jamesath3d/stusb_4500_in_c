@@ -13,6 +13,9 @@ i2c-tools/tools/i2cbusses.c
 i2c-tools/tools/i2cget.c
 linux_i2c01/Makefile
 linux_i2c01/main_linux_i2c01.c
+stusb_4500_in_c/i2c_all.h
+stusb_4500_in_c/i2c_bus_init.c
+stusb_4500_in_c/i2c_bus_init.h
 stusb_4500_in_c/i2c_reg_write.c
 stusb_4500_in_c/i2c_reg_write.h
 stusb_4500_in_c/i2c_tx.c

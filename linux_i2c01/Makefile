@@ -10,6 +10,7 @@ strip:=	strip --strip-unneeded
 
 proj:=main_linux_i2c01
 mid:=\
+	i2c_bus_init \
 	i2c_tx \
 	i2c_reg_write
 src01=$(proj).c $(foreach aa1,$(mid),$(aa1).c)
