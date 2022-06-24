@@ -29,7 +29,7 @@ int main( int ___argc, char ** ___argv ) {
     __b01 = _i2c_bus_init( &_stusb4500_St,  I2C_bus_NO , STUSB4500_i2cClient_addr );
     if ( ! __b01 ) return -1 ;
 
-    //__b01 = stusb4500_read_byte_test() ;
+    __b01 = stusb4500_read_byte_test() ;
     if ( ! __b01 ) return -1 ;
 
     __b01 = _stusb4500_reset01( &_stusb4500_St ) ;
