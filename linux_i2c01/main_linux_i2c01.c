@@ -17,19 +17,23 @@ bool _stusb4500_reset01( STUSB4500_ST * __st45LP ) {
 bool stusb4500_read_byte_test( STUSB4500_ST * __st45LP ){
     char * __ch ;
 
-    __ch = i2c_reg_read_one_byte( __st45LP, 0x06) ;
+    __ch = 
+        i2c_reg_read_one_byte( __st45LP, 0x06) ;
     if ( NULL == __ch ) return false ;
     printf( " 81939918381 : get from Reg <0x%0x> : <%0x> \n" , __st45LP->wBuf[0] , __ch[0] ) ;
 
-    __ch = i2c_reg_read_one_byte( __st45LP, 0x06) ;
+    __ch = 
+        i2c_reg_read_one_byte( __st45LP, 0x06) ;
     if ( NULL == __ch ) return false ;
     printf( " 81939918383 : get from Reg <0x%0x> : <%0x> \n" , __st45LP->wBuf[0] , __ch[0] ) ;
 
-    __ch = i2c_reg_read_one_byte( __st45LP, 0x08) ;
+    __ch = 
+        i2c_reg_read_one_byte( __st45LP, 0x08) ;
     if ( NULL == __ch ) return false ;
     printf( " 81939918383 : get from Reg <0x%0x> : <%0x> \n" , __st45LP->wBuf[0] , __ch[0] ) ;
 
-    __ch = i2c_reg_read_one_byte( __st45LP, 0x08) ;
+    __ch = 
+        i2c_reg_read_one_byte( __st45LP, 0x08) ;
     if ( NULL == __ch ) return false ;
     printf( " 81939918383 : get from Reg <0x%0x> : <%0x> \n" , __st45LP->wBuf[0] , __ch[0] ) ;
 
@@ -39,13 +43,15 @@ bool stusb4500_read_byte_test( STUSB4500_ST * __st45LP ){
 int main( int ___argc, char ** ___argv ) {
     bool __b01 ;
 
-    __b01 = _i2c_bus_init( &_stusb4500_St,  I2C_bus_NO , STUSB4500_i2cClient_addr );
+    __b01 = 
+        _i2c_bus_init( &_stusb4500_St,  I2C_bus_NO , STUSB4500_i2cClient_addr );
     if ( ! __b01 ) return -1 ;
 
-    __b01 = stusb4500_read_byte_test( &_stusb4500_St ) ;
+    __b01 = 
+        stusb4500_read_byte_test( &_stusb4500_St ) ;
     if ( ! __b01 ) return -1 ;
 
-    __b01 = _stusb4500_reset01( &_stusb4500_St ) ;
+    //__b01 = _stusb4500_reset01( &_stusb4500_St ) ;
     if ( ! __b01 ) return -1 ;
 
     return 0 ; 
