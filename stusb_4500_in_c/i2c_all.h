@@ -28,6 +28,7 @@ typedef struct STUSB4500_ST STUSB4500_ST ;
 #include "i2c_bus_init.h"
 #include "i2c_tx.h"
 #include "i2c_reg_write.h"
+#include "i2c_reg_read_write_test.h"
 
 #endif
 
