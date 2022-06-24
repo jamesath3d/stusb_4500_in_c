@@ -43,7 +43,11 @@ char * i2c_reg_read_bytes(STUSB4500_ST * ___st45LP, char ___i2cRegAddr, size_t _
     ___st45LP -> wLEN = 1 ;
     ___st45LP -> rLEN = ___len ;
 
-    return ___st45LP -> rBuf ; 
+    if ( false == _i2c_tx1( ___st45LP ) ) 
+        return NULL ;
+
+    return 
+        ___st45LP -> rBuf ; 
     //return NULL ;
 } // i2c_reg_read_bytes
 

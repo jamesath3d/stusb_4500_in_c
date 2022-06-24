@@ -14,6 +14,11 @@ bool _stusb4500_reset01( STUSB4500_ST * __st45LP ) {
         _i2c_reg_write_one_byte( __st45LP, 0x23, 0x01);
 } // _stusb4500_reset01
 
+void gap01(void){
+    usleep(1000);
+    printf("\n");
+} // gap01
+
 bool stusb4500_read_byte_test( STUSB4500_ST * __st45LP ){
     char * __ch ;
 
@@ -21,21 +26,25 @@ bool stusb4500_read_byte_test( STUSB4500_ST * __st45LP ){
         i2c_reg_read_one_byte( __st45LP, 0x06) ;
     if ( NULL == __ch ) return false ;
     printf( " 81939918381 : get from Reg <0x%0x> : <%0x> \n" , __st45LP->wBuf[0] , __ch[0] ) ;
+    gap01();
 
     __ch = 
         i2c_reg_read_one_byte( __st45LP, 0x06) ;
     if ( NULL == __ch ) return false ;
     printf( " 81939918383 : get from Reg <0x%0x> : <%0x> \n" , __st45LP->wBuf[0] , __ch[0] ) ;
+    gap01();
 
     __ch = 
         i2c_reg_read_one_byte( __st45LP, 0x08) ;
     if ( NULL == __ch ) return false ;
     printf( " 81939918383 : get from Reg <0x%0x> : <%0x> \n" , __st45LP->wBuf[0] , __ch[0] ) ;
+    gap01();
 
     __ch = 
         i2c_reg_read_one_byte( __st45LP, 0x08) ;
     if ( NULL == __ch ) return false ;
     printf( " 81939918383 : get from Reg <0x%0x> : <%0x> \n" , __st45LP->wBuf[0] , __ch[0] ) ;
+    gap01();
 
     return true ;
 } // stusb4500_read_byte_test
@@ -51,7 +60,7 @@ int main( int ___argc, char ** ___argv ) {
         stusb4500_read_byte_test( &_stusb4500_St ) ;
     if ( ! __b01 ) return -1 ;
 
-    //__b01 = _stusb4500_reset01( &_stusb4500_St ) ;
+    __b01 = _stusb4500_reset01( &_stusb4500_St ) ;
     if ( ! __b01 ) return -1 ;
 
     return 0 ; 
