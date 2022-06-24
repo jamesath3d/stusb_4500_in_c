@@ -32,4 +32,7 @@ bool _i2c_reg_write_one_byte(STUSB4500_ST * __st45LP, char __i2cRegAddr, char d)
 
 } // _i2c_reg_write_one_byte
 
-//bool _i2c_reg_read (STUSB4500_ST * __st45LP, uint8_t __i2cRegAddr, uint8_t d) {
+char * i2c_reg_read_one_byte(STUSB4500_ST * __st45LP, char __i2cRegAddr) {
+    return __st45LP -> rBuf ; 
+    //return NULL ;
+} // i2c_reg_read_one_byte
