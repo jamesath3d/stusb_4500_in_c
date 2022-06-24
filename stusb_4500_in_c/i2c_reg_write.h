@@ -4,7 +4,8 @@
 
 #include "i2c_all.h"
 
-bool _i2c_reg_write_one_byte(STUSB4500_ST * __st45LP, uint8_t __i2cRegAddr, uint8_t d) ;
+bool _i2c_reg_write_bytes(STUSB4500_ST * __st45LP, char __i2cRegAddr, char * ___buf, size_t ___len) ;
+bool _i2c_reg_write_one_byte(STUSB4500_ST * __st45LP, char __i2cRegAddr, char d) ;
 
 #endif
 

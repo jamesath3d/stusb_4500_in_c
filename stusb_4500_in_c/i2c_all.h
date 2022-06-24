@@ -9,16 +9,17 @@
 #include <stdio.h>				//printf
 #include <stdbool.h>            // bool
 #include <stdint.h>             // uint8_t
+#include <string.h>             // memcpy
 
 struct STUSB4500_ST {
-    uint8_t     i2cBusNo ;
+    char        i2cBusNo ;
     char        i2cBusName[256] ;
     int         i2cBusFD ;
-    uint8_t     i2cClientAddr ;
-    uint8_t     wBuf[80];
-    uint8_t     rBuf[80];
-    uint8_t     wLEN ;
-    uint8_t     rLEN ;
+    char        i2cClientAddr ;
+    char        wBuf[80];
+    char        rBuf[80];
+    size_t      wLEN ;
+    size_t      rLEN ;
     int         wRT ;
     int         rRT ;
 } ;
