@@ -7,9 +7,16 @@ ex03/i2cget_v4.2.c
 ex03/smbus_v4.2.c
 exSTUSB4500/example_i2c001.c
 exSTUSB4500/example_stusb4500.c
+exSTUSB4500/example_stusb4500_flash.c
+exSTUSB4500/example_stusb4500_read_config.c
 exSTUSB4500/try_reboot.c
+exSTUSB4500/usb-c__STUSB4500_USBPD_CUST_NVM_API.c
+exSTUSB4500/usb-c__STUSB4500_USBPD_CUST_NVM_API_001.c
+exSTUSB4500/usb-c__STUSB4500_main_NVM.c
+exSTUSB4500/usb-c__STUSB4500_main_NVM_001.c
 linux_i2c01/Makefile
 linux_i2c01/main_linux_i2c01.c
+stusb_4500_in_c/USB_PD_defines.h
 stusb_4500_in_c/i2c_all.h
 stusb_4500_in_c/i2c_bus_init.c
 stusb_4500_in_c/i2c_bus_init.h

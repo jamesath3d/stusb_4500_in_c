@@ -69,30 +69,31 @@ o 101 = Erase sector 0 to 4  (depending upon the mask value which has been progr
 o 110 = Program sector 0  to 4 (depending on FTP_CUST_SECT1)
 o 111 = Soft program sector 0 to 4 (depending upon the value which has been programmed to SER)*/
 
-int CUST_EnterWriteMode(uint8_t Port,unsigned char ErasedSector)
+int CUST_EnterWriteMode(uint8_t Port,unsigned char ErasedSector) // ErasedSector == 1
 {
     unsigned char Buffer[2];
     
     
-    Buffer[0]=FTP_CUST_PASSWORD;   /* Set Password*/
-    if ( I2C_Write_USB_PD(Port,FTP_CUST_PASSWORD_REG,Buffer,1) != HAL_OK )return -1;
+    Buffer[0]=FTP_CUST_PASSWORD;   /* Set Password*/ // 0x47
+    if ( I2C_Write_USB_PD(Port,FTP_CUST_PASSWORD_REG,Buffer,1) != HAL_OK )return -1; // W : 0x95 : 0x47
     
     Buffer[0]= 0 ;   /* this register must be NULL for Partial Erase feature */
-    if ( I2C_Write_USB_PD(Port,RW_BUFFER,Buffer,1) != HAL_OK )return -1;
+    if ( I2C_Write_USB_PD(Port,RW_BUFFER,Buffer,1) != HAL_OK )return -1; // W:0x53 : 0
     
     {  
         //NVM Power-up Sequence
         //After STUSB start-up sequence, the NVM is powered off.
         
         Buffer[0]= 0;  /* NVM internal controller reset */
-        if ( I2C_Write_USB_PD(Port,FTP_CTRL_0,Buffer,1)  != HAL_OK ) return -1;
+        if ( I2C_Write_USB_PD(Port,FTP_CTRL_0,Buffer,1)  != HAL_OK ) return -1;//W:0x96:0
         
         Buffer[0]= FTP_CUST_PWR | FTP_CUST_RST_N; /* Set PWR and RST_N bits */
-        if ( I2C_Write_USB_PD(Port,FTP_CTRL_0,Buffer,1) != HAL_OK ) return -1;
+        if ( I2C_Write_USB_PD(Port,FTP_CTRL_0,Buffer,1) != HAL_OK ) return -1;//W:0x96:(0x80|0x40)==0xC0
     }
     
     
-    Buffer[0]=((ErasedSector << 3) & FTP_CUST_SER_MASK) | ( WRITE_SER & FTP_CUST_OPCODE_MASK) ;  /* Load 0xF1 to erase all sectors of FTP and Write SER Opcode */
+    Buffer[0]=((ErasedSector << 3) & FTP_CUST_SER_MASK) | ( WRITE_SER & FTP_CUST_OPCODE_MASK) ;  
+    /* Load 0xF1 to erase all sectors of FTP and Write SER Opcode */ // (0x08 & 0xF8)|(0x02&0x07)==0x08|0x02==0x0C
     if ( I2C_Write_USB_PD(Port,FTP_CTRL_1,Buffer,1) != HAL_OK )return -1; /* Set Write SER Opcode */
     
     Buffer[0]=FTP_CUST_PWR | FTP_CUST_RST_N | FTP_CUST_REQ ; 
