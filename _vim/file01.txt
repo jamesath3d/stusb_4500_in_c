@@ -29,3 +29,5 @@ stusb_4500_in_c/i2c_tx.h
 stusb_4500_in_c/st45_00_all.h
 stusb_4500_in_c/st45_01_read_config.c
 stusb_4500_in_c/st45_01_read_config.h
+stusb_4500_in_c/st45_31_nvm_read.c
+stusb_4500_in_c/st45_31_nvm_read.h

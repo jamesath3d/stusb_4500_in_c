@@ -4,6 +4,12 @@
 // _st45_read_config blocks until a successful configuration is read from the
 // light sensor and returns it.
 // stusb4500_config read_config() {
+#ifndef kkkk
+ST45_config _st45_read_config() {
+    ST45_config __st = {0};
+    return __st ;
+} // _st45_read_config
+#else
 ST45_config _st45_read_config() {
   uint16_t voltage_map[] = {5 * 20, 9 * 20, 12 * 20, 15 * 20, 20 * 20};
   enum { packet_len = 4 };
@@ -32,3 +38,4 @@ ST45_config _st45_read_config() {
     return c;
   }
 } // _st45_read_config
+#endif

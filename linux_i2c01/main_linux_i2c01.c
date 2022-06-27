@@ -1,4 +1,5 @@
 #include "i2c_all.h"
+#include "st45_00_all.h"
 
 #define STUSB4500_i2cClient_addr 0x28
 #define I2C_bus_NO 8
@@ -17,14 +18,17 @@ bool _stusb4500_reset01( STUSB4500_ST * __st45LP ) {
 
 int main( int ___argc, char ** ___argv ) {
     bool __b01 ;
+    char* __clp01 ;
 
-    __b01 = 
-        _i2c_bus_init( &_stusb4500_St,  I2C_bus_NO , STUSB4500_i2cClient_addr );
+    __b01 = _i2c_bus_init( &_stusb4500_St,  I2C_bus_NO , STUSB4500_i2cClient_addr );
     if ( ! __b01 ) return -1 ;
 
-    __b01 = 
-        stusb4500_read_byte_test( &_stusb4500_St ) ;
+    //__b01 = stusb4500_read_byte_test( &_stusb4500_St ) ;
     if ( ! __b01 ) return -1 ;
+
+    __clp01 =
+        _st45_read_top();
+    if ( NULL == __clp01 ) return -1 ;
 
     __b01 = _stusb4500_reset01( &_stusb4500_St ) ;
     if ( ! __b01 ) return -1 ;
