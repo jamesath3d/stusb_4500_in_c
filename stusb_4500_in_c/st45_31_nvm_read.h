@@ -4,8 +4,8 @@
 
 #include "st45_00_all.h"
 
-char* _st45_read_top(void) ;
-int _st45_nvm_read(char * pSectorsOut, int SectorsLength);
+char* _st45_read_top( STUSB4500_ST * __st45LP ) ;
+int _st45_nvm_read( STUSB4500_ST * __st45LP, char * ___pSectorsOut, int __SectorsLength);
 
 #endif
 

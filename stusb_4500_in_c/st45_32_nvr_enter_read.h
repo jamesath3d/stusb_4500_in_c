@@ -4,6 +4,7 @@
 
 #include "st45_00_all.h"
 
+int _st45_enter_nvr_read( STUSB4500_ST * __st45LP ) ;
 
 #endif
 

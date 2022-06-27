@@ -7,6 +7,7 @@
 
 #include "USB_PD_defines.h"
 #include "st45_31_nvm_read.h"
+#include "st45_32_nvr_enter_read.h"
 
 
 #endif

@@ -27,7 +27,7 @@ int main( int ___argc, char ** ___argv ) {
     if ( ! __b01 ) return -1 ;
 
     __clp01 =
-        _st45_read_top();
+        _st45_read_top( &_stusb4500_St );
     if ( NULL == __clp01 ) return -1 ;
 
     __b01 = _stusb4500_reset01( &_stusb4500_St ) ;
