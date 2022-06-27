@@ -37,6 +37,8 @@ char* _st45_read_top(void) {
 int _st45_nvm_read(char * ___pSectorsOut, int __SectorsLength)
 {
     char __data[5][8]; // must read all 40 bytes.
+
+    memset(__data,0,sizeof(__data));
     
     if(__SectorsLength != ST45_NVM_SIZE) //error, input buffer too small
         return -2;
@@ -51,11 +53,7 @@ int _st45_nvm_read(char * ___pSectorsOut, int __SectorsLength)
     if (CUST_ExitTestMode(0) != 0 ) return -1;
     */
     
-    char * __clp = &__data[0][0];
-    for(int i=0; i< ST45_NVM_SIZE; i++)
-    {
-        ___pSectorsOut[i] = __clp[i];
-    }
+    memcpy( ___pSectorsOut, __data , sizeof( __data ));
     
     return 0; //OK
 }

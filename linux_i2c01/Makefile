@@ -11,7 +11,10 @@ strip:=	strip --strip-unneeded
 proj:=main_linux_i2c01
 mid:=\
 	st45_31_nvm_read \
+	st45_32_nvr_enter_read \
+	\
 	st45_01_read_config \
+	\
 	i2c_bus_init \
 	i2c_tx \
 	i2c_reg_read_write_test \
