@@ -1,14 +1,14 @@
 #define ST45_NVM_SIZE   40 // 5 * 8 == 40
 
 
-/* read from my STUSB4500's origin NVR. by dyn @ 2022 0627
- * 00 00 B0 AA 00 45 00 00
- * 10 40 9C 1C FF 01 3C DF
- * 02 40 0F 00 32 00 FC F1
-
- * 00 19 56 AF F5 35 5F 00
- * 00 4B 90 21 43 00 40 FB
- */
+// read from my STUSB4500's origin NVR. by dyn @ 2022 0627
+#define ST45default  \
+    0x00, 0x00, 0xB0, 0xAA, 0x00, 0x45, 0x00, 0x00, \
+    0x10, 0x40, 0x9C, 0x1C, 0xFF, 0x01, 0x3C, 0xDF, \
+    0x02, 0x40, 0x0F, 0x00, 0x32, 0x00, 0xFC, 0xF1, \
+    \
+    0x00, 0x19, 0x56, 0xAF, 0xF5, 0x35, 0x5F, 0x00, \
+    0x00, 0x4B, 0x90, 0x21, 0x43, 0x00, 0x40, 0xFB
 
 /*Identification of STUSB */
 #define DEVICE_ID 0x2F
@@ -25,15 +25,15 @@
 #define FTP_CUST_PASSWORD_REG	0x95
 #define FTP_CUST_PASSWORD		0x47
 #define FTP_CTRL_0              0x96
-	#define FTP_CUST_PWR	0x80 
-	#define FTP_CUST_RST_N	0x40
-	#define FTP_CUST_REQ	0x10
-	#define FTP_CUST_SECT 0x07
+#define FTP_CUST_PWR	0x80 
+#define FTP_CUST_RST_N	0x40
+#define FTP_CUST_REQ	0x10
+#define FTP_CUST_SECT 0x07
 #define FTP_CTRL_1              0x97
-	#define FTP_CUST_SER_MASK 0xF8
-	#define FTP_CUST_OPCODE_MASK 0x07
+#define FTP_CUST_SER_MASK 0xF8
+#define FTP_CUST_OPCODE_MASK 0x07
 #define RW_BUFFER 0x53
-	
+
 
 /* FTP_CUST_OPCODE field values */
 #define READ            0x00 //Read memory array
