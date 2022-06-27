@@ -4,7 +4,7 @@
 
 // CUST_EnterReadMode
 int _st45_enter_nvr_read( STUSB4500_ST * __st45LP ) {
-    unsigned char Buffer[2];
+    //unsigned char Buffer[2];
     
     //Buffer[0]=FTP_CUST_PASSWORD;  /* Set Password*/
     if ( false == _i2c_reg_write_one_byte( __st45LP , FTP_CUST_PASSWORD_REG, FTP_CUST_PASSWORD)  )return -1;

@@ -25,19 +25,29 @@ bool _i2c_tx2(STUSB4500_ST * __st45LP){
         __wLen = __st45LP->wLEN ;
         __wRT = write( __st45LP->i2cBusFD, __st45LP->wBuf, __wLen) ;
         if ( __wRT != __wLen ) {
-            printf( " 883918181 : write error   <%ld> vs <%ld> \n", __wLen , __wRT );
+            printf( " 883918181 : write error   ") ;
         } else {
-            printf( " 883918182 : write succeed <%ld> vs <%ld> \n", __wLen , __wRT );
+            printf( " 883918182 : write succeed ") ;
         }
+        printf( " <%ld> vs <%ld> : ", __wLen , __wRT );
+        for ( uint8_t __ii=0 ; __ii < __wLen ; __ii ++ ) {
+            printf( " %02hhX" , __st45LP->wBuf[__ii] );
+        }
+        printf( "\n" );
     }
     if ( __st45LP->rLEN > 0) {
         __rLen = __st45LP->rLEN ;
         __rRT = read(__st45LP->i2cBusFD, __st45LP->rBuf, __rLen) ;
         if ( __rRT != __rLen ) {
-            printf( " 883918183 : read error   <%ld> vs <%ld> \n", __rLen , __rRT );
+            printf( " 883918183 : read error   ");
         } else {
-            printf( " 883918184 : read succeed <%ld> vs <%ld> \n", __rLen , __rRT );
+            printf( " 883918184 : read succeed ");
         }
+        printf( " <%ld> vs <%ld> : ", __rLen , __rRT );
+        for ( uint8_t __ii=0 ; __ii < __rLen ; __ii ++ ) {
+            printf( " %02hhX" , __st45LP->rBuf[__ii] );
+        }
+        printf( "\n" );
 
     }
 
@@ -66,7 +76,7 @@ bool _i2c_tx1(STUSB4500_ST * __st45LP){
 
     bool __rt2 = (0 == close( __st45LP->i2cBusFD ))?true:false;
 
-    printf(" 831919915 : Function %s return <%d> <%d>\n", __func__ , __rt1, __rt2 );
+    if ( 0 ) printf(" 831919915 : Function %s return <%d> <%d>\n", __func__ , __rt1, __rt2 );
 
     return __rt1 && __rt2;
     //return true;
