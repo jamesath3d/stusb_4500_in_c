@@ -26,6 +26,8 @@ int main( int ___argc, char ** ___argv ) {
     //__b01 = stusb4500_read_byte_test( &_stusb4500_St ) ;
     if ( ! __b01 ) return -1 ;
 
+    _i2c_tx_debug = true ;
+
     __clp01 =
         _st45_read_top( &_stusb4500_St );
     if ( NULL == __clp01 ) return -1 ;

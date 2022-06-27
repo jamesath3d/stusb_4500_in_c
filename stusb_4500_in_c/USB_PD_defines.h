@@ -1,5 +1,15 @@
 #define ST45_NVM_SIZE   40 // 5 * 8 == 40
 
+
+/* read from my STUSB4500's origin NVR. by dyn @ 2022 0627
+ * 00 00 B0 AA 00 45 00 00
+ * 10 40 9C 1C FF 01 3C DF
+ * 02 40 0F 00 32 00 FC F1
+
+ * 00 19 56 AF F5 35 5F 00
+ * 00 4B 90 21 43 00 40 FB
+ */
+
 /*Identification of STUSB */
 #define DEVICE_ID 0x2F
 #define EXTENTION_10  (uint8_t )0x80

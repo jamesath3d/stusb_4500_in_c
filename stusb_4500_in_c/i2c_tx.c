@@ -10,8 +10,8 @@
 //   c. a write followed by a read (where wLen > 0 and rLen > 0)
 // Data to be written is read from w. Data to be read is stored in r.
 
-//#define Rlen 0x80
-#define Rlen 0x01
+bool _i2c_tx_debug = false ;
+
 bool _i2c_tx2(STUSB4500_ST * __st45LP){
     ssize_t __wLen ;
     ssize_t __rLen ;
@@ -25,29 +25,32 @@ bool _i2c_tx2(STUSB4500_ST * __st45LP){
         __wLen = __st45LP->wLEN ;
         __wRT = write( __st45LP->i2cBusFD, __st45LP->wBuf, __wLen) ;
         if ( __wRT != __wLen ) {
-            printf( " 883918181 : write error   ") ;
+            if(_i2c_tx_debug) printf( " 883918181 : write error   ") ;
         } else {
-            printf( " 883918182 : write succeed ") ;
+            if(_i2c_tx_debug) printf( " 883918182 : write succeed ") ;
         }
-        printf( " <%ld> vs <%ld> : ", __wLen , __wRT );
+        if(_i2c_tx_debug) printf( " <%ld> vs <%ld> : ", __wLen , __wRT );
         for ( uint8_t __ii=0 ; __ii < __wLen ; __ii ++ ) {
-            printf( " %02hhX" , __st45LP->wBuf[__ii] );
+            if ( 1 == __ii )  if(_i2c_tx_debug) printf( " :" );
+            if(_i2c_tx_debug) printf( " %02hhX" , __st45LP->wBuf[__ii] );
         }
-        printf( "\n" );
+        if ( 1 == __wLen ) if(_i2c_tx_debug) printf( " <--- Write addre only." );
+        if(_i2c_tx_debug) printf( "\n" );
     }
     if ( __st45LP->rLEN > 0) {
         __rLen = __st45LP->rLEN ;
         __rRT = read(__st45LP->i2cBusFD, __st45LP->rBuf, __rLen) ;
         if ( __rRT != __rLen ) {
-            printf( " 883918183 : read error   ");
+            if(_i2c_tx_debug) printf( " 883918183 # read  error   ");
         } else {
-            printf( " 883918184 : read succeed ");
+            if(_i2c_tx_debug) printf( " 883918184 # read  succeed ");
         }
-        printf( " <%ld> vs <%ld> : ", __rLen , __rRT );
+        if(_i2c_tx_debug) printf( " <%ld> vs <%ld> : ", __rLen , __rRT );
+        if(_i2c_tx_debug) printf( " %02hhX=#=" , __st45LP->wBuf[0] );
         for ( uint8_t __ii=0 ; __ii < __rLen ; __ii ++ ) {
-            printf( " %02hhX" , __st45LP->rBuf[__ii] );
+            if(_i2c_tx_debug) printf( " %02hhX" , __st45LP->rBuf[__ii] );
         }
-        printf( "\n" );
+        if(_i2c_tx_debug) printf( "\n" );
 
     }
 

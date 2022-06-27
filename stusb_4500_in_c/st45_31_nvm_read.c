@@ -1,14 +1,5 @@
 #include "st45_00_all.h"
 
-/*
- * 00 00 B0 AA 00 45 00 00
- * 10 40 9C 1C FF 01 3C DF
- * 02 40 0F 00 32 00 FC F1
-
- * 00 19 56 AF F5 35 5F 00
- * 00 4B 90 21 43 00 40 FB
- */
-
 
 char* _st45_read_top( STUSB4500_ST * __st45LP ) {
     static char __st45_rBuf[5][8] = {};
