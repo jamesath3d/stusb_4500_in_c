@@ -1,5 +1,13 @@
 #include "st45_00_all.h"
 
+/*
+ * 00 00 B0 AA 00 45 00 00
+ * 10 40 9C 1C FF 01 3C DF
+ * 02 40 0F 00 32 00 FC F1
+
+ * 00 19 56 AF F5 35 5F 00
+ * 00 4B 90 21 43 00 40 FB
+ */
 
 
 char* _st45_read_top( STUSB4500_ST * __st45LP ) {
@@ -13,7 +21,7 @@ char* _st45_read_top( STUSB4500_ST * __st45LP ) {
                 if ( 0 == __jj ) {
                     printf ( "%02hhX"  , __st45_rBuf[__ii][__jj] );
                 } else {
-                    printf ( " %02hhx" , __st45_rBuf[__ii][__jj] );
+                    printf ( " %02hhX" , __st45_rBuf[__ii][__jj] );
                 }
             }
             if ( 2 == __ii ) {
@@ -38,10 +46,10 @@ int _st45_nvm_read( STUSB4500_ST * __st45LP, char * ___pSectorsOut, int __Sector
     static char __rBuf[5][8]; // must read all 40 bytes.
 
     memset(__rBuf,0,sizeof(__rBuf));
-    
+
     if(__SectorsLength != ST45_NVM_SIZE) //error, input buffer too small
         return -2;
-    
+
     if ( 3 != _st45_enter_nvr_read( __st45LP ) ) return -1;
 
     if ( 8 != _st45_nvr_read_8_bytes(__st45LP, 0, &(__rBuf[0][0])) ) return -1;
@@ -49,16 +57,8 @@ int _st45_nvm_read( STUSB4500_ST * __st45LP, char * ___pSectorsOut, int __Sector
     if ( 8 != _st45_nvr_read_8_bytes(__st45LP, 2, &(__rBuf[2][0])) ) return -1;
     if ( 8 != _st45_nvr_read_8_bytes(__st45LP, 3, &(__rBuf[3][0])) ) return -1;
     if ( 8 != _st45_nvr_read_8_bytes(__st45LP, 4, &(__rBuf[4][0])) ) return -1;
-    /*
-    if (CUST_ReadSector(0, 0, &__rBuf[0][0]) != 0 ) return -1;
-    if (CUST_ReadSector(0, 1, &__rBuf[1][0]) != 0 ) return -1;
-    if (CUST_ReadSector(0, 2, &__rBuf[2][0]) != 0 ) return -1;
-    if (CUST_ReadSector(0, 3, &__rBuf[3][0]) != 0 ) return -1;
-    if (CUST_ReadSector(0, 4, &__rBuf[4][0]) != 0 ) return -1;
-    if (CUST_ExitTestMode(0) != 0 ) return -1;
-    */
-    
+
     memcpy( ___pSectorsOut, __rBuf , sizeof( __rBuf ));
-    
+
     return 0; //OK
 } // _st45_nvm_read

@@ -9,8 +9,8 @@ int _st45_enter_nvr_read( STUSB4500_ST * ___st45LP ) {
     __cnt = 0 ; 
 
     // FTP_CUST_PASSWORD;  Set Password : 0x95 : 0x47
-    if ( false == _i2c_reg_write_one_byte( ___st45LP , FTP_CUST_PASSWORD_REG, FTP_CUST_PASSWORD)  )
-        return -101;
+    if ( false == _i2c_reg_write_one_byte( ___st45LP , FTP_CUST_PASSWORD_REG, 
+                FTP_CUST_PASSWORD)  ) return -101;
     __cnt ++ ;
 
     //NVM Power-up Sequence
@@ -22,8 +22,8 @@ int _st45_enter_nvr_read( STUSB4500_ST * ___st45LP ) {
     __cnt ++ ;
 
     // FTP_CUST_PWR | FTP_CUST_RST_N;  Set PWR and RST_N bits : 0x96 : 0xC0
-    if ( false == _i2c_reg_write_one_byte( ___st45LP , FTP_CTRL_0, (FTP_CUST_PWR | FTP_CUST_RST_N) ) ) 
-        return -103;
+    if ( false == _i2c_reg_write_one_byte( ___st45LP , FTP_CTRL_0, 
+                (FTP_CUST_PWR | FTP_CUST_RST_N) ) ) return -103;
     __cnt ++ ;
 
     return __cnt ;
@@ -33,17 +33,17 @@ int _st45_enter_nvr_read( STUSB4500_ST * ___st45LP ) {
 int _st45_nvr_read_8_bytes( STUSB4500_ST * ___st45LP, char ___nvrBankIdx, char *___rBuf) {
     //unsigned char Buffer[2];
 
-    //Buffer[0]= FTP_CUST_PWR | FTP_CUST_RST_N ;  // Set PWR and RST_N bits //
-    if ( false == _i2c_reg_write_one_byte( ___st45LP, FTP_CTRL_0, (FTP_CUST_PWR | FTP_CUST_RST_N) )) 
-        return -201;
+    //FTP_CUST_PWR | FTP_CUST_RST_N ;  // Set PWR and RST_N bits //
+    if ( false == _i2c_reg_write_one_byte( ___st45LP, FTP_CTRL_0, 
+                (FTP_CUST_PWR | FTP_CUST_RST_N) )) return -201;
 
-    //Buffer[0]= (READ & FTP_CUST_OPCODE_MASK);
-    if ( false == _i2c_reg_write_one_byte( ___st45LP, FTP_CTRL_1, (READ & FTP_CUST_OPCODE_MASK))) 
-        return -202;// Set Read Sectors Opcode //
+    //(READ & FTP_CUST_OPCODE_MASK);
+    if ( false == _i2c_reg_write_one_byte( ___st45LP, FTP_CTRL_1, 
+                (READ & FTP_CUST_OPCODE_MASK))) return -202;// Set Read Sectors Opcode //
 
-    //Buffer[0]= (___nvrBankIdx & FTP_CUST_SECT) |FTP_CUST_PWR |FTP_CUST_RST_N | FTP_CUST_REQ;
-    if ( false == _i2c_reg_write_one_byte( ___st45LP, 
-                FTP_CTRL_0, ((___nvrBankIdx & FTP_CUST_SECT) |FTP_CUST_PWR |FTP_CUST_RST_N | FTP_CUST_REQ))) 
+    //(___nvrBankIdx & FTP_CUST_SECT) |FTP_CUST_PWR |FTP_CUST_RST_N | FTP_CUST_REQ;
+    if ( false == _i2c_reg_write_one_byte( ___st45LP, FTP_CTRL_0, ((___nvrBankIdx 
+                        & FTP_CUST_SECT) |FTP_CUST_PWR |FTP_CUST_RST_N | FTP_CUST_REQ))) 
         return -203;  // Load Read Sectors Opcode //
 
     do 
