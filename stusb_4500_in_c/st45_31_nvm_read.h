@@ -5,6 +5,7 @@
 #include "st45_00_all.h"
 
 char* _st45_read_top(void) ;
+int _st45_nvm_read(char * pSectorsOut, int SectorsLength);
 
 #endif
 
