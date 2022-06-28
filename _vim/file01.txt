@@ -39,3 +39,5 @@ stusb_4500_in_c/st45_34_read_top.c
 stusb_4500_in_c/st45_34_read_top.h
 stusb_4500_in_c/st45_35_nvm_write.c
 stusb_4500_in_c/st45_35_nvm_write.h
+stusb_4500_in_c/st45_36_gen_new.c
+stusb_4500_in_c/st45_36_gen_new.h

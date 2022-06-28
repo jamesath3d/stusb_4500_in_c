@@ -35,6 +35,10 @@ int main( int ___argc, char ** ___argv ) {
     __b01 = 
         _st45_comp_buf_with_defult( __clp01 );
 
+    __b01 = 
+        _st45_gen_new_config( __clp01 );
+
+
     _i2c_tx_debug = true ;
 
     __b01 = _stusb4500_reset01( &_stusb4500_St ) ;

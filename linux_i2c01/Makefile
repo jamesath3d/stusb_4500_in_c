@@ -16,6 +16,7 @@ mid:=\
 	st45_34_read_top \
 	\
 	st45_35_nvm_write \
+	st45_36_gen_new \
 	\
 	st45_01_read_config \
 	\

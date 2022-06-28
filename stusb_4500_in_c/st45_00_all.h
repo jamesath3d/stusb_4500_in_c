@@ -13,6 +13,7 @@
 #include "st45_34_read_top.h"
 
 #include "st45_35_nvm_write.h"
+#include "st45_36_gen_new.h"
 
 
 #endif
