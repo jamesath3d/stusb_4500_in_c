@@ -33,7 +33,7 @@ int main( int ___argc, char ** ___argv ) {
     if ( NULL == __clp01 ) return -1 ;
 
     __b01 = 
-        _st45_comp_buf_with_defult( &_stusb4500_St , __clp01 );
+        _st45_comp_buf_with_defult( __clp01 );
 
     _i2c_tx_debug = true ;
 

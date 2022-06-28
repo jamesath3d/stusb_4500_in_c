@@ -2,24 +2,34 @@
 
 
 const char _st45Default[] = ST45default ;
-bool _st45_comp_buf_with_defult( STUSB4500_ST * __st45LP , char* ___cmpBuf ) {
+bool _st45_comp_buf_with_defult( char* ___cmpBuf ) {
+    bool __rt1 ;
+    bool __rt2 = true ;
+    uint8_t __kk ;
     printf("834881811 :                         ========== NVM cmp : begin \n");
     if ( 1 ) {
         for ( uint8_t __ii = 0 ; __ii < 5 ; __ii ++ ) {
-            printf ( "cmp : %01d : "  , __ii );
+            __rt1 = true ;
+            printf ( "cmp  : %01d : "  , __ii );
             for ( uint8_t __jj = 0 ; __jj < 8 ; __jj ++ ) {
-                printf ( " %02hhX" , __st45_rBuf[__ii][__jj] );
+                __kk = __ii*8 + __jj ;
+                printf ( " %02hhX" , ___cmpBuf[__kk] );
+                if ( ___cmpBuf[__kk] != _st45Default[__kk] ) {
+                    __rt1 = false;
+                    printf ( "(%02hhX)" , _st45Default[__kk] );
+                }
             }
-            if ( 2 == __ii ) {
-                printf( "\n\n" ) ;
+            if ( __rt1 ) {
+                printf( " -- ok \n" ) ;
             } else {
-                printf( "\n" ) ;
+                printf( " -- failed 01 \n" ) ;
+                __rt2 = false ;
             }
         }
 
     }
 
-    return true ;
+    return __rt2 ;
 } // _st45_comp_buf_with_defult
 
 char* _st45_read_top( STUSB4500_ST * __st45LP ) {
