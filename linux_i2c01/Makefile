@@ -18,6 +18,8 @@ mid:=\
 	st45_35_nvm_write \
 	st45_36_gen_new \
 	\
+	st45_37_dump_buf \
+	\
 	st45_01_read_config \
 	\
 	i2c_bus_init \

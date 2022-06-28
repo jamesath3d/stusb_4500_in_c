@@ -15,6 +15,8 @@
 #include "st45_35_nvm_write.h"
 #include "st45_36_gen_new.h"
 
+#include "st45_37_dump_buf.h"
+
 
 #endif
 
