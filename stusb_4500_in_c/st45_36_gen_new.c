@@ -2,46 +2,15 @@
 
 
 extern const char _st45Default[] ;
+static char _st45new[ST45_NVM_SIZE] ;
 char* _st45_gen_new_config( uint16_t __Iconfig1, 
-        uint16_t __Iconfig2, uint16_t __Iconfig2, 
-        uint16_t __Iconfig3, uint16_t __Iconfig3) 
+        uint16_t __Iconfig2, uint16_t __Vconfig2, 
+        uint16_t __Iconfig3, uint16_t __Vconfig3) {
     char* __rt1 = NULL;
-    bool __rt2 = true ;
-    uint8_t __ii ;
-    uint8_t __jj ;
-    uint8_t __kk ;
-    printf("834881811 :                         ========== NVM cmp : begin \n");
-    if ( 1 ) {
-        for ( __ii = 0 ; __ii < 5 ; __ii ++ ) {
-            __rt1 = true ;
-            printf ( "cmp  : %01d : "  , __ii );
-            for ( __jj = 0 ; __jj < 8 ; __jj ++ ) {
-                __kk = __ii*8 + __jj ;
-                printf ( " %02hhX" , ___cmpBuf[__kk] );
-                if ( ___cmpBuf[__kk] != _st45Default[__kk] ) {
-                    __rt1 = false;
-                    printf ( "(%02hhX)" , _st45Default[__kk] );
-                }
-            }
-            if ( ! __rt1 ) {
-            }
-            if ( __rt1 ) {
-                printf( " -- ok \n" ) ;
-            } else {
-                printf( " -- failed 01 \n" ) ;
-                __rt2 = false ;
-                printf ( "orig : %01d : "  , __ii );
-                for ( __jj = 0 ; __jj < 8 ; __jj ++ ) {
-                    __kk = __ii*8 + __jj ;
-                    printf ( " %02hhX" , _st45Default[__kk] ) ;
-                }
-                printf( " -- default \n" ) ;
-            }
-        }
 
-    }
-printf("834881819 :                         ========== NVM cmp : end \n");
+    memcpy( _st45new, _st45Default, ST45_NVM_SIZE );
 
-return __rt2 ;
+
+    return __rt1 ;
 } // _st45_gen_new_config
 

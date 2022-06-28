@@ -16,7 +16,8 @@ char* _st45_read_top( STUSB4500_ST * __st45LP ) {
                 }
             }
             if ( 2 == __ii ) {
-                printf( "\n\n" ) ;
+                //printf( "\n\n" ) ;
+                printf( "\n" ) ;
             } else {
                 printf( "\n" ) ;
             }
