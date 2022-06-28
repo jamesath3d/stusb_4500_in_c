@@ -12,6 +12,9 @@ proj:=main_linux_i2c01
 mid:=\
 	st45_31_nvm_read \
 	st45_32_nvm_enter_read \
+	st45_33_nvm_cmp \
+	st45_34_read_top \
+	\
 	st45_35_nvm_write \
 	\
 	st45_01_read_config \
