@@ -44,7 +44,9 @@ c clean :
 	rm -f $(bin01)
 
 #r run : $(bin01)
-r run : clean all
+r run : clean all run_only
+ro run_only:
+	@echo
 	@echo
 	./$(bin01)
 
