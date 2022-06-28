@@ -28,16 +28,20 @@ int main( int ___argc, char ** ___argv ) {
 
     _i2c_tx_debug = 2 ;
 
-    __clp01 =
-        _st45_read_top( &_stusb4500_St );
-    if ( NULL == __clp01 ) return -1 ;
-    ST45_dump_buf2( __clp01 , "read NVM content" );
+    if ( 1 ) {
+        __clp01 =
+            _st45_read_top( &_stusb4500_St );
+        if ( NULL == __clp01 ) return -1 ;
+        ST45_dump_buf2( __clp01 , "read NVM content" );
 
-    __b01 = 
-        _st45_comp_buf_with_defult( __clp01 );
+        __b01 = 
+            _st45_comp_buf_with_defult( __clp01 );
+
+    }
 
     __b01 = 
         _st45_gen_new_config( 3.25, 12, 3.25, 20, 5 );
+    ST45_dump_buf2( __clp01 , "generated new NVM content" );
 
 
     _i2c_tx_debug = 2 ;
