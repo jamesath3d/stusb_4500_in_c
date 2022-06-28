@@ -1,6 +1,7 @@
 #include "st45_00_all.h"
 
 
+const char _st45Default[] = ST45default ;
 bool _st45_comp_buf_with_defult( STUSB4500_ST * __st45LP , char* ___cmpBuf ) {
     return true ;
 } // _st45_comp_buf_with_defult
