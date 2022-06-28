@@ -26,11 +26,12 @@ int main( int ___argc, char ** ___argv ) {
     //__b01 = stusb4500_read_byte_test( &_stusb4500_St ) ;
     if ( ! __b01 ) return -1 ;
 
-    _i2c_tx_debug = false ;
+    _i2c_tx_debug = 2 ;
 
     __clp01 =
         _st45_read_top( &_stusb4500_St );
     if ( NULL == __clp01 ) return -1 ;
+    ST45_dump_buf2( __clp01 , "read NVM content" );
 
     __b01 = 
         _st45_comp_buf_with_defult( __clp01 );
@@ -39,7 +40,7 @@ int main( int ___argc, char ** ___argv ) {
         _st45_gen_new_config( 3.25, 12, 3.25, 20, 5 );
 
 
-    _i2c_tx_debug = true ;
+    _i2c_tx_debug = 2 ;
 
     __b01 = _stusb4500_reset01( &_stusb4500_St ) ;
     if ( ! __b01 ) return -1 ;

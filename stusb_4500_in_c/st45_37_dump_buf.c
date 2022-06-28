@@ -1,5 +1,6 @@
 #include "st45_00_all.h"
 
+// ST45_dump_buf3 
 void _st45_dump_buf( char* ___cmpBuf , char* ___pre, char* ___pre2, char* ___tail ) {
     char __preX[256] ;
     uint8_t __ii ; 
@@ -7,9 +8,10 @@ void _st45_dump_buf( char* ___cmpBuf , char* ___pre, char* ___pre2, char* ___tai
     uint8_t __kk ; 
 
     if ( strlen(___pre) < 7 ) {
-        strcpy( __preX, "(no)" );
+        strcpy( __preX, ___pre );
     } else {
-        strncpy( __preX, ___pre + 6 , 5 );
+        strncpy( __preX, ___pre + 6 , 8 );
+        __preX[8] = 0 ;
     }
     printf("834983811 :                         ========== %s : begin \n", ___pre);
     for ( __ii = 0 ; __ii < 5 ; __ii ++ ) {

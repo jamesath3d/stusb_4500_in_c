@@ -43,7 +43,8 @@ c clean :
 	@echo
 	rm -f $(bin01)
 
-r run : $(bin01)
+#r run : $(bin01)
+r run : clean all
 	@echo
 	./$(bin01)
 
