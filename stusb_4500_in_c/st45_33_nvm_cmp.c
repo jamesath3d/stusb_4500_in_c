@@ -38,6 +38,7 @@ bool _st45_comp_buf_with_defult( char* ___cmpBuf ) {
         }
 
     }
+    printf("834881819 :                         ========== NVM cmp : end \n");
 
     return __rt2 ;
 } // _st45_comp_buf_with_defult
