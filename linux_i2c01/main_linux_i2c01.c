@@ -36,7 +36,7 @@ int main( int ___argc, char ** ___argv ) {
         _st45_comp_buf_with_defult( __clp01 );
 
     __b01 = 
-        _st45_gen_new_config( __clp01 );
+        _st45_gen_new_config( 3.25, 12, 3.25, 20, 5 );
 
 
     _i2c_tx_debug = true ;

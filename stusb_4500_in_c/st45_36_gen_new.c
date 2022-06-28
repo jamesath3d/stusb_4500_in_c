@@ -2,8 +2,10 @@
 
 
 extern const char _st45Default[] ;
-bool _st45_gen_new_config( char* ___cmpBuf ) {
-    bool __rt1 ;
+char* _st45_gen_new_config( uint16_t __Iconfig1, 
+        uint16_t __Iconfig2, uint16_t __Iconfig2, 
+        uint16_t __Iconfig3, uint16_t __Iconfig3) 
+    char* __rt1 = NULL;
     bool __rt2 = true ;
     uint8_t __ii ;
     uint8_t __jj ;
@@ -38,8 +40,8 @@ bool _st45_gen_new_config( char* ___cmpBuf ) {
         }
 
     }
-    printf("834881819 :                         ========== NVM cmp : end \n");
+printf("834881819 :                         ========== NVM cmp : end \n");
 
-    return __rt2 ;
+return __rt2 ;
 } // _st45_gen_new_config
 
