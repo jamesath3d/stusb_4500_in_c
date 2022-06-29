@@ -25,8 +25,19 @@ struct STUSB4500_ST {
 } ;
 typedef struct STUSB4500_ST STUSB4500_ST ;
 
+struct ST45pdo {
+    uint16_t    Vu ;
+    float       Vf ;
+    uint16_t    Iu ;
+    float       If ;
+} ;
+typedef struct ST45pdo ST45pdo ;
+
 struct ST45config {
     char        pdoAmount ;
+    ST45pdo     pdo1 ;
+    ST45pdo     pdo2 ;
+    ST45pdo     pdo3 ;
 } ;
 typedef struct ST45config ST45config ;
 
