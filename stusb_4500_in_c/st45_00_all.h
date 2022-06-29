@@ -16,6 +16,7 @@
 #include "st45_36_gen_new.h"
 
 #include "st45_37_dump_buf.h"
+#include "st45_38_analyze_nvm.h"
 
 
 #endif
