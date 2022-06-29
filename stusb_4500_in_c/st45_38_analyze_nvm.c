@@ -42,7 +42,8 @@ ST45config* _st45_analyze_nvm( char* ___nvmBuf ) {
     }
 
     // Pdo2i : sector 3, byte 4, bits 0:3
-    __u01 = _st45nvm[3][4] ; __u01 &= 0x000F ;
+    __u01 = _st45nvm[3][4] ; 
+    __u01 &= 0x000F ;
     _st45analyze . pdo2 . Iu = __u01 ;
     _st45analyze . pdo2 . If = 0 ;
     if(__u01 != 0)      {
