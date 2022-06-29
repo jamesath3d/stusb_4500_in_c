@@ -8,7 +8,7 @@ void _st45_analyze_nvm( char* ___nvmBuf ) {
   //uint8_t currentValue;
 
   //PDO Number
-  setPdoNumber((sector[3][2] & 0x06)>>1);
+  //setPdoNumber((sector[3][2] & 0x06)>>1);
 
 
   /*
