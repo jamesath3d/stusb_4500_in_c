@@ -4,7 +4,8 @@
 
 #include "st45_00_all.h"
 
-void _st45_analyze_nvm( char* ___nvmBuf ) ;
+ST45config* _st45_analyze_nvm( char* ___nvmBuf ) ;
+void _st45_dump_st45config( ST45config* ___nvmBuf ) ;
 
 #endif
 

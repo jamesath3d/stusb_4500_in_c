@@ -45,7 +45,10 @@ int main( int ___argc, char ** ___argv ) {
         _st45_gen_new_config( 3.25, 12, 3.25, 20, 5 );
     ST45_dump_buf2( __clp01 , "generated new NVM content" );
 
-    _st45_analyze_nvm( __clp01 ) ;
+    ST45config* __st45analyze =
+        _st45_analyze_nvm( __clp01 ) ;
+
+    _st45_dump_st45config(__st45analyze);
 
     _i2c_tx_debug = 2 ;
 

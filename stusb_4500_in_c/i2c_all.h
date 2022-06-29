@@ -25,6 +25,11 @@ struct STUSB4500_ST {
 } ;
 typedef struct STUSB4500_ST STUSB4500_ST ;
 
+struct ST45config {
+    char        pdoAmount ;
+} ;
+typedef struct ST45config ST45config ;
+
 #include "i2c_bus_init.h"
 #include "i2c_tx.h"
 #include "i2c_reg_write.h"
