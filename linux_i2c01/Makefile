@@ -20,6 +20,7 @@ mid:=\
 	\
 	st45_37_dump_buf \
 	st45_38_analyze_nvm \
+	st45_39_dump_config \
 	\
 	st45_01_read_config \
 	\

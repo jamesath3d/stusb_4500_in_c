@@ -17,6 +17,7 @@
 
 #include "st45_37_dump_buf.h"
 #include "st45_38_analyze_nvm.h"
+#include "st45_39_dump_config.h"
 
 
 #endif
