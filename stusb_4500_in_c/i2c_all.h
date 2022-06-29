@@ -30,6 +30,8 @@ struct ST45pdo {
     float       Vf ;
     uint16_t    Iu ;
     float       If ;
+    uint16_t    lowerV ; 
+    uint16_t    upperV ;
 } ;
 typedef struct ST45pdo ST45pdo ;
 
@@ -38,6 +40,8 @@ struct ST45config {
     ST45pdo     pdo1 ;
     ST45pdo     pdo2 ;
     ST45pdo     pdo3 ;
+    uint16_t    flexCurrentU ;
+    float       flexCurrentF ;
 } ;
 typedef struct ST45config ST45config ;
 

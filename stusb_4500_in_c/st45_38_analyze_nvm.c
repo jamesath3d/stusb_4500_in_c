@@ -67,3 +67,42 @@ ST45config* _st45_analyze_nvm( char* ___nvmBuf ) {
     return &_st45analyze ;
 } // _st45_analyze_nvm
 
+/*
+uint8_t STUSB4500::getLowerVoltageLimit(uint8_t pdo_numb)
+{  
+  if(pdo_numb == 1) //PDO1
+  {
+	return 0;
+  }
+  else if(pdo_numb == 2) //PDO2
+  {
+	return (sector[3][4]>>4) + 5;
+  }
+  else //PDO3
+  {
+	return (sector[3][6] & 0x0F) + 5;
+  }
+}
+
+uint8_t STUSB4500::getUpperVoltageLimit(uint8_t pdo_numb)
+{
+  if(pdo_numb == 1) //PDO1
+  {
+	return (sector[3][3]>>4) + 5;
+  }
+  else if(pdo_numb == 2) //PDO2
+  {
+	return (sector[3][5] & 0x0F) + 5;
+  }
+  else //PDO3
+  {
+	return (sector[3][6]>>4) + 5;
+  }
+}
+
+float STUSB4500::getFlexCurrent(void)
+{
+  uint16_t digitalValue = ((sector[4][4]&0x0F)<<6) + ((sector[4][3]&0xFC)>>2);
+  return digitalValue / 100.0;
+}
+*/
