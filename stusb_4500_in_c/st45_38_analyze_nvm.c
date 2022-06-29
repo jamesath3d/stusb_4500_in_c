@@ -40,7 +40,6 @@ ST45config* _st45_analyze_nvm( char* ___nvmBuf ) {
         if(__u01 < 11)     _st45analyze . pdo1 . If = __u01 * 0.25 + 0.25 ;
         else               _st45analyze . pdo1 . If = __u01 * 0.50 - 2.50 ;
     }
-
     // Pdo2i : sector 3, byte 4, bits 0:3
     __u01 = _st45nvm[3][4] ; 
     __u01 &= 0x000F ;
@@ -50,7 +49,6 @@ ST45config* _st45_analyze_nvm( char* ___nvmBuf ) {
         if(__u01 < 11)      _st45analyze . pdo2 . If = __u01 * 0.25 + 0.25 ;
         else                _st45analyze . pdo2 . If = __u01 * 0.50 - 2.50 ;
     }
-
     //PDO3i : sector 3, byte 5, bits 4:7
     __u01 = _st45nvm[3][5] ; 
     __u01 >>= 4 ;
@@ -63,46 +61,18 @@ ST45config* _st45_analyze_nvm( char* ___nvmBuf ) {
         else                _st45analyze . pdo3 . If = __u01 * 0.50 - 2.50 ;
     }
 
+    _st45analyze . pdo1 . lowerV = 0 ;
+    _st45analyze . pdo2 . lowerV = 5 + ((0x000F & _st45nvm[3][4]) >>4 ) ;
+    _st45analyze . pdo3 . lowerV = 5 +  (0x000F & _st45nvm[3][6]) ;
 
+    _st45analyze . pdo1 . upperV = 5 + ( (0x000F & _st45nvm[3][3] ) >> 4 ) ;
+    _st45analyze . pdo2 . upperV = 5 + ( (0x000F & _st45nvm[3][5] ) ) ;
+    _st45analyze . pdo3 . upperV = 5 + ( (0x000F & _st45nvm[3][6] ) >> 4 ) ;
+
+    _st45analyze . flexCurrentU = ((0x000F & _st45nvm[4][4])<<6) | ((0x00FC & _st45nvm[4][3])>>2);
+    _st45analyze . flexCurrentF = _st45analyze . flexCurrentU / 100.0 ;
     return &_st45analyze ;
 } // _st45_analyze_nvm
 
-/*
-uint8_t STUSB4500::getLowerVoltageLimit(uint8_t pdo_numb)
-{  
-  if(pdo_numb == 1) //PDO1
-  {
-	return 0;
-  }
-  else if(pdo_numb == 2) //PDO2
-  {
-	return (sector[3][4]>>4) + 5;
-  }
-  else //PDO3
-  {
-	return (sector[3][6] & 0x0F) + 5;
-  }
-}
+// https://github.com/sparkfun/SparkFun_STUSB4500_Arduino_Library.git
 
-uint8_t STUSB4500::getUpperVoltageLimit(uint8_t pdo_numb)
-{
-  if(pdo_numb == 1) //PDO1
-  {
-	return (sector[3][3]>>4) + 5;
-  }
-  else if(pdo_numb == 2) //PDO2
-  {
-	return (sector[3][5] & 0x0F) + 5;
-  }
-  else //PDO3
-  {
-	return (sector[3][6]>>4) + 5;
-  }
-}
-
-float STUSB4500::getFlexCurrent(void)
-{
-  uint16_t digitalValue = ((sector[4][4]&0x0F)<<6) + ((sector[4][3]&0xFC)>>2);
-  return digitalValue / 100.0;
-}
-*/
