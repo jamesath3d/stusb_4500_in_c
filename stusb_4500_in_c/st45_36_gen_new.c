@@ -1,6 +1,5 @@
 #include "st45_00_all.h"
 
-
 extern const char _st45Default[] ;
 char* _st45_gen_new_config( uint16_t __Iconfig1, 
         uint16_t __Iconfig2, uint16_t __Vconfig2, 
