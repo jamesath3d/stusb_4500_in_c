@@ -4,9 +4,9 @@
 
 #include "st45_00_all.h"
 
-char* _st45_gen_new_config( uint16_t __Iconfig1, 
-        uint16_t __Iconfig2, uint16_t __Vconfig2, 
-        uint16_t __Iconfig3, uint16_t __Vconfig3) ;
+char* _st45_gen_new_config( float __Iconfig1, 
+        float __Iconfig2, float __Vconfig2, 
+        float __Iconfig3, float __Vconfig3) ;
 
 #endif
 
