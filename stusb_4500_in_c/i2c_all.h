@@ -40,6 +40,7 @@ struct ST45config {
     ST45pdo     pdo[3] ;
     uint16_t    flexCurrentU ;
     float       flexCurrentF ;
+    uint8_t     buf[5][8] ;
 } ;
 typedef struct ST45config ST45config ;
 
