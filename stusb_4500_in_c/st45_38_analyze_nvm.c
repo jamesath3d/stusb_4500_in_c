@@ -2,7 +2,7 @@
 
 static uint8_t _st45nvm[5][8] ;
 static ST45config _st45analyze ;
-ST45config* _st45_analyze_nvm( uint8_t* ___nvmBuf ) {
+ST45config* _st45_analyze_nvm( ST45config* ___st45config, uint8_t* ___nvmBuf ) {
     uint16_t  __u01 ;
 
     memcpy( _st45nvm, ___nvmBuf, ST45_NVM_SIZE );

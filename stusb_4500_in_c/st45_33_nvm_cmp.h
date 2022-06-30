@@ -4,7 +4,7 @@
 
 #include "st45_00_all.h"
 
-bool _st45_comp_buf_with_defult( uint8_t* ___cmpBuf ) ;
+bool _st45_cmp_buf_with_defult( uint8_t* ___cmpBuf ) ;
 
 #endif
 

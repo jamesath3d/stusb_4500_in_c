@@ -23,5 +23,5 @@ void _st45_dump_buf( char* ___cmpBuf , char* ___pre, char* ___pre2, char* ___tai
         printf( " -- %s \n" , ___tail ) ;
     }
     printf("834983819 :                         ========== %s : end \n", ___pre);
-} // _st45_comp_buf_with_defult
+} // _st45_dump_buf
 

@@ -2,7 +2,7 @@
 
 
 const uint8_t _st45Default[] = ST45default ;
-bool _st45_comp_buf_with_defult( uint8_t* ___cmpBuf ) {
+bool _st45_cmp_buf_with_defult( uint8_t* ___cmpBuf ) {
     bool __rt1 ;
     bool __rt2 = true ;
     uint8_t __ii ;
@@ -41,5 +41,5 @@ bool _st45_comp_buf_with_defult( uint8_t* ___cmpBuf ) {
     printf("834881819 :                         ========== NVM cmp : end \n");
 
     return __rt2 ;
-} // _st45_comp_buf_with_defult
+} // _st45_cmp_buf_with_defult
 

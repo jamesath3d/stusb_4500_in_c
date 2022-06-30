@@ -4,7 +4,7 @@
 #define STUSB4500_i2cClient_addr 0x28
 #define I2C_bus_NO 8
 
-ST45i2cST _stusb4500_St;
+ST45i2cST _st45i2c;
 
 //------------------------------
 // _stusb4500_reset01 resets the STUSB4500. This also results in loss of
@@ -19,31 +19,31 @@ bool _stusb4500_reset01( ST45i2cST * __st45LP ) {
 int main( int ___argc, char ** ___argv ) {
     bool __b01 ;
     uint8_t* __clp01 ;
-    ST45config* __st45analyze ;
+    ST45config _st45config_old ;
 
-    __b01 = _i2c_bus_init( &_stusb4500_St,  I2C_bus_NO , STUSB4500_i2cClient_addr );
+    __b01 = _i2c_bus_init( &_st45i2c,  I2C_bus_NO , STUSB4500_i2cClient_addr );
     if ( ! __b01 ) return -1 ;
 
-    //__b01 = stusb4500_read_byte_test( &_stusb4500_St ) ;
+    //__b01 = stusb4500_read_byte_test( &_st45i2c ) ;
     if ( ! __b01 ) return -1 ;
 
     _i2c_tx_debug = 2 ;
 
     if ( 1 ) { // read the origin data, and try to compare with the default
         __clp01 =
-            _st45_read_top( &_stusb4500_St );
+            _st45_read_top( &_st45i2c );
         if ( NULL == __clp01 ) return -1 ;
 
         if(1) {
             __b01 = 
-                _st45_comp_buf_with_defult( __clp01 );
+                _st45_cmp_buf_with_defult( __clp01 );
         } else {
             ST45_dump_buf2( __clp01 , "read NVM content" );
         }
     }
 
-    __st45analyze =
-        _st45_analyze_nvm( __clp01 ) ;
+    _st45_analyze_nvm( &_st45config_old, __clp01 ) ;
+    /*
     _st45_dump_st45config(__st45analyze);
 
 
@@ -61,8 +61,9 @@ int main( int ___argc, char ** ___argv ) {
 
     _i2c_tx_debug = 2 ;
 
-    __b01 = _stusb4500_reset01( &_stusb4500_St ) ;
+    __b01 = _stusb4500_reset01( &_st45i2c ) ;
     if ( ! __b01 ) return -1 ;
+    */
 
     return 0 ; 
 } // main
