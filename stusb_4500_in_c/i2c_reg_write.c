@@ -7,7 +7,7 @@
 //   register address (___i2cRegAddr), register value (d)
 // This is a common way of writing into I2C device registers.
 // Returns true if successful, false otherwise.
-bool _i2c_reg_write_bytes(STUSB4500_ST * ___st45LP, char ___i2cRegAddr, char * ___buf, size_t ___len) {
+bool _i2c_reg_write_bytes(ST45i2cST * ___st45LP, char ___i2cRegAddr, char * ___buf, size_t ___len) {
 
     if ( ___len > 0x80 ) return false ;
 
@@ -22,7 +22,7 @@ bool _i2c_reg_write_bytes(STUSB4500_ST * ___st45LP, char ___i2cRegAddr, char * _
 
 } // _i2c_reg_write_bytes
 
-bool _i2c_reg_write_one_byte(STUSB4500_ST * ___st45LP, char ___i2cRegAddr, char d) {
+bool _i2c_reg_write_one_byte(ST45i2cST * ___st45LP, char ___i2cRegAddr, char d) {
 
     char __buf[1] = {d} ;
     return 
@@ -34,7 +34,7 @@ bool _i2c_reg_write_one_byte(STUSB4500_ST * ___st45LP, char ___i2cRegAddr, char 
 
 
 
-char * i2c_reg_read_bytes(STUSB4500_ST * ___st45LP, char ___i2cRegAddr, size_t ___len ) {
+char * i2c_reg_read_bytes(ST45i2cST * ___st45LP, char ___i2cRegAddr, size_t ___len ) {
 
     if ( ___len > 0x80 ) return false ;
 
@@ -51,7 +51,7 @@ char * i2c_reg_read_bytes(STUSB4500_ST * ___st45LP, char ___i2cRegAddr, size_t _
     //return NULL ;
 } // i2c_reg_read_bytes
 
-char * i2c_reg_read_one_byte(STUSB4500_ST * ___st45LP, char ___i2cRegAddr) {
+char * i2c_reg_read_one_byte(ST45i2cST * ___st45LP, char ___i2cRegAddr) {
     return 
         i2c_reg_read_bytes( ___st45LP, ___i2cRegAddr, 1 ) ;
 } // i2c_reg_read_one_byte

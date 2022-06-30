@@ -1,6 +1,6 @@
 #include "st45_00_all.h"
 
-uint8_t* _st45_read_top( STUSB4500_ST * __st45LP ) {
+uint8_t* _st45_read_top( ST45i2cST * __st45LP ) {
     static uint8_t __st45_rBuf[5][8] = {};
     int __rt = -1 ;
     __rt = _st45_nvm_read( __st45LP, &(__st45_rBuf[0][0]), sizeof(__st45_rBuf) );

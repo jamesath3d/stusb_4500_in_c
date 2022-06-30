@@ -4,13 +4,13 @@
 #define STUSB4500_i2cClient_addr 0x28
 #define I2C_bus_NO 8
 
-STUSB4500_ST _stusb4500_St;
+ST45i2cST _stusb4500_St;
 
 //------------------------------
 // _stusb4500_reset01 resets the STUSB4500. This also results in loss of
 // power to the entire board while STUSB4500 boots up again, effectively
 // resetting the uC as well.
-bool _stusb4500_reset01( STUSB4500_ST * __st45LP ) {
+bool _stusb4500_reset01( ST45i2cST * __st45LP ) {
     return 
         _i2c_reg_write_one_byte( __st45LP, 0x23, 0x01);
 } // _stusb4500_reset01

@@ -1,7 +1,7 @@
 #include "i2c_bus_init.h"
 
 
-bool _i2c_bus_init( STUSB4500_ST * __st45LP , uint8_t ___i2cBusNo, uint8_t ___i2cClientAddr){
+bool _i2c_bus_init( ST45i2cST * __st45LP , uint8_t ___i2cBusNo, uint8_t ___i2cClientAddr){
     int __rt ;
 
     __st45LP->i2cBusNo = ___i2cBusNo ; 
@@ -30,7 +30,7 @@ bool _i2c_bus_init( STUSB4500_ST * __st45LP , uint8_t ___i2cBusNo, uint8_t ___i2
 
 } // _i2c_bus_init
 
-int _i2c_bus_open(STUSB4500_ST * __st45LP){
+int _i2c_bus_open(ST45i2cST * __st45LP){
     int __rt ;
     if ((__rt = open(__st45LP->i2cBusName, O_RDWR)) < 0) {
         printf( " %s : 881818919191 : error open I2C device <%s> , return <%d> \n", __func__, 

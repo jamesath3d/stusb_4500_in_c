@@ -4,8 +4,8 @@
 
 #include "st45_00_all.h"
 
-int _st45_enter_nvm_read( STUSB4500_ST * ___st45LP ) ;
-int _st45_nvm_read_8_bytes( STUSB4500_ST * ___st45LP, char ___nvmBankIdx, char *___rBuf) ;
+int _st45_enter_nvm_read( ST45i2cST * ___st45LP ) ;
+int _st45_nvm_read_8_bytes( ST45i2cST * ___st45LP, char ___nvmBankIdx, char *___rBuf) ;
 
 #endif
 

@@ -11,7 +11,7 @@
 #include <stdint.h>             // uint8_t
 #include <string.h>             // memcpy
 
-struct STUSB4500_ST {
+struct ST45i2cST {
     uint8_t     i2cBusNo ;
     char        i2cBusName[256] ;
     int         i2cBusFD ;
@@ -23,7 +23,7 @@ struct STUSB4500_ST {
     int         wRT ;
     int         rRT ;
 } ;
-typedef struct STUSB4500_ST STUSB4500_ST ;
+typedef struct ST45i2cST ST45i2cST ;
 
 struct ST45pdo {
     uint16_t    Vu ;

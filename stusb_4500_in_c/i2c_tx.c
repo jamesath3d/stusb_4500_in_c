@@ -12,7 +12,7 @@
 
 uint8_t _i2c_tx_debug = 0 ;
 
-bool _i2c_tx2(STUSB4500_ST * __st45LP){
+bool _i2c_tx2(ST45i2cST * __st45LP){
     ssize_t __wLen ;
     ssize_t __rLen ;
     ssize_t __wRT ;
@@ -57,7 +57,7 @@ bool _i2c_tx2(STUSB4500_ST * __st45LP){
     return true ;
 } // _i2c_tx2
 
-bool _i2c_tx1(STUSB4500_ST * __st45LP){
+bool _i2c_tx1(ST45i2cST * __st45LP){
     //int length;
     //unsigned char buffer[60] = {0};
     //int __fi_i2c;

@@ -4,7 +4,7 @@
 
 #include "st45_00_all.h"
 
-int _st45_nvm_read( STUSB4500_ST * __st45LP, uint8_t * ___pSectorsOut, int __SectorsLength);
+int _st45_nvm_read( ST45i2cST * __st45LP, uint8_t * ___pSectorsOut, int __SectorsLength);
 
 #endif
 

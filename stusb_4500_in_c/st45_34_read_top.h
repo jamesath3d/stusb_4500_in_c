@@ -4,7 +4,7 @@
 
 #include "st45_00_all.h"
 
-uint8_t* _st45_read_top( STUSB4500_ST * __st45LP ) ;
+uint8_t* _st45_read_top( ST45i2cST * __st45LP ) ;
 
 #endif
 

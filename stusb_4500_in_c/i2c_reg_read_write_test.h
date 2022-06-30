@@ -4,7 +4,7 @@
 
 #include "i2c_all.h"
 
-bool stusb4500_read_byte_test( STUSB4500_ST * __st45LP );
+bool stusb4500_read_byte_test( ST45i2cST * __st45LP );
 
 #endif
 

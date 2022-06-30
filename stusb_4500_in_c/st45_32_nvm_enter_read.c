@@ -3,7 +3,7 @@
 
 
 // CUST_EnterReadMode
-int _st45_enter_nvm_read( STUSB4500_ST * ___st45LP ) {
+int _st45_enter_nvm_read( ST45i2cST * ___st45LP ) {
     int __cnt ; 
 
     __cnt = 0 ; 
@@ -30,7 +30,7 @@ int _st45_enter_nvm_read( STUSB4500_ST * ___st45LP ) {
 } // _st45_enter_nvm_read
 
 // CUST_ReadSector
-int _st45_nvm_read_8_bytes( STUSB4500_ST * ___st45LP, char ___nvmBankIdx, char *___rBuf) {
+int _st45_nvm_read_8_bytes( ST45i2cST * ___st45LP, char ___nvmBankIdx, char *___rBuf) {
     //unsigned char Buffer[2];
 
     //FTP_CUST_PWR | FTP_CUST_RST_N ;  // Set PWR and RST_N bits //
