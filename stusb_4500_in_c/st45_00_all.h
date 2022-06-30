@@ -19,6 +19,7 @@
 #include "st45_38_analyze_nvm.h"
 #include "st45_39_dump_config.h"
 
+#include "st45_3a_voltage_current_check.h"
 
 #endif
 

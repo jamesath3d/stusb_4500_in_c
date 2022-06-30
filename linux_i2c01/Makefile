@@ -22,6 +22,8 @@ mid:=\
 	st45_38_analyze_nvm \
 	st45_39_dump_config \
 	\
+	st45_3a_voltage_current_check \
+	\
 	st45_01_read_config \
 	\
 	i2c_bus_init \
