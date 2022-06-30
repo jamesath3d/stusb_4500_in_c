@@ -12,9 +12,9 @@
 
 /*
    PDO amount is : 3 , FlexCurrent is 0xC8-2.000000
-   PDO 1 V,I is : 0x064- 5.00v ,  0x5-1.50A , lowV: 0%, upV: 5%
-   PDO 2 V,I is : 0x12C-15.00v ,  0x5-1.50A , lowV: 5%, upV: 10%
-   PDO 3 V,I is : 0x190-20.00v ,  0x3-1.00A , lowV: 20%, upV: 5%
+   PDO 1 V,I is : 0x064- 5.00v ,  0x5-1.50A , lowVp: 15%, upVp: 10%
+   PDO 2 V,I is : 0x12C-15.00v ,  0x5-1.50A , lowVp: 15%, upVp: 5%
+   PDO 3 V,I is : 0x190-20.00v ,  0x3-1.00A , lowVp: 15%, upVp: 5%
    */
 
 /*Identification of STUSB */
