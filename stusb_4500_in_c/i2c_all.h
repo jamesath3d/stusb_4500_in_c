@@ -37,9 +37,7 @@ typedef struct ST45pdo ST45pdo ;
 
 struct ST45config {
     uint8_t     pdoAmount ;
-    ST45pdo     pdo1 ;
-    ST45pdo     pdo2 ;
-    ST45pdo     pdo3 ;
+    ST45pdo     pdo[3] ;
     uint16_t    flexCurrentU ;
     float       flexCurrentF ;
 } ;

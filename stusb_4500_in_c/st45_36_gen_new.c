@@ -4,33 +4,11 @@
 extern const uint8_t _st45Default[] ;
 static uint8_t _st45new[5][8] ;
 static ST45config _st45newConfig ;
-uint8_t* _st45_gen_new_config( float __Iconfig1, 
-        float __Iconfig2, float __Vconfig2, 
-        float __Iconfig3, float __Vconfig3) {
 
-    _st45_check_and_modifyV( 2, &__Vconfig2 ) ;
-    _st45_check_and_modifyV( 3, &__Vconfig3 ) ;
-    _st45_check_and_modifyI( 1, &__Iconfig1 ) ;
-    _st45_check_and_modifyI( 2, &__Iconfig2 ) ;
-    _st45_check_and_modifyI( 3, &__Iconfig3 ) ;
-
-    _st45newConfig . pdoAmount = 3 ;
-
-    _st45newConfig . pdo1 . Vf = 5 ;
-    _st45newConfig . pdo1 . Vu = 5 * 20 ;
-    _st45newConfig . pdo2 . Vf = __Vconfig2 ;
-    _st45newConfig . pdo2 . Vu = __Vconfig2 * 20 ;
-    _st45newConfig . pdo3 . Vf = __Vconfig3 ;
-    _st45newConfig . pdo3 . Vu = __Vconfig3 * 20 ;
-
-    _st45newConfig . pdo1 . If = __Iconfig1 ;
-    _st45newConfig . pdo1 . Iu = __Iconfig1 * 20 ;
-    _st45newConfig . pdo2 . If = __Iconfig2 ;
-    _st45newConfig . pdo2 . Iu = __Iconfig2 * 20 ;
-    _st45newConfig . pdo3 . If = __Iconfig3 ;
-    _st45newConfig . pdo3 . Iu = __Iconfig3 * 20 ;
+void _st45_gen_new_configX(void) {
 
 
+    /*
     uint8_t* __rt1 = &(_st45new[0][0]);
     float __f01 ;
     uint16_t __u01 ;
@@ -56,5 +34,35 @@ uint8_t* _st45_gen_new_config( float __Iconfig1,
 
 
     return __rt1 ;
+    */
+} // _st45_gen_new_configX
+
+uint8_t* _st45_gen_new_config( float __Iconfig1, 
+        float __Iconfig2, float __Vconfig2, 
+        float __Iconfig3, float __Vconfig3) {
+
+    _st45_check_and_modifyV( 2, &__Vconfig2 ) ;
+    _st45_check_and_modifyV( 3, &__Vconfig3 ) ;
+    _st45_check_and_modifyI( 1, &__Iconfig1 ) ;
+    _st45_check_and_modifyI( 2, &__Iconfig2 ) ;
+    _st45_check_and_modifyI( 3, &__Iconfig3 ) ;
+
+    _st45newConfig . pdoAmount = 3 ;
+
+    _st45newConfig . pdo[0] . Vf = 5 ;
+    _st45newConfig . pdo[0] . Vu = 5 * 20 ;
+    _st45newConfig . pdo[1] . Vf = __Vconfig2 ;
+    _st45newConfig . pdo[1] . Vu = __Vconfig2 * 20 ;
+    _st45newConfig . pdo[2] . Vf = __Vconfig3 ;
+    _st45newConfig . pdo[2] . Vu = __Vconfig3 * 20 ;
+
+    _st45newConfig . pdo[0] . If = __Iconfig1 ;
+    _st45newConfig . pdo[0] . Iu = __Iconfig1 * 20 ;
+    _st45newConfig . pdo[1] . If = __Iconfig2 ;
+    _st45newConfig . pdo[1] . Iu = __Iconfig2 * 20 ;
+    _st45newConfig . pdo[2] . If = __Iconfig3 ;
+    _st45newConfig . pdo[2] . Iu = __Iconfig3 * 20 ;
+
+    return &(_st45new[0][0]) ;
 } // _st45_gen_new_config
 
