@@ -1,8 +1,8 @@
 #include "st45_00_all.h"
 
 
-const char _st45Default[] = ST45default ;
-bool _st45_comp_buf_with_defult( char* ___cmpBuf ) {
+const uint8_t _st45Default[] = ST45default ;
+bool _st45_comp_buf_with_defult( uint8_t* ___cmpBuf ) {
     bool __rt1 ;
     bool __rt2 = true ;
     uint8_t __ii ;

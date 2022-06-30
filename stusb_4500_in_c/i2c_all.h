@@ -12,10 +12,10 @@
 #include <string.h>             // memcpy
 
 struct STUSB4500_ST {
-    char        i2cBusNo ;
+    uint8_t     i2cBusNo ;
     char        i2cBusName[256] ;
     int         i2cBusFD ;
-    char        i2cClientAddr ;
+    uint8_t     i2cClientAddr ;
     char        wBuf[80];
     char        rBuf[80];
     size_t      wLEN ;
@@ -36,7 +36,7 @@ struct ST45pdo {
 typedef struct ST45pdo ST45pdo ;
 
 struct ST45config {
-    char        pdoAmount ;
+    uint8_t     pdoAmount ;
     ST45pdo     pdo1 ;
     ST45pdo     pdo2 ;
     ST45pdo     pdo3 ;

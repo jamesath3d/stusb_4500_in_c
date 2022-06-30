@@ -1,12 +1,15 @@
 #include "st45_00_all.h"
 
-extern const char _st45Default[] ;
-static char _st45new[5][8] ;
-char* _st45_gen_new_config( float __Iconfig1, 
+extern const uint8_t _st45Default[] ;
+static uint8_t _st45new[5][8] ;
+static ST45config _st45newConfig ;
+uint8_t* _st45_gen_new_config( float __Iconfig1, 
         float __Iconfig2, float __Vconfig2, 
         float __Iconfig3, float __Vconfig3) {
 
-    char* __rt1 = &(_st45new[0][0]);
+    _st45newConfig . pdoAmount = 3 ;
+
+    uint8_t* __rt1 = &(_st45new[0][0]);
     float __f01 ;
     uint16_t __u01 ;
     uint16_t __u02 ;

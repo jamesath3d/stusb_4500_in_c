@@ -1,6 +1,6 @@
 #include "st45_00_all.h"
 
-int _st45_nvm_read( STUSB4500_ST * __st45LP, char * ___pSectorsOut, int __SectorsLength) {
+int _st45_nvm_read( STUSB4500_ST * __st45LP, uint8_t * ___pSectorsOut, int __SectorsLength) {
     static char __rBuf[5][8]; // must read all 40 bytes.
 
     memset(__rBuf,0,sizeof(__rBuf));

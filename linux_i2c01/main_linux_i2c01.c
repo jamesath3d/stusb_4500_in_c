@@ -18,7 +18,7 @@ bool _stusb4500_reset01( STUSB4500_ST * __st45LP ) {
 
 int main( int ___argc, char ** ___argv ) {
     bool __b01 ;
-    char* __clp01 ;
+    uint8_t* __clp01 ;
     ST45config* __st45analyze ;
 
     __b01 = _i2c_bus_init( &_stusb4500_St,  I2C_bus_NO , STUSB4500_i2cClient_addr );

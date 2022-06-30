@@ -1,8 +1,8 @@
 #include "st45_00_all.h"
 
-static char _st45nvm[5][8] ;
+static uint8_t _st45nvm[5][8] ;
 static ST45config _st45analyze ;
-ST45config* _st45_analyze_nvm( char* ___nvmBuf ) {
+ST45config* _st45_analyze_nvm( uint8_t* ___nvmBuf ) {
     uint16_t  __u01 ;
 
     memcpy( _st45nvm, ___nvmBuf, ST45_NVM_SIZE );
