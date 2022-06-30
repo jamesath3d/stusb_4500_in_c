@@ -20,6 +20,7 @@ int main( int ___argc, char ** ___argv ) {
     bool __b01 ;
     uint8_t* __clp01 ;
     ST45config _st45config_old ;
+    ST45config _st45config_new ;
 
     __b01 = _i2c_bus_init( &_st45i2c,  I2C_bus_NO , STUSB4500_i2cClient_addr );
     if ( ! __b01 ) return -1 ;
@@ -45,25 +46,27 @@ int main( int ___argc, char ** ___argv ) {
     _st45_analyze_nvm( &_st45config_old, __clp01 ) ;
     _st45_dump_st45config(&_st45config_old);
 
+    memcpy( &_st45config_new, &_st45config_old, sizeof(ST45config));
 
+    _st45_gen_new_config( &_st45config_new,
+            14, 12, 33.25,
+            13, 13, 1.5,    9,
+            12, 14, 1,      20
+            );
     /*
-    __clp01 = 
-        _st45_gen_new_config( 
-                14, 12, 33.25,
-                13, 13, 1.5,    9,
-                12, 14, 1,      20
-                );
-    ST45_dump_buf2( __clp01 , "generated new NVM content" );
 
-    __st45analyze =
-        _st45_analyze_nvm( __clp01 ) ;
-    _st45_dump_st45config(__st45analyze);
+       ST45_dump_buf2( __clp01 , "generated new NVM content" );
 
-    _i2c_tx_debug = 2 ;
+       __st45analyze =
+       _st45_analyze_nvm( __clp01 ) ;
+       _st45_dump_st45config(__st45analyze);
 
-    __b01 = _stusb4500_reset01( &_st45i2c ) ;
-    if ( ! __b01 ) return -1 ;
-    */
+       _i2c_tx_debug = 2 ;
+
+       __b01 = _stusb4500_reset01( &_st45i2c ) ;
+       if ( ! __b01 ) return -1 ;
+
+*/
 
     return 0 ; 
 } // main
