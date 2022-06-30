@@ -43,10 +43,10 @@ int main( int ___argc, char ** ___argv ) {
     }
 
     _st45_analyze_nvm( &_st45config_old, __clp01 ) ;
+    _st45_dump_st45config(&_st45config_old);
+
+
     /*
-    _st45_dump_st45config(__st45analyze);
-
-
     __clp01 = 
         _st45_gen_new_config( 
                 14, 12, 33.25,
