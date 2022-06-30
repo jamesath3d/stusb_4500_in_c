@@ -61,7 +61,7 @@ ST45config* _st45_analyze_nvm( uint8_t* ___nvmBuf ) {
         else                _st45analyze . pdo[2] . If = __u01 * 0.50 - 2.50 ;
     }
 
-    _st45analyze . pdo[0] . lowerV = 0 ;
+    _st45analyze . pdo[0] . lowerV = 5 ;
     _st45analyze . pdo[1] . lowerV = 5 + ((0x000F & _st45nvm[3][4]) >>4 ) ;
     _st45analyze . pdo[2] . lowerV = 5 +  (0x000F & _st45nvm[3][6]) ;
 
@@ -70,7 +70,7 @@ ST45config* _st45_analyze_nvm( uint8_t* ___nvmBuf ) {
     _st45analyze . pdo[2] . upperV = 5 + ( (0x000F & _st45nvm[3][6] ) >> 4 ) ;
 
     _st45analyze . flexCurrentU = ((0x000F & _st45nvm[4][4])<<6) | ((0x00FC & _st45nvm[4][3])>>2);
-    _st45analyze . flexCurrentF = _st45analyze . flexCurrentU / 100.0 ;
+    _st45analyze . flexCurrentF = _st45analyze . flexCurrentU / 100.0 ; // valueU * 0.010A
     return &_st45analyze ;
 } // _st45_analyze_nvm
 
