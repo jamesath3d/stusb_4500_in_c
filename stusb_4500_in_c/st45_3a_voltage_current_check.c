@@ -48,6 +48,10 @@ void _st45_check_and_modify_range_lower_up_V( ST45pdo* ___pdo, uint8_t ___low, u
             "83818818185 : current check failed : pdo %.2f , force modify to 0.5A <<<<<==========\n" , ___low, 1, 15 );
     ___up = _checkUint8(
             "83818818185 : current check failed : pdo %.2f , force modify to 0.5A <<<<<==========\n" , ___up, 1, 15 );
+    if ( ___pdo ) {
+        ___pdo -> lowerVpercent = ___low ;
+        ___pdo -> upperVpercent = ___up ;
+    }
 } // _st45_check_and_modify_range_I
 
 void _st45_check_and_fill_config( ST45pdo* ___pdo, float ___V, float ___I , uint8_t ___lowVp, uint8_t ___upVp ) {
