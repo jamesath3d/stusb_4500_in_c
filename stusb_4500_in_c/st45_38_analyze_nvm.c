@@ -61,13 +61,13 @@ ST45config* _st45_analyze_nvm( uint8_t* ___nvmBuf ) {
         else                _st45analyze . pdo[2] . If = __u01 * 0.50 - 2.50 ;
     }
 
-    _st45analyze . pdo[0] . lowerV = 5 ;
-    _st45analyze . pdo[1] . lowerV = 5 + ((0x000F & _st45nvm[3][4]) >>4 ) ;
-    _st45analyze . pdo[2] . lowerV = 5 +  (0x000F & _st45nvm[3][6]) ;
+    _st45analyze . pdo[0] . lowerVpercent = 5 ;
+    _st45analyze . pdo[1] . lowerVpercent = 5 + ((0x000F & _st45nvm[3][4]) >>4 ) ;
+    _st45analyze . pdo[2] . lowerVpercent = 5 +  (0x000F & _st45nvm[3][6]) ;
 
-    _st45analyze . pdo[0] . upperV = 5 + ( (0x000F & _st45nvm[3][3] ) >> 4 ) ;
-    _st45analyze . pdo[1] . upperV = 5 + ( (0x000F & _st45nvm[3][5] ) ) ;
-    _st45analyze . pdo[2] . upperV = 5 + ( (0x000F & _st45nvm[3][6] ) >> 4 ) ;
+    _st45analyze . pdo[0] . upperVpercent = 5 + ( (0x000F & _st45nvm[3][3] ) >> 4 ) ;
+    _st45analyze . pdo[1] . upperVpercent = 5 + ( (0x000F & _st45nvm[3][5] ) ) ;
+    _st45analyze . pdo[2] . upperVpercent = 5 + ( (0x000F & _st45nvm[3][6] ) >> 4 ) ;
 
     _st45analyze . flexCurrentU = ((0x000F & _st45nvm[4][4])<<6) | ((0x00FC & _st45nvm[4][3])>>2);
     _st45analyze . flexCurrentF = _st45analyze . flexCurrentU / 100.0 ; // valueU * 0.010A

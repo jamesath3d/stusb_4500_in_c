@@ -49,7 +49,7 @@ int main( int ___argc, char ** ___argv ) {
 
     __clp01 = 
         _st45_gen_new_config( 
-                3.25,
+                33.25,
                 1.5,    9,
                 1,      20
                 );

@@ -30,8 +30,8 @@ struct ST45pdo {
     float       Vf ;
     uint16_t    Iu ;
     float       If ;
-    uint16_t    lowerV ; 
-    uint16_t    upperV ;
+    uint16_t    lowerVpercent ; 
+    uint16_t    upperVpercent ;
 } ;
 typedef struct ST45pdo ST45pdo ;
 

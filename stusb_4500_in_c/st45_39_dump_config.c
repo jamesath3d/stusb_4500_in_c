@@ -5,11 +5,11 @@ void _st45_dump_st45pdo( ST45config* ___nvmConfig , char ___pdoIdx ) {
     __pdo = &(___nvmConfig -> pdo[0]) ;
     __pdo += ___pdoIdx - 1;
 
-    printf( " PDO %d V,I is : 0x%03X-%5.2fv ,  0x%1X-%4.2fA , lowV: %d%%, upV: %d%% \n"
+    printf( " PDO %d V,I is : 0x%03X-%5.2fv ,  0x%1X-%4.2fA , lowVp: %d%%, upVp: %d%% \n"
             , ___pdoIdx
             , __pdo -> Vu , __pdo -> Vf
             , __pdo -> Iu , __pdo -> If
-            , __pdo -> lowerV , __pdo -> upperV
+            , __pdo -> lowerVpercent , __pdo -> upperVpercent
           );
 
 } // _st45_dump_st45pdo

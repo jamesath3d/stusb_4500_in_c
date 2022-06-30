@@ -42,8 +42,8 @@ uint8_t* _st45_gen_new_config( float __Iconfig1,
         float __Iconfig3, float __Vconfig3) {
 
     _st45_check_and_fill_config( &(_st45newConfig . pdo[0]) , 5,          __Iconfig1 ) ;
-    _st45_check_and_fill_config( &(_st45newConfig . pdo[1]) , __Vconfig2, __Iconfig1 ) ;
-    _st45_check_and_fill_config( &(_st45newConfig . pdo[2]) , __Vconfig2, __Iconfig1 ) ;
+    _st45_check_and_fill_config( &(_st45newConfig . pdo[1]) , __Vconfig2, __Iconfig2 ) ;
+    _st45_check_and_fill_config( &(_st45newConfig . pdo[2]) , __Vconfig3, __Iconfig3 ) ;
 
     _st45newConfig . pdoAmount = 3 ;
 
