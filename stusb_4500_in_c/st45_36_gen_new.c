@@ -37,13 +37,13 @@ void _st45_gen_new_configX(void) {
     */
 } // _st45_gen_new_configX
 
-uint8_t* _st45_gen_new_config( float __Iconfig1, 
-        float __Iconfig2, float __Vconfig2, 
-        float __Iconfig3, float __Vconfig3) {
+uint8_t* _st45_gen_new_config( uint8_t ___lowVp1, uint8_t ___upVp1, float __Iconfig1, 
+        uint8_t ___lowVp2, uint8_t ___upVp2, float __Iconfig2, float __Vconfig2, 
+        uint8_t ___lowVp3, uint8_t ___upVp3, float __Iconfig3, float __Vconfig3) {
 
-    _st45_check_and_fill_config( &(_st45newConfig . pdo[0]) , 5,          __Iconfig1 ) ;
-    _st45_check_and_fill_config( &(_st45newConfig . pdo[1]) , __Vconfig2, __Iconfig2 ) ;
-    _st45_check_and_fill_config( &(_st45newConfig . pdo[2]) , __Vconfig3, __Iconfig3 ) ;
+    _st45_check_and_fill_config( &(_st45newConfig . pdo[0]) , 5,          __Iconfig1 , ___lowVp1, ___upVp1 ) ;
+    _st45_check_and_fill_config( &(_st45newConfig . pdo[1]) , __Vconfig2, __Iconfig2 , ___lowVp2, ___upVp2 ) ;
+    _st45_check_and_fill_config( &(_st45newConfig . pdo[2]) , __Vconfig3, __Iconfig3 , ___lowVp3, ___upVp3 ) ;
 
     _st45newConfig . pdoAmount = 3 ;
 

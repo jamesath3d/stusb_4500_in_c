@@ -49,9 +49,9 @@ int main( int ___argc, char ** ___argv ) {
 
     __clp01 = 
         _st45_gen_new_config( 
-                33.25,
-                1.5,    9,
-                1,      20
+                15, 10, 33.25,
+                15, 15, 1.5,    9,
+                20, 15, 1,      20
                 );
     ST45_dump_buf2( __clp01 , "generated new NVM content" );
 
