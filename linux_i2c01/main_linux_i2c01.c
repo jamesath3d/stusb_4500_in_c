@@ -53,6 +53,9 @@ int main( int ___argc, char ** ___argv ) {
             13, 13, 1.5,    9,
             12, 14, 1,      20
             );
+
+    _st45_convert_config_to_nvm_buf( &_st45config_new ) ;
+
     /*
 
        ST45_dump_buf2( __clp01 , "generated new NVM content" );

@@ -20,6 +20,7 @@
 #include "st45_39_dump_config.h"
 
 #include "st45_3a_voltage_current_check.h"
+#include "st45_3b_convert_config_to_nvm_buf.h"
 
 #endif
 
