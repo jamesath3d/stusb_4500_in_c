@@ -2,10 +2,11 @@
 
 //static uint8_t ___st45config -> buf[5][8] ;
 //static ST45config _st45analyze ;
-ST45config* _st45_analyze_nvm( ST45config* ___st45config, uint8_t* ___nvmBuf ) {
+ST45config* _st45_analyze_buf_to_gen_nvm_config( ST45config* ___st45config, uint8_t* ___nvmBuf ) {
     uint16_t  __u01 ;
 
     if ( NULL == ___st45config || NULL == ___nvmBuf ) return NULL ;
+    memset( ___st45config, 0 , sizeof(ST45config) );
     memcpy( ___st45config -> buf, ___nvmBuf, ST45_NVM_SIZE );
 
     //PDO Number
@@ -77,7 +78,7 @@ ST45config* _st45_analyze_nvm( ST45config* ___st45config, uint8_t* ___nvmBuf ) {
     ___st45config -> flexCurrentF = ___st45config -> flexCurrentU / 100.0 ; // valueU * 0.010A
     // return &_st45analyze ;
     return ___st45config ;
-} // _st45_analyze_nvm
+} // _st45_analyze_buf_to_gen_nvm_config
 
 // https://github.com/sparkfun/SparkFun_STUSB4500_Arduino_Library.git
 
