@@ -21,6 +21,7 @@ int main( int ___argc, char ** ___argv ) {
     uint8_t* __clp01 ;
     ST45config _st45config_old ;
     ST45config _st45config_new ;
+    ST45config _st45config_check ;
 
     __b01 = _i2c_bus_init( &_st45i2c,  I2C_bus_NO , STUSB4500_i2cClient_addr );
     if ( ! __b01 ) return -1 ;
@@ -58,6 +59,8 @@ int main( int ___argc, char ** ___argv ) {
     ST45_dump_buf2( &(_st45config_new . buf[0][0]) , "generated new NVM content" );
     _st45_cmp_buf2( (uint8_t*) _st45config_old . buf , (uint8_t*) _st45config_new . buf , "old vs want:");
 
+    _st45_analyze_buf_to_gen_nvm_config( &_st45config_check, (uint8_t*)_st45config_new . buf ) ;
+    _st45_dump_st45config(&_st45config_check, "reAnalyze: ");
     /*
 
 
