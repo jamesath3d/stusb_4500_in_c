@@ -4,6 +4,8 @@
 ST45config* _st45_convert_config_to_nvm_buf(ST45config* ___st45config) {
     uint16_t __u01 ;
     uint16_t __u02 ;
+    uint8_t  __u81 ;
+    uint8_t  __u82 ;
     if ( NULL == ___st45config ) return NULL ;
 
     ___st45config -> buf[3][2] &= (~0b110) ;
@@ -32,11 +34,41 @@ ST45config* _st45_convert_config_to_nvm_buf(ST45config* ___st45config) {
 
     // PDO1i : sector 3, byte 2, bits 4:7
     __u01 = ___st45config -> pdo[0] . Iu ;
-    printf( "IIIu : 0x%04X, %d , %f \n" , ___st45config -> pdo[0] . Iu, ___st45config -> pdo[0] . Iu, ___st45config -> pdo[0] . If ) ;
     __u02 = __u01 << 4;
     ___st45config -> buf[3][2] &= 0x0F ;
-    ___st45config -> buf[3][2] |= __u02 ;
-    printf( "IIIx : %X, %X \n" , __u01, __u02 );
+    ___st45config -> buf[3][2] |= (0xF0 & __u02) ;
+    // Pdo2i : sector 3, byte 4, bits 0:3
+    ___st45config -> buf[3][4] &= 0xF0 ;
+    ___st45config -> buf[3][4] |= (0x0F & (___st45config -> pdo[1] . Iu)) ;
+
+    // lowerVpercent 1
+    __u81 = 0xF0 & ___st45config -> buf[3][3] ;
+    __u82 = 0x0F & ___st45config -> pdo[0] . lowerVpercent ;
+    ___st45config -> buf[3][3] = __u81 | __u82 ;
+    // lowerVpercent 2
+    __u81 = 0x0F & ___st45config -> buf[3][4] ;
+    __u82 = 0x0F & ___st45config -> pdo[1] . lowerVpercent ;
+    __u82 <<= 4 ;
+    ___st45config -> buf[3][4] = __u81 | __u82 ;
+    // lowerVpercent 3
+    __u81 = 0xF0 & ___st45config -> buf[3][6] ;
+    __u82 = 0x0F & ___st45config -> pdo[2] . lowerVpercent ;
+    ___st45config -> buf[3][6] = __u81 | __u82 ;
+
+    // upperVpercent 1
+    __u81 = 0x0F & ___st45config -> buf[3][3] ;
+    __u82 = 0x0F & ___st45config -> pdo[0] . upperVpercent ;
+    __u82 <<= 4 ;
+    ___st45config -> buf[3][3] = __u81 | __u82 ;
+    // upperVpercent 2
+    __u81 = 0xF0 & ___st45config -> buf[3][5] ;
+    __u82 = 0x0F & ___st45config -> pdo[1] . upperVpercent ;
+    ___st45config -> buf[3][5] = __u81 | __u82 ;
+    // upperVpercent 3
+    __u81 = 0x0F & ___st45config -> buf[3][6] ;
+    __u82 = 0x0F & ___st45config -> pdo[2] . upperVpercent ;
+    __u82 <<= 4 ;
+    ___st45config -> buf[3][6] = __u81 | __u82 ;
 
     return ___st45config ;
 } // _st45_convert_config_to_nvm_buf

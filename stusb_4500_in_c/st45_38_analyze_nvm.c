@@ -59,7 +59,6 @@ ST45config* _st45_analyze_buf_to_gen_nvm_config( ST45config* ___st45config, uint
     __u01 &= 0x000FUL ;
     ___st45config -> pdo[2] . Iu = __u01 ;
     ___st45config -> pdo[2] . If = 0 ;
-
     if(__u01 != 0)      {
         if(__u01 < 11)      ___st45config -> pdo[2] . If = __u01 * 0.25 + 0.25 ;
         else                ___st45config -> pdo[2] . If = __u01 * 0.50 - 2.50 ;
