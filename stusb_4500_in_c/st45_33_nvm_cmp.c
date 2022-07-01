@@ -1,8 +1,12 @@
 #include "st45_00_all.h"
 
 
-const uint8_t _st45Default[] = ST45default ;
+const uint8_t _st45Default[][8] = ST45default ;
 bool _st45_cmp_buf_with_defult( uint8_t* ___cmpBuf ) {
+    return _st45_cmp_buf2( (uint8_t*)&_st45Default , ___cmpBuf );
+} // _st45_cmp_buf_with_defult
+
+bool _st45_cmp_buf2( uint8_t* ___cmpBuf1 , uint8_t* ___cmpBuf2 ) {
     bool __rt1 ;
     bool __rt2 = true ;
     uint8_t __ii ;
@@ -16,10 +20,10 @@ bool _st45_cmp_buf_with_defult( uint8_t* ___cmpBuf ) {
         printf ( "cmp  : %01d : "  , __ii );
         for ( __jj = 0 ; __jj < 8 ; __jj ++ ) {
             __kk = __ii*8 + __jj ;
-            printf ( " %02hhX" , ___cmpBuf[__kk] );
-            if ( ___cmpBuf[__kk] != _st45Default[__kk] ) {
+            printf ( " %02hhX" , ___cmpBuf1[__kk] );
+            if ( ___cmpBuf1[__kk] != ___cmpBuf2[__kk] ) {
                 __rt1 = false;
-                printf ( "(%02hhX)" , _st45Default[__kk] );
+                printf ( "(%02hhX)" , ___cmpBuf2[__kk] );
             }
         }
         if ( ! __rt1 ) {
@@ -32,7 +36,7 @@ bool _st45_cmp_buf_with_defult( uint8_t* ___cmpBuf ) {
             printf ( "orig : %01d : "  , __ii );
             for ( __jj = 0 ; __jj < 8 ; __jj ++ ) {
                 __kk = __ii*8 + __jj ;
-                printf ( " %02hhX" , _st45Default[__kk] ) ;
+                printf ( " %02hhX" , ___cmpBuf2[__kk] ) ;
             }
             printf( " -- default \n" ) ;
         }
@@ -41,5 +45,5 @@ bool _st45_cmp_buf_with_defult( uint8_t* ___cmpBuf ) {
     printf("834881819 :                         ========== NVM cmp : end \n");
 
     return __rt2 ;
-} // _st45_cmp_buf_with_defult
+} // _st45_cmp_buf2
 

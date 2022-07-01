@@ -49,16 +49,19 @@ int main( int ___argc, char ** ___argv ) {
     memcpy( &_st45config_new, &_st45config_old, sizeof(ST45config));
 
     _st45_gen_new_config( &_st45config_new,
-            14, 12, 33.25,
-            13, 13, 1.5,    9,
-            12, 14, 1,      20
+            14, 12,  5,   3.25,  
+            13, 13,  12,  1.5,   
+            12, 14,  20,  1      
             );
 
+    _st45_dump_st45config(&_st45config_new);
     _st45_convert_config_to_nvm_buf( &_st45config_new ) ;
+    ST45_dump_buf2( &(_st45config_new . buf[0][0]) , "generated new NVM content" );
+
+    _st45_cmp_buf2( (uint8_t*) _st45config_old . buf , (uint8_t*) _st45config_new . buf );
 
     /*
 
-       ST45_dump_buf2( __clp01 , "generated new NVM content" );
 
        __st45analyze =
        _st45_analyze_nvm( __clp01 ) ;
