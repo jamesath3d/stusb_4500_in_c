@@ -2,11 +2,11 @@
 
 
 const uint8_t _st45Default[][8] = ST45default ;
-bool _st45_cmp_buf_with_defult( uint8_t* ___cmpBuf ) {
-    return _st45_cmp_buf2( (uint8_t*)&_st45Default , ___cmpBuf );
+bool _st45_cmp_buf_with_defult( uint8_t* ___cmpBuf , char* ___pr ) {
+    return _st45_cmp_buf2( (uint8_t*)&_st45Default , ___cmpBuf , ___pr );
 } // _st45_cmp_buf_with_defult
 
-bool _st45_cmp_buf2( uint8_t* ___cmpBuf1 , uint8_t* ___cmpBuf2 ) {
+bool _st45_cmp_buf2( uint8_t* ___cmpBuf1 , uint8_t* ___cmpBuf2 , char* ___pr) {
     bool __rt1 ;
     bool __rt2 = true ;
     uint8_t __ii ;
@@ -17,7 +17,7 @@ bool _st45_cmp_buf2( uint8_t* ___cmpBuf1 , uint8_t* ___cmpBuf2 ) {
 
     for ( __ii = 0 ; __ii < 5 ; __ii ++ ) {
         __rt1 = true ;
-        printf ( "cmp  : %01d : "  , __ii );
+        printf ( "%s cmp  : %01d : "  , ___pr , __ii );
         for ( __jj = 0 ; __jj < 8 ; __jj ++ ) {
             __kk = __ii*8 + __jj ;
             printf ( " %02hhX" , ___cmpBuf1[__kk] );

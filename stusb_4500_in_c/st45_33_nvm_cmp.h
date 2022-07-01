@@ -4,8 +4,8 @@
 
 #include "st45_00_all.h"
 
-bool _st45_cmp_buf_with_defult( uint8_t* ___cmpBuf ) ;
-bool _st45_cmp_buf2( uint8_t* ___cmpBuf1 , uint8_t* ___cmpBuf2 ) ;
+bool _st45_cmp_buf_with_defult( uint8_t* ___cmpBuf , char* ___pr ) ;
+bool _st45_cmp_buf2( uint8_t* ___cmpBuf1 , uint8_t* ___cmpBuf2 , char* ___pr) ;
 
 #endif
 
