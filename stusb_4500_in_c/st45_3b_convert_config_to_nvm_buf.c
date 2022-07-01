@@ -30,7 +30,13 @@ ST45config* _st45_convert_config_to_nvm_buf(ST45config* ___st45config) {
     ___st45config -> buf[4][3] |= (0b11 & __u02) ;
     ___st45config -> buf[4][2] = 0xFFUL & __u01 ;
 
-
+    // PDO1i : sector 3, byte 2, bits 4:7
+    __u01 = ___st45config -> pdo[0] . Iu ;
+    printf( "IIIu : 0x%04X, %d , %f \n" , ___st45config -> pdo[0] . Iu, ___st45config -> pdo[0] . Iu, ___st45config -> pdo[0] . If ) ;
+    __u02 = __u01 << 4;
+    ___st45config -> buf[3][2] &= 0x0F ;
+    ___st45config -> buf[3][2] |= __u02 ;
+    printf( "IIIx : %X, %X \n" , __u01, __u02 );
 
     return ___st45config ;
 } // _st45_convert_config_to_nvm_buf

@@ -31,6 +31,9 @@ void _st45_check_and_modify_range_V( ST45pdo* ___pdo, float ___V ){
         ___pdo -> Vf = ___V ;
         ___pdo -> Vu = 20 * (___V) ; // 50mV for 1
     }
+    if ( (___pdo -> Vu) != ( 0x3FF & (___pdo -> Vu)) ) {
+        printf( "83818818182 : error found : Vu : 0x%03X out of range 0x3FF \n" , ___pdo -> Vu ) ;
+    }
 } // _st45_check_and_modify_range_V
 
 void _st45_check_and_modify_range_I( ST45pdo* ___pdo, float ___I ){
@@ -41,16 +44,25 @@ void _st45_check_and_modify_range_I( ST45pdo* ___pdo, float ___I ){
         ___pdo -> If = ___I ;
         ___pdo -> Iu = 20 * (___I) ; // 50mV for 1
     }
+    if ( (___pdo -> Iu) != ( 0xF & (___pdo -> Iu)) ) {
+        printf( "83818818184 : error found : Iu : 0x%2X out of range 0xF \n" , ___pdo -> Iu ) ;
+    }
 } // _st45_check_and_modify_range_I
 
 void _st45_check_and_modify_range_lower_up_V( ST45pdo* ___pdo, uint8_t ___low, uint8_t ___up ){
     ___low = _checkUint8(
             "83818818185 : current check failed : pdo %.2f , force modify to 0.5A <<<<<==========\n" , ___low, 1, 15 );
     ___up = _checkUint8(
-            "83818818185 : current check failed : pdo %.2f , force modify to 0.5A <<<<<==========\n" , ___up, 1, 15 );
+            "83818818186 : current check failed : pdo %.2f , force modify to 0.5A <<<<<==========\n" , ___up, 1, 15 );
     if ( ___pdo ) {
         ___pdo -> lowerVpercent = ___low ;
         ___pdo -> upperVpercent = ___up ;
+    }
+    if ( (___low) != ( 0xF & (___low)) ) {
+        printf( "83818818187 : error found : lowerV : 0x%2X out of range 0xF \n" , ___low ) ;
+    }
+    if ( (___up) != ( 0xF & (___up)) ) {
+        printf( "83818818188 : error found : upperV : 0x%2X out of range 0xF \n" , ___up ) ;
     }
 } // _st45_check_and_modify_range_I
 
