@@ -33,12 +33,18 @@ bool _st45_cmp_buf2( uint8_t* ___cmpBuf1 , uint8_t* ___cmpBuf2 , char* ___pr) {
         } else {
             printf( " -- failed 01 \n" ) ;
             __rt2 = false ;
-            printf ( "orig : %01d : "  , __ii );
+            printf ( "differ1 : --------- %01d : "  , __ii );
+            for ( __jj = 0 ; __jj < 8 ; __jj ++ ) {
+                __kk = __ii*8 + __jj ;
+                printf ( " %02hhX" , ___cmpBuf1[__kk] ) ;
+            }
+            printf( " -- differ1 \n" ) ;
+            printf ( "differ2 : --------- %01d : "  , __ii );
             for ( __jj = 0 ; __jj < 8 ; __jj ++ ) {
                 __kk = __ii*8 + __jj ;
                 printf ( " %02hhX" , ___cmpBuf2[__kk] ) ;
             }
-            printf( " -- default \n" ) ;
+            printf( " -- differ2 \n" ) ;
         }
     }
 
