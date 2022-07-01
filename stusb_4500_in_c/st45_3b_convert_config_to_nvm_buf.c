@@ -28,7 +28,7 @@ ST45config* _st45_convert_config_to_nvm_buf(ST45config* ___st45config) {
     __u02 = __u01 >> 8;
     ___st45config -> buf[4][3] &= (~0b11) ;
     ___st45config -> buf[4][3] |= (0b11 & __u02) ;
-    ___st45config -> buf[4][2] = 0xFFUL & __u02 ;
+    ___st45config -> buf[4][2] = 0xFFUL & __u01 ;
 
 
 

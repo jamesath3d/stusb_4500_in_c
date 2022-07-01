@@ -31,6 +31,8 @@ ST45config* _st45_analyze_buf_to_gen_nvm_config( ST45config* ___st45config, uint
     __u01 |= 0x00FFUL & ___st45config -> buf[4][2] ;
     ___st45config -> pdo[2] . Vu = __u01 ;
     ___st45config -> pdo[2] . Vf = __u01 / 20.0 ;
+    ___st45config -> pdo[2] . Vf = 0.05 * __u01 ;
+    printf( "VVVVu : %04X , %d, %f \n", __u01 , __u01 , ___st45config -> pdo[2] . Vf);
 
     // PDO1i : sector 3, byte 2, bits 4:7
     __u01 = ___st45config -> buf[3][2] ;

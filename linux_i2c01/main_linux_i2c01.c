@@ -52,7 +52,7 @@ int main( int ___argc, char ** ___argv ) {
     _st45_gen_new_config( &_st45config_new,
             14, 12,  5,   3.25,  
             13, 13,  12,  1.5,   
-            12, 14,  20,  1      
+            12, 14,  15,  1.2      
             );
     _st45_dump_st45config(&_st45config_new, "want:");
     _st45_convert_config_to_nvm_buf( &_st45config_new ) ;
