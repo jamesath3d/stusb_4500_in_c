@@ -8,7 +8,7 @@ bool _i2c_bus_init( ST45i2cST * __st45LP , uint8_t ___i2cClientAddr){
     char __i2cSYS[i2cSysLen] ;
     char __i2cLINE[i2cLineLen] ;
 
-    if ( NULL == __st45LP ) return false ;
+    if ( NULL == __st45LP ) EXb( false ) ;
     __st45LP -> i2cFileNO = -1 ;
 
     for ( __i2cBusNo = 19 ; __i2cBusNo >= 0 ; __i2cBusNo -- ) {
@@ -31,7 +31,7 @@ bool _i2c_bus_init( ST45i2cST * __st45LP , uint8_t ___i2cClientAddr){
         }
     }
     if ( __i2cBusNo < 0 ) {
-        return false ;
+        EXb( false ) ;
     }
 
     __st45LP->i2cBusNo = __i2cBusNo ; 
@@ -41,13 +41,13 @@ bool _i2c_bus_init( ST45i2cST * __st45LP , uint8_t ___i2cClientAddr){
     if ( __rt < 10 || __rt > 12 ) {
         FP( "8181991223 : error device name <%d> <%s> \n\n", 
                 __i2cBusNo , __st45LP->i2cBusName );
-        return false ;
+        EXb( false ) ;
     }
 
     if ((__rt = _i2c_bus_open( __st45LP ))< 0) {
         FP( "8181991225 : error open I2C device <%d> <%s> , return <%d> \n\n", 
                 __i2cBusNo , __st45LP->i2cBusName , __rt );
-        return false ;
+        EXb( false );
     }
 
     // close(__rt);

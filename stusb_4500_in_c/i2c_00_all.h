@@ -7,6 +7,7 @@
 #include <sys/ioctl.h>			//Needed for I2C port
 #include <linux/i2c-dev.h>		//Needed for I2C port
 #include <stdio.h>				//printf
+#include <stdlib.h>				//printf
 #include <stdbool.h>            // bool
 #include <stdint.h>             // uint8_t
 #include <string.h>             // memcpy
@@ -14,8 +15,14 @@
 #define Fprintf( fmt, ... ) printf( "%s: " fmt, __func__, __VA_ARGS__)
 #define FP Fprintf
 #define FP1(fmt) printf("%s: " fmt, __func__)
-#define EXi(rtI) {printf("Error met : %s line %d, return %d \n" , __func__, __LINE__, rtI ); \
+#define EXi(rtI) {printf("Error met : %s line %d, return %d \n" , \
+        __func__, __LINE__, rtI ); \
+    exit( -1 ) ; \
     return rtI ; }
+#define EXb(rtB) {printf("Error met : %s line %d, return %s \n" , \
+        __func__, __LINE__, (rtB?"true":"false") ); \
+    exit( -1 ) ; \
+    return rtB ; }
 
 struct ST45i2cST {
     uint8_t     i2cBusNo ;
