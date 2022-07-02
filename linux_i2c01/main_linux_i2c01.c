@@ -26,7 +26,7 @@ int main( int ___argc, char ** ___argv ) {
     ST45config _st45config_new ;
     ST45config _st45config_check ;
 
-    __b01 = _i2c_bus_init( &_st45i2c,  I2C_bus_NO , STUSB4500_i2cClient_addr );
+    __b01 = _i2c_bus_init( &_st45i2c,  STUSB4500_i2cClient_addr );
     if ( ! __b01 ) return -1 ;
 
     //__b01 = stusb4500_read_byte_test( &_st45i2c ) ;
