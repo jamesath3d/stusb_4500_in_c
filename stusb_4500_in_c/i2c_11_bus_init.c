@@ -1,4 +1,4 @@
-#include "i2c_bus_init.h"
+#include "i2c_00_all.h"
 
 #define i2cSysLen   55
 #define i2cLineLen  51

@@ -1,5 +1,4 @@
-#include "i2c_tx.h"
-#include "i2c_reg_write.h"
+#include "i2c_00_all.h"
 
 
 

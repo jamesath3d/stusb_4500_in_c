@@ -1,4 +1,4 @@
-#include "i2c_all.h"
+#include "i2c_00_all.h"
 #include "st45_00_all.h"
 
 #define STUSB4500_i2cClient_addr 0x28
@@ -27,10 +27,10 @@ int main( int ___argc, char ** ___argv ) {
     ST45config _st45config_check ;
 
     __b01 = _i2c_bus_init( &_st45i2c,  STUSB4500_i2cClient_addr );
-    if ( ! __b01 ) return -1 ;
+    if ( ! __b01 ) EXi( -11 ) ;
 
     //__b01 = stusb4500_read_byte_test( &_st45i2c ) ;
-    if ( ! __b01 ) return -1 ;
+    if ( ! __b01 ) EXi( -13 ) ;
 
     _i2c_tx_debug = 2 ;
 
@@ -38,7 +38,7 @@ int main( int ___argc, char ** ___argv ) {
         __clp01old =
             _st45_read_top( &_st45i2c );
         // _st45_nvm_read
-        if ( NULL == __clp01old ) return -1 ;
+        if ( NULL == __clp01old ) EXi( -15 ) ;
 
         if(1) {
             __b01 = 
@@ -75,7 +75,7 @@ int main( int ___argc, char ** ___argv ) {
         _st45_nvm_write( &_st45i2c , &(_st45config_new . buf[0][0])) ;
 
     __b01 = _stusb4500_reset01( &_st45i2c ) ;
-    if ( ! __b01 ) return -1 ;
+    if ( ! __b01 ) EXi( -21 ) ;
 
     return 0 ; 
 } // main

@@ -1,4 +1,4 @@
-#include "i2c_reg_read_write_test.h"
+#include "i2c_00_all.h"
 
 inline void gap01(void){
     usleep(1000);

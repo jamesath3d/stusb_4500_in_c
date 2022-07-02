@@ -1,8 +1,8 @@
 
-#ifndef  I2C_REG_WRITE_H__
-#define  I2C_REG_WRITE_H__
+#ifndef  I2C_23_REG_WRITE_H__
+#define  I2C_23_REG_WRITE_H__
 
-#include "i2c_all.h"
+#include "i2c_00_all.h"
 
 bool _i2c_reg_write_bytes(ST45i2cST * __st45LP, uint8_t __i2cRegAddr, uint8_t * ___buf, size_t ___len) ;
 bool _i2c_reg_write_one_byte(ST45i2cST * __st45LP, uint8_t __i2cRegAddr, uint8_t d) ;

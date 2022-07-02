@@ -28,10 +28,10 @@ mid:=\
 	\
 	st45_01_read_config \
 	\
-	i2c_bus_init \
-	i2c_tx \
-	i2c_reg_read_write_test \
-	i2c_reg_write
+	i2c_11_bus_init \
+	i2c_21_reg_read_write_test \
+	i2c_23_reg_write \
+	i2c_31_tx 
 src01=$(proj).c $(foreach aa1,$(mid),$(aa1).c)
 bin01=$(proj).$(KVERSION).bin
 

@@ -1,4 +1,4 @@
-#include "i2c_tx.h"
+#include "i2c_00_all.h"
 
 //#define LinuxI2C_device "/dev/i2c-8"
 //#define LinuxI2C_i2cAddr 0x28

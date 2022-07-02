@@ -14,6 +14,8 @@
 #define Fprintf( fmt, ... ) printf( "%s: " fmt, __func__, __VA_ARGS__)
 #define FP Fprintf
 #define FP1(fmt) printf("%s: " fmt, __func__)
+#define EXi(rtI) {printf("Error met : %s line %d, return %d \n" , __func__, __LINE__, rtI ); \
+    return rtI ; }
 
 struct ST45i2cST {
     uint8_t     i2cBusNo ;
@@ -48,10 +50,10 @@ struct ST45config {
 } ;
 typedef struct ST45config ST45config ;
 
-#include "i2c_bus_init.h"
-#include "i2c_tx.h"
-#include "i2c_reg_write.h"
-#include "i2c_reg_read_write_test.h"
+#include "i2c_11_bus_init.h"
+#include "i2c_21_reg_read_write_test.h"
+#include "i2c_23_reg_write.h"
+#include "i2c_31_tx.h"
 
 #endif
 
