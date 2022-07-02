@@ -21,7 +21,10 @@ all:
 		/bin/cp -f ch341-buses.ko ch341-buses.unstrip.ko ; \
 		$(strip) ch341-buses.ko )
 	test -f $(ko01) || cp ch341-buses.ko $(ko01)
-	@echo ; echo 'try : ' ; echo '     rmmod ch341-buses ; modprobe i2c-dev ; insmod ./ch341-buses.ko ' ; echo
+	@echo ; echo 'try : ' ; echo '     rmmod ch341-buses ; modprobe i2c-dev '
+	@echo 'insmod ./ch341-buses.ko ' 
+	@echo 'insmod ./$(ko01) ' 
+	@echo
 c clean:
 	make -C $(KERNEL_DIR) M=$(PWD) clean
 h help:
