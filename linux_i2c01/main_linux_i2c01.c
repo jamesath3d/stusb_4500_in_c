@@ -57,7 +57,7 @@ int main( int ___argc, char ** ___argv ) {
     memcpy( &_st45config_new, &_st45config_default, sizeof(ST45config));
     _st45_gen_new_config( &_st45config_new,
             14, 7,  6,   4.35,  
-            13, 8,  11,  3.45,   
+            13, 8,  15,  3.45,   
             12, 9,  16,  1.55      
             );
     _st45_dump_st45config(&_st45config_new, "want:");
