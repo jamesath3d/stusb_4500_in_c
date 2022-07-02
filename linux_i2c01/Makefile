@@ -49,13 +49,19 @@ $(bin01): $(src01)
 a all: $(bin01)
 	@echo
 
+e8:
+	@echo; echo; echo; echo; echo; echo; echo; echo;
+e16: e8
+	@echo; echo; echo; echo; echo; echo; echo; echo;
+
+
 c clean :
 	@echo
 	rm -f $(bin01)
 
 #r run : $(bin01)
-r run : clean all run_only
-ro run_only:
+r run : e16 clean all run_only
+ro run_only: 
 	@echo
 	@echo
 	./$(bin01)

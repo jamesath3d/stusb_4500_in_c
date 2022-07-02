@@ -10,7 +10,9 @@ int _st45_nvm_write( ST45i2cST * ___st45I2C, uint8_t * ___wBufTo ) {
 
     memcpy(__wBuf,___wBufTo,sizeof(__wBuf));
 
-    //_i2c_reg_write_bytes
+    if ( 3 != _st45_enter_nvm_write( ___st45I2C ) ) EXi( -1 ) ;
+
+    if ( 8 != _st45_nvm_write_8_bytes(___st45I2C, 0, &(__wBuf[0][0])) ) EXi( -1 ) ;
 
     /*
     if ( 3 != _st45_enter_nvm_read( ___st45I2C ) ) return -1;
@@ -22,6 +24,10 @@ int _st45_nvm_write( ST45i2cST * ___st45I2C, uint8_t * ___wBufTo ) {
     if ( 8 != _st45_nvm_read_8_bytes(___st45I2C, 4, &(__wBuf[4][0])) ) return -1;
 
     */
+
+    if ( false == 
+            _st45_exit_test_mode(___st45I2C) ) EXi( -41 ) ;
+
 
     return 0; //OK
 } // _st45_nvm_write
