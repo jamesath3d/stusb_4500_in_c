@@ -69,6 +69,10 @@ int main( int ___argc, char ** ___argv ) {
     _st45_analyze_buf_to_gen_nvm_config( &_st45config_check, (uint8_t*)_st45config_new . buf ) ;
     _st45_dump_st45config(&_st45config_check, "reAnalyze: ");
 
+    // _st45_nvm_read
+    if(0) 
+        _st45_nvm_write( &_st45i2c , &(_st45config_new . buf[0][0])) ;
+
     __b01 = _stusb4500_reset01( &_st45i2c ) ;
     if ( ! __b01 ) return -1 ;
 
