@@ -7,7 +7,7 @@ inline void gap01(void){
 
 
 bool stusb4500_read_byte_test( ST45i2cST * __st45LP ){
-    char * __ch ;
+    uint8_t * __ch ;
 
     __ch = 
         i2c_reg_read_one_byte( __st45LP, 0x06) ;

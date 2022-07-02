@@ -24,6 +24,7 @@ mid:=\
 	\
 	st45_3a_voltage_current_check \
 	st45_3b_convert_config_to_nvm_buf \
+	st45_3c_exit_test_mode \
 	\
 	st45_01_read_config \
 	\

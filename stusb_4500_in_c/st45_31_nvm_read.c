@@ -17,6 +17,9 @@ int _st45_nvm_read( ST45i2cST * ___st45I2C, uint8_t * ___rBufStore, int __Sector
     if ( 8 != _st45_nvm_read_8_bytes(___st45I2C, 3, &(__rBuf[3][0])) ) return -1;
     if ( 8 != _st45_nvm_read_8_bytes(___st45I2C, 4, &(__rBuf[4][0])) ) return -1;
 
+    if ( false == 
+            _st45_exit_test_mode(___st45I2C) ) return -2 ;
+
     memcpy( ___rBufStore, __rBuf , sizeof( __rBuf ));
 
     return 0; //OK

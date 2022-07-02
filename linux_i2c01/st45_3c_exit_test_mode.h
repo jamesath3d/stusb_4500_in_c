@@ -1,0 +1,1 @@
+../stusb_4500_in_c/st45_3c_exit_test_mode.h

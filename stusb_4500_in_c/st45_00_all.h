@@ -21,6 +21,7 @@
 
 #include "st45_3a_voltage_current_check.h"
 #include "st45_3b_convert_config_to_nvm_buf.h"
+#include "st45_3c_exit_test_mode.h"
 
 #endif
 
