@@ -11,10 +11,13 @@
 #include <stdint.h>             // uint8_t
 #include <string.h>             // memcpy
 
+#define Fprintf( fmt, ... ) printf( "%s: " fmt, __func__, __VA_ARGS__)
+#define FP Fprintf
+#define FP1(fmt) printf("%s: " fmt, __func__)
+
 struct ST45i2cST {
     uint8_t     i2cBusNo ;
     char        i2cBusName[256] ;
-    int         i2cBusFD ;
     uint8_t     i2cClientAddr ;
     char        wBuf[80];
     char        rBuf[80];
@@ -22,6 +25,7 @@ struct ST45i2cST {
     size_t      rLEN ;
     int         wRT ;
     int         rRT ;
+    int         i2cFileNO ;
 } ;
 typedef struct ST45i2cST ST45i2cST ;
 

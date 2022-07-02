@@ -12,9 +12,9 @@ extern const uint8_t _st45Default[][8] ;
 // _stusb4500_reset01 resets the STUSB4500. This also results in loss of
 // power to the entire board while STUSB4500 boots up again, effectively
 // resetting the uC as well.
-bool _stusb4500_reset01( ST45i2cST * __st45LP ) {
+bool _stusb4500_reset01( ST45i2cST * ___st45I2C ) {
     return 
-        _i2c_reg_write_one_byte( __st45LP, 0x23, 0x01);
+        _i2c_reg_write_one_byte( ___st45I2C, 0x23, 0x01);
 } // _stusb4500_reset01
 
 
@@ -37,6 +37,7 @@ int main( int ___argc, char ** ___argv ) {
     if ( 1 ) { // read the origin data, and try to compare with the default
         __clp01old =
             _st45_read_top( &_st45i2c );
+        // _st45_nvm_read
         if ( NULL == __clp01old ) return -1 ;
 
         if(1) {

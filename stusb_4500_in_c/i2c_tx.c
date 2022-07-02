@@ -12,18 +12,18 @@
 
 uint8_t _i2c_tx_debug = 0 ;
 
-bool _i2c_tx2(ST45i2cST * __st45LP){
+bool _i2c_tx2(ST45i2cST * ___st45i2c1){
     ssize_t __wLen ;
     ssize_t __rLen ;
     ssize_t __wRT ;
     ssize_t __rRT ;
 
-    if ( __st45LP->wLEN == 0 && __st45LP->rLEN == 0) {
+    if ( ___st45i2c1->wLEN == 0 && ___st45i2c1->rLEN == 0) {
         return true;
     }
-    if ( __st45LP->wLEN > 0) {
-        __wLen = __st45LP->wLEN ;
-        __wRT = write( __st45LP->i2cBusFD, __st45LP->wBuf, __wLen) ;
+    if ( ___st45i2c1->wLEN > 0) {
+        __wLen = ___st45i2c1->wLEN ;
+        __wRT = write( ___st45i2c1->i2cFileNO, ___st45i2c1->wBuf, __wLen) ;
         if ( __wRT != __wLen ) {
             if(_i2c_tx_debug>10) printf( " 883918181 : write error   ") ;
         } else {
@@ -32,23 +32,23 @@ bool _i2c_tx2(ST45i2cST * __st45LP){
         if(_i2c_tx_debug>10) printf( " <%ld> vs <%ld> : ", __wLen , __wRT );
         for ( uint8_t __ii=0 ; __ii < __wLen ; __ii ++ ) {
             if ( 1 == __ii )  if(_i2c_tx_debug>10) printf( " :" );
-            if(_i2c_tx_debug>10) printf( " %02hhX" , __st45LP->wBuf[__ii] );
+            if(_i2c_tx_debug>10) printf( " %02hhX" , ___st45i2c1->wBuf[__ii] );
         }
         if ( 1 == __wLen ) if(_i2c_tx_debug>10) printf( " <--- Write addre only." );
         if(_i2c_tx_debug>10) printf( "\n" );
     }
-    if ( __st45LP->rLEN > 0) {
-        __rLen = __st45LP->rLEN ;
-        __rRT = read(__st45LP->i2cBusFD, __st45LP->rBuf, __rLen) ;
+    if ( ___st45i2c1->rLEN > 0) {
+        __rLen = ___st45i2c1->rLEN ;
+        __rRT = read(___st45i2c1->i2cFileNO, ___st45i2c1->rBuf, __rLen) ;
         if ( __rRT != __rLen ) {
             if(_i2c_tx_debug>10) printf( " 883918183 # read  error   ");
         } else {
             if(_i2c_tx_debug>10) printf( " 883918184 # read  succeed ");
         }
         if(_i2c_tx_debug>10) printf( " <%ld> vs <%ld> : ", __rLen , __rRT );
-        if(_i2c_tx_debug>10) printf( " %02hhX=#=" , __st45LP->wBuf[0] );
+        if(_i2c_tx_debug>10) printf( " %02hhX=#=" , ___st45i2c1->wBuf[0] );
         for ( uint8_t __ii=0 ; __ii < __rLen ; __ii ++ ) {
-            if(_i2c_tx_debug>10) printf( " %02hhX" , __st45LP->rBuf[__ii] );
+            if(_i2c_tx_debug>10) printf( " %02hhX" , ___st45i2c1->rBuf[__ii] );
         }
         if(_i2c_tx_debug>10) printf( "\n" );
 
@@ -57,27 +57,30 @@ bool _i2c_tx2(ST45i2cST * __st45LP){
     return true ;
 } // _i2c_tx2
 
-bool _i2c_tx1(ST45i2cST * __st45LP){
+bool _i2c_tx1(ST45i2cST * ___st45i2c2){
     //int length;
     //unsigned char buffer[60] = {0};
     //int __fi_i2c;
 
 
-    if (__st45LP->wLEN == 0 && __st45LP->rLEN == 0) { // no read, no write, so nothing need to be done.
+    // if no read, no write, NOTHING need to be done.
+    if (___st45i2c2->wLEN == 0 && ___st45i2c2->rLEN == 0) { 
         return true;
     }
 
     //----- OPEN THE I2C BUS -----
-    if ((__st45LP->i2cBusFD = _i2c_bus_open(__st45LP)) < 0)
+    if (___st45i2c2->i2cFileNO < 0) _i2c_bus_open(___st45i2c2) ;
+    if (___st45i2c2->i2cFileNO < 0) 
     {
         //ERROR HANDLING: you can check errno to see what went wrong
-        printf(" 831919911 :  Failed to open the i2c bus. \n\n" );
+        FP1(" 831919911 :  Failed to open the i2c bus. \n\n" );
         return false;
     }
 
-    bool __rt1 = _i2c_tx2(__st45LP);
+    bool __rt1 = _i2c_tx2(___st45i2c2);
 
-    bool __rt2 = (0 == close( __st45LP->i2cBusFD ))?true:false;
+    //bool __rt2 = (0 == close( ___st45i2c2->i2cFileNO ))?true:false;
+    bool __rt2 = true ;
 
     if ( 0 ) printf(" 831919915 : Function %s return <%d> <%d>\n", __func__ , __rt1, __rt2 );
 
