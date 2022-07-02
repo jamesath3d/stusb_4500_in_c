@@ -71,6 +71,7 @@ int main( int ___argc, char ** ___argv ) {
 
     // _st45_nvm_read
     // _st45_exit_test_mode
+    _i2c_tx_debug = 99 ;
     if(0) 
         _st45_nvm_write( &_st45i2c , &(_st45config_new . buf[0][0])) ;
 

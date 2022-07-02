@@ -26,11 +26,15 @@ mid:=\
 	st45_3b_convert_config_to_nvm_buf \
 	st45_3c_exit_test_mode \
 	\
+	st45_3d_nvm_enter_write \
+	st45_3e_nvm_write_8_bytes \
+	\
 	st45_01_read_config \
 	\
 	i2c_11_bus_init \
 	i2c_21_reg_read_write_test \
 	i2c_23_reg_write \
+	\
 	i2c_31_tx 
 src01=$(proj).c $(foreach aa1,$(mid),$(aa1).c)
 bin01=$(proj).$(KVERSION).bin

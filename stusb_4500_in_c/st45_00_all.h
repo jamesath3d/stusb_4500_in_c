@@ -24,5 +24,8 @@
 #include "st45_3b_convert_config_to_nvm_buf.h"
 #include "st45_3c_exit_test_mode.h"
 
+#include "st45_3d_nvm_enter_write.h"
+#include "st45_3e_nvm_write_8_bytes.h"
+
 #endif
 
