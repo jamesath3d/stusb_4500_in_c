@@ -6,25 +6,48 @@ strip:= strip --strip-debug
 strip:= strip --strip-unneeded
 
 
-ko01:=ch341-buses.$(KVERSION).ko
+ko00:=ch341-buses
+ko01:=$(ko00).$(KVERSION).ko
+koS:=ch341-buses i2c-ch341-usb
 
-obj-m       := ch341-buses.o
 
-ch341-buses-objs := ch341-core.o ch341-i2c.o ch341-gpio.o ch341-spi.o
+obj-m       := $(ko00).o
+
+$(ko00)-objs := ch341-core.o ch341-i2c.o ch341-gpio.o ch341-spi.o
 
 $(if $(wildcard $(KERNEL_DIR)/),,$(info directory $(KERNEL_DIR) don\'t exist.) \
 	$(info apt install linux-headers-$(KVERSION))$(error ===exit===))
 
 all:
-	make -C $(KERNEL_DIR) M=$(PWD) modules
-	test -f ch341-buses.unstrip.ko || ( \
-		/bin/cp -f ch341-buses.ko ch341-buses.unstrip.ko ; \
-		$(strip) ch341-buses.ko )
-	test -f $(ko01) || cp ch341-buses.ko $(ko01)
-	@echo ; echo 'try : ' ; echo '     rmmod ch341-buses ; modprobe i2c-dev '
-	@echo 'insmod ./ch341-buses.ko ' 
-	@echo 'insmod ./$(ko01) ' 
+	@echo ; echo 'try : ' ; echo '     $(foreach aa1,$(koS),rmmod $(aa1);) ; modprobe i2c-dev '
+	@echo 'insmod ./$(ko00).ko '
+	@echo 'insmod ./$(ko01) '
 	@echo
+	@echo 'i -> insert ( .ko module )'
+	@echo 'r -> remove ( .ko module )'
+	@echo
+
+
+r remove:
+	@echo ; 
+	$(foreach aa1,$(koS),rmmod $(aa1) &>/dev/null ;) 
+i insert: remove
+	modprobe i2c-dev &> /dev/null
+	insmod ./$(ko01)
+	@echo
+	grep -i ch341 /sys/class/i2c-adapter/i2c-*/name
+
+
+
+m:
+	vim Makefile
+
+b build :
+	make -C $(KERNEL_DIR) M=$(PWD) modules
+	test -f $(ko00).unstrip.ko || ( \
+		/bin/cp -f $(ko00).ko $(ko00).unstrip.ko ; \
+		$(strip) $(ko00).ko )
+	test -f $(ko01) || cp $(ko00).ko $(ko01)
 c clean:
 	make -C $(KERNEL_DIR) M=$(PWD) clean
 h help:
