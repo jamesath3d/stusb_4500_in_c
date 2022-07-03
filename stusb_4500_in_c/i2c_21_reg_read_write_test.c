@@ -1,5 +1,10 @@
 #include "i2c_00_all.h"
 
+// ST45default
+void _prDefaultRegsOfStusb4500(void){
+    P( "\n i2cdump -y 9 0x28 \n ------------- Should got -------------- \n" );
+} // _prDefaultRegsOfStusb4500
+
 inline void gap01(void){
     usleep(1000);
     printf("\n");
@@ -34,18 +39,25 @@ bool stusb4500_read_byte_test( ST45i2cST * __st45LP ){
     gap01();
 
     __ch = 
-        _i2c_reg_read_bytes( __st45LP, 0x06, 4 ) ;
+        _i2c_reg_read_bytes( __st45LP, 0x08, 4 ) ;
     if ( NULL == __ch ) return false ;
     printf( " 81939918385 : get from Reg <0x%0x> : <%0x> <%0x> <%0x> <%0x> \n" , __st45LP->wBuf[0] 
             , __ch[0] , __ch[1] , __ch[2] , __ch[3] ) ;
     gap01();
 
     __ch = 
-        _i2c_reg_read_bytes( __st45LP, 0x08, 4 ) ;
+        _i2c_reg_read_bytes( __st45LP, 0x06, 4 ) ;
     if ( NULL == __ch ) return false ;
     printf( " 81939918385 : get from Reg <0x%0x> : <%0x> <%0x> <%0x> <%0x> \n" , __st45LP->wBuf[0] 
             , __ch[0] , __ch[1] , __ch[2] , __ch[3] ) ;
     gap01();
+
+    if ( (0x12 != __ch[0]) || (0x11 != __ch[2]) ) {
+        FP1( "Error found: Reg 0x06 get 0x12, Reg 0x08 get 0x11 ! ERROR ! \n");
+        _prDefaultRegsOfStusb4500();
+        EXb( false );
+    }
+
 
     return true ;
 } // stusb4500_read_byte_test

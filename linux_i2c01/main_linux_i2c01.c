@@ -17,40 +17,31 @@ bool _stusb4500_reset01( ST45i2cST * ___st45I2C ) {
         _i2c_reg_write_one_byte( ___st45I2C, 0x23, 0x01);
 } // _stusb4500_reset01
 
+uint8_t* mainX1( ST45i2cST* ___st45I2C ){
+    uint8_t* __rt ;
+    if ( 1 ) { // read the origin data, and try to compare with the default
+        __rt = _st45_read_top( &_st45i2c );
+        // _st45_nvm_read
+        if ( NULL == __rt ) EXlp( NULL ) ;
 
-int main( int ___argc, char ** ___argv ) {
-    bool __b01 ;
-    uint8_t* __clp01old ;
-    ST45config _st45config_default ;
+        if(1) {
+            _st45_cmp_buf_with_defult( __rt , "default vs read");
+        } else {
+            ST45_dump_buf2( __rt , "read NVM content" );
+        }
+    }
+    return __rt ;
+} // mainX1
+uint8_t* mainX2( ST45i2cST* ___st45I2C , uint8_t* ___oldConfigBuf ){
+    static uint8_t __Buf58[5][8] ;
     ST45config _st45config_old ;
     ST45config _st45config_new ;
     ST45config _st45config_check ;
-
-    __b01 = _i2c_bus_init( &_st45i2c,  STUSB4500_i2cClient_addr );
-    if ( ! __b01 ) EXi( -11 ) ;
-
-    //__b01 = stusb4500_read_byte_test( &_st45i2c ) ;
-    if ( ! __b01 ) EXi( -13 ) ;
-
-    _i2c_tx_debug = 2 ;
-
-    if ( 1 ) { // read the origin data, and try to compare with the default
-        __clp01old =
-            _st45_read_top( &_st45i2c );
-        // _st45_nvm_read
-        if ( NULL == __clp01old ) EXi( -15 ) ;
-
-        if(1) {
-            __b01 = 
-                _st45_cmp_buf_with_defult( __clp01old , "default vs read");
-        } else {
-            ST45_dump_buf2( __clp01old , "read NVM content" );
-        }
-    }
+    ST45config _st45config_default ;
 
     _st45_analyze_buf_to_gen_nvm_config( &_st45config_default, (uint8_t*) &(_st45Default[0][0]) ) ;
     _st45_dump_st45config(&_st45config_default, "default: ");
-    _st45_analyze_buf_to_gen_nvm_config( &_st45config_old, __clp01old ) ;
+    _st45_analyze_buf_to_gen_nvm_config( &_st45config_old, ___oldConfigBuf ) ;
     _st45_dump_st45config(&_st45config_old, "old: ");
 
     // gen new config, dump to check, convert it, dump the buf, cmp the buf
@@ -69,12 +60,35 @@ int main( int ___argc, char ** ___argv ) {
     _st45_analyze_buf_to_gen_nvm_config( &_st45config_check, (uint8_t*)_st45config_new . buf ) ;
     _st45_dump_st45config(&_st45config_check, "reAnalyze: ");
 
+    memcpy( __Buf58 , _st45config_new . buf, 40 ) ;
+    return &(__Buf58[0][0]) ;
+} // mainX2
+
+int main( int ___argc, char ** ___argv ) {
+    bool __b01 ;
+    uint8_t* __clp01old ;
+    uint8_t* __clp02newGen ;
+
+    __b01 = _i2c_bus_init( &_st45i2c,  STUSB4500_i2cClient_addr );
+    if ( ! __b01 ) EXi( -11 ) ;
+
+    if ( 1 ) {
+        __b01 = stusb4500_read_byte_test( &_st45i2c ) ;
+        if ( ! __b01 ) EXi( -13 ) ;
+    }
+
+    _i2c_tx_debug = 2 ;
+
+    __clp01old = mainX1( &_st45i2c ) ;
+    __clp02newGen = mainX2( &_st45i2c , __clp01old ) ;
+
+
     // _st45_nvm_read
     // _st45_enter_nvm_read
     // _st45_exit_test_mode
     // _i2c_tx_debug = 99 ;
     if(0) 
-        _st45_nvm_write( &_st45i2c , &(_st45config_new . buf[0][0])) ;
+        _st45_nvm_write( &_st45i2c , __clp02newGen ) ;
     // CUST_WriteSector
 
     if(1) FP1( " reseting ... \n");

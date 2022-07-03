@@ -14,6 +14,7 @@
 
 #define Fprintf( fmt, ... ) printf( "%s: " fmt, __func__, __VA_ARGS__)
 #define FP Fprintf
+#define P printf
 #define FP1(fmt) printf("%s: " fmt, __func__)
 #define EXi(rtI) {printf("Error met : %s line %d, return %d \n" , \
         __func__, __LINE__, rtI ); \
@@ -23,6 +24,10 @@
         __func__, __LINE__, (rtB?"true":"false") ); \
     exit( -1 ) ; \
     return rtB ; }
+#define EXlp(rtLP) {printf("Error met : %s line %d, return 0x%0X \n" , \
+        __func__, __LINE__, 0 ); \
+    exit( -1 ) ; \
+    return rtLP ; }
 
 struct ST45i2cST {
     uint8_t     i2cBusNo ;
