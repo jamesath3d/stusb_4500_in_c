@@ -4,7 +4,7 @@
 
 #include "st45_00_all.h"
 
-int _st45_nvm_write_8_bytes( ST45i2cST * ___st45LP, char ___nvmBankIdx, char *___rBuf) ;
+int _st45_nvm_write_8_bytes( ST45i2cST * ___st45LP, uint8_t ___nvmBankIdx, uint8_t *___wBuf) ;
 
 #endif
 

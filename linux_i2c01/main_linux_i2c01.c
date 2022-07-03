@@ -72,10 +72,12 @@ int main( int ___argc, char ** ___argv ) {
     // _st45_nvm_read
     // _st45_enter_nvm_read
     // _st45_exit_test_mode
-    _i2c_tx_debug = 99 ;
-    if(1) 
+    // _i2c_tx_debug = 99 ;
+    if(0) 
         _st45_nvm_write( &_st45i2c , &(_st45config_new . buf[0][0])) ;
+    // CUST_WriteSector
 
+    if(1) FP1( " reseting ... \n");
     __b01 = _stusb4500_reset01( &_st45i2c ) ;
     if ( ! __b01 ) EXi( -21 ) ;
 

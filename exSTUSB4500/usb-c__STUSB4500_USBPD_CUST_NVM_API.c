@@ -181,6 +181,7 @@ int CUST_ReadSector(uint8_t Port,char SectorNum, unsigned char *SectorData)
     return 0;
 }
 
+// _st45_enter_nvm_write
 int CUST_WriteSector(uint8_t Port,char SectorNum, unsigned char *SectorData)
 {
     unsigned char Buffer[2];

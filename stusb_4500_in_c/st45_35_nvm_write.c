@@ -16,7 +16,17 @@ int _st45_nvm_write( ST45i2cST * ___st45I2C, uint8_t * ___wBufTo ) {
     __u02 = _st45_enter_nvm_write( ___st45I2C , __u01 ) ;
     if ( 10 != __u02 ) EXi( __u02 ) ;
 
-    if ( 8 != _st45_nvm_write_8_bytes(___st45I2C, 0, &(__wBuf[0][0])) ) EXi( -8 ) ;
+    // _i2c_tx_debug = 99 ;
+    __u02 = _st45_nvm_write_8_bytes(___st45I2C, 0, (uint8_t*) &(__wBuf[0][0])) ;
+    if ( 13 != __u02 ) EXi( __u02 ) ;
+    __u02 = _st45_nvm_write_8_bytes(___st45I2C, 1, (uint8_t*) &(__wBuf[1][0])) ;
+    if ( 13 != __u02 ) EXi( __u02 ) ;
+    __u02 = _st45_nvm_write_8_bytes(___st45I2C, 2, (uint8_t*) &(__wBuf[2][0])) ;
+    if ( 13 != __u02 ) EXi( __u02 ) ;
+    __u02 = _st45_nvm_write_8_bytes(___st45I2C, 3, (uint8_t*) &(__wBuf[3][0])) ;
+    if ( 13 != __u02 ) EXi( __u02 ) ;
+    __u02 = _st45_nvm_write_8_bytes(___st45I2C, 4, (uint8_t*) &(__wBuf[4][0])) ;
+    if ( 13 != __u02 ) EXi( __u02 ) ;
 
     /*
     if ( 3 != _st45_enter_nvm_read( ___st45I2C ) ) return -1;
