@@ -2,13 +2,17 @@ PWD         := $(shell pwd)
 KVERSION    := $(shell uname -r)
 KERNEL_DIR  ?= /lib/modules/$(KVERSION)/build
 
+define EOL
+
+
+endef
 strip:= strip --strip-debug
 strip:= strip --strip-unneeded
 
 
 ko00:=ch341-buses
 ko01:=$(ko00).$(KVERSION).ko
-koS:=ch341-buses i2c-ch341-usb
+koS:=ch341_buses i2c_ch341_usb ch341
 
 
 obj-m       := $(ko00).o
@@ -30,12 +34,14 @@ all:
 
 r remove:
 	@echo ; 
-	$(foreach aa1,$(koS),rmmod $(aa1) &>/dev/null ;) 
+	$(foreach aa1,$(koS),((lsmod |grep $(aa1)) && rmmod $(aa1) )|| echo>/dev/null$(EOL))
+	@lsmod |grep -i ch341;echo>/dev/null
 i insert: remove
 	modprobe i2c-dev &> /dev/null
 	insmod ./$(ko01)
 	@echo
-	grep -i ch341 /sys/class/i2c-adapter/i2c-*/name
+	@grep -i ch341 /sys/class/i2c-adapter/i2c-*/name
+	@lsmod |grep -i ch341
 
 
 

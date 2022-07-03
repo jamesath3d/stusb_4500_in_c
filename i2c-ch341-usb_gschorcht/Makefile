@@ -1,6 +1,11 @@
 MODULE_NAME=i2c-ch341-usb
 MODULE_VERSION=1.0.0
 
+define EOL
+
+
+endef
+
 DKMS       := $(shell which dkms)
 PWD        := $(shell pwd) 
 KVERSION   := $(shell uname -r)
@@ -29,16 +34,18 @@ all:
 
 ko00:=i2c-ch341-usb
 ko01:=$(ko00).$(KVERSION).ko
-koS:=ch341-buses i2c-ch341-usb
+koS:=ch341_buses i2c_ch341_usb ch341
 
 r remove:
 	@echo ;
-	$(foreach aa1,$(koS),rmmod $(aa1) &>/dev/null ;) 
+	$(foreach aa1,$(koS),((lsmod |grep $(aa1)) && rmmod $(aa1) )|| echo>/dev/null$(EOL)) 
+	@lsmod |grep -i ch341;echo>/dev/null
 i insert: remove
 	modprobe i2c-dev &> /dev/null
 	insmod ./$(ko01)
 	@echo
-	grep -i ch341 /sys/class/i2c-adapter/i2c-*/name
+	@grep -i ch341 /sys/class/i2c-adapter/i2c-*/name
+	@lsmod |grep -i ch341
 gs:
 	git status
 
