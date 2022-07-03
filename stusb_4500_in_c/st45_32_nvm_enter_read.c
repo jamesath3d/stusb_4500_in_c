@@ -10,7 +10,7 @@ int _st45_enter_nvm_read( ST45i2cST * ___st45LP ) {
 
     // FTP_CUST_PASSWORD;  Set Password : 0x95 : 0x47
     if ( false == _i2c_reg_write_one_byte( ___st45LP , FTP_CUST_PASSWORD_REG, 
-                FTP_CUST_PASSWORD)  ) return -101;
+                FTP_CUST_PASSWORD)  ) EXi( -101 ) ;
     __cnt ++ ;
 
     //NVM Power-up Sequence
@@ -18,12 +18,12 @@ int _st45_enter_nvm_read( ST45i2cST * ___st45LP ) {
 
     //    NVM internal controller reset : 0x96 : 0x00
     if ( false == _i2c_reg_write_one_byte( ___st45LP , FTP_CTRL_0, 0x0 )  ) 
-        return -102;
+        EXi( -102 ) ;
     __cnt ++ ;
 
     // FTP_CUST_PWR | FTP_CUST_RST_N;  Set PWR and RST_N bits : 0x96 : 0xC0
     if ( false == _i2c_reg_write_one_byte( ___st45LP , FTP_CTRL_0, 
-                (FTP_CUST_PWR | FTP_CUST_RST_N) ) ) return -103;
+                (FTP_CUST_PWR | FTP_CUST_RST_N) ) ) EXi( -103 ) ;
     __cnt ++ ;
 
     return __cnt ;
@@ -48,14 +48,14 @@ int _st45_nvm_read_8_bytes( ST45i2cST * ___st45LP, char ___nvmBankIdx, char *___
 
     do 
     {
-        if ( NULL == i2c_reg_read_one_byte( ___st45LP, FTP_CTRL_0 ) )
+        if ( NULL == _i2c_reg_read_one_byte( ___st45LP, FTP_CTRL_0 ) )
             return -204; // Wait for execution //
     }
     while(___st45LP->rBuf[0] & FTP_CUST_REQ); 
     //The FTP_CUST_REQ is cleared by NVM controller when the operation is finished.
 
     //if ( I2C_Read_USB_PD(Port,RW_BUFFER,&SectorData[0],8) != HAL_OK ) 
-    if ( NULL == i2c_reg_read_bytes( ___st45LP, RW_BUFFER, 8 ) )
+    if ( NULL == _i2c_reg_read_bytes( ___st45LP, RW_BUFFER, 8 ) )
         return -205; // Sectors Data are available in RW-BUFFER @ 0x53 //
     memcpy( ___rBuf, ___st45LP->rBuf, 8 ) ;
 

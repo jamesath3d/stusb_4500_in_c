@@ -33,7 +33,7 @@ bool _i2c_reg_write_one_byte(ST45i2cST * __st45i2c2, uint8_t ___i2cRegAddr, uint
 
 
 
-uint8_t * i2c_reg_read_bytes(ST45i2cST * ___st45i2c3, uint8_t ___i2cRegAddr, size_t ___len ) {
+uint8_t * _i2c_reg_read_bytes(ST45i2cST * ___st45i2c3, uint8_t ___i2cRegAddr, size_t ___len ) {
 
     if ( ___len > 0x80 ) return false ;
 
@@ -48,9 +48,9 @@ uint8_t * i2c_reg_read_bytes(ST45i2cST * ___st45i2c3, uint8_t ___i2cRegAddr, siz
     return 
         (uint8_t*) ___st45i2c3 -> rBuf ; 
     //return NULL ;
-} // i2c_reg_read_bytes
+} // _i2c_reg_read_bytes
 
-uint8_t * i2c_reg_read_one_byte(ST45i2cST * ___st45i2c4, uint8_t ___i2cRegAddr) {
+uint8_t * _i2c_reg_read_one_byte(ST45i2cST * ___st45i2c4, uint8_t ___i2cRegAddr) {
     return 
-        i2c_reg_read_bytes( ___st45i2c4, ___i2cRegAddr, 1 ) ;
+        _i2c_reg_read_bytes( ___st45i2c4, ___i2cRegAddr, 1 ) ;
 } // i2c_reg_read_one_byte

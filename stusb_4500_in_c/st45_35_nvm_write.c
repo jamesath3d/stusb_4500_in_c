@@ -10,7 +10,8 @@ int _st45_nvm_write( ST45i2cST * ___st45I2C, uint8_t * ___wBufTo ) {
 
     memcpy(__wBuf,___wBufTo,sizeof(__wBuf));
 
-    if ( 3 != _st45_enter_nvm_write( ___st45I2C ) ) EXi( -1 ) ;
+    uint8_t __u01 = SECTOR_0 | SECTOR_1  | SECTOR_2 | SECTOR_3  | SECTOR_4 ;
+    if ( 3 != _st45_enter_nvm_write( ___st45I2C , __u01 ) ) EXi( -1 ) ;
 
     if ( 8 != _st45_nvm_write_8_bytes(___st45I2C, 0, &(__wBuf[0][0])) ) EXi( -1 ) ;
 

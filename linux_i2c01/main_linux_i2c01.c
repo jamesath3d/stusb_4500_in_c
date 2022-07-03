@@ -70,6 +70,7 @@ int main( int ___argc, char ** ___argv ) {
     _st45_dump_st45config(&_st45config_check, "reAnalyze: ");
 
     // _st45_nvm_read
+    // _st45_enter_nvm_read
     // _st45_exit_test_mode
     _i2c_tx_debug = 99 ;
     if(0) 
