@@ -99,7 +99,7 @@ int _st45_enter_nvm_write( ST45i2cST * ___st45LP , unsigned char ___erasedSector
     }
     while(___st45LP->rBuf[0]  & FTP_CUST_REQ);	// read 0xD0,0xD0,0xD0, failed ; 0xC0, ok-exit loop
 
-    if(1) FP( "now __cnt is %d \n" , __cnt ) ;
+    if(0) FP( "now __cnt is %d \n" , __cnt ) ;
     return __cnt;
 
 } // _st45_enter_nvm_write

@@ -64,6 +64,6 @@ int _st45_nvm_write_8_bytes( ST45i2cST * ___st45LP, uint8_t ___nvmBankIdx, uint8
     }
     while(___st45LP->rBuf[0] & FTP_CUST_REQ); //FTP_CUST_REQ clear by NVM controller
 
-    if(1) FP(" return : %d\n" , __cnt ) ; 
+    if(0) FP(" return : %d\n" , __cnt ) ; 
     return __cnt  ;
 } // _st45_nvm_write_8_bytes

@@ -12,7 +12,7 @@
 #include <stdint.h>             // uint8_t
 #include <string.h>             // memcpy
 
-#define Fprintf( fmt, ... ) printf( "%s: " fmt, __func__, __VA_ARGS__)
+#define Fprintf( fmt, ... ) printf( "%s:%d: " fmt, __func__, __LINE__, __VA_ARGS__)
 #define FP Fprintf
 #define P printf
 #define FP1(fmt) printf("%s: " fmt, __func__)
