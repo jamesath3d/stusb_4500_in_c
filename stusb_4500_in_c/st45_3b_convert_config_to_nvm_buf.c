@@ -40,6 +40,12 @@ ST45config* _st45_convert_config_to_nvm_buf(ST45config* ___st45config) {
     // Pdo2i : sector 3, byte 4, bits 0:3
     ___st45config -> buf[3][4] &= 0xF0 ;
     ___st45config -> buf[3][4] |= (0x0F & (___st45config -> pdo[1] . Iu)) ;
+    //PDO3i : sector 3, byte 5, bits 4:7
+    __u01 = ___st45config -> pdo[2] . Iu ;
+    __u02 = __u01 << 4;
+    ___st45config -> buf[3][5] &= 0x0F ;
+    ___st45config -> buf[3][5] |= (0xF0 & __u02) ;
+
 
     // lowerVpercent 1
     __u81 = 0xF0 & ___st45config -> buf[3][3] ;
