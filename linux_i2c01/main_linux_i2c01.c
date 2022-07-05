@@ -49,7 +49,7 @@ uint8_t* mainX2( ST45i2cST* ___st45I2C , uint8_t* ___oldConfigBuf ){
     memcpy( &_st45config_new, &_st45config_default, sizeof(ST45config));
     _st45_gen_new_config( &_st45config_new,
             14, 7,   5,  1.5,  
-            13, 8,   5,  3.00,   
+            13, 8,  15,  3.00,   
             12, 9,  15,  5.00      
             );
     _st45_dump_st45config(&_st45config_new, "want:");
