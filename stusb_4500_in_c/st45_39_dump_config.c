@@ -23,6 +23,9 @@ void _st45_dump_st45config( ST45config* ___nvmConfig , char * ___pr ) {
     _st45_dump_st45pdo( ___nvmConfig, 1 , ___pr );
     _st45_dump_st45pdo( ___nvmConfig, 2 , ___pr );
     _st45_dump_st45pdo( ___nvmConfig, 3 , ___pr );
+
+    if(0) FP(" pdo3 : I 0x%02X , %f ######## \n" , ___nvmConfig -> pdo[2] . Iu, ___nvmConfig -> pdo[2] . If );
+
 } // _st45_dump_st45config
 
 

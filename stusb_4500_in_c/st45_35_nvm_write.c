@@ -16,6 +16,7 @@ int _st45_nvm_write( ST45i2cST * ___st45I2C, uint8_t * ___wBufTo ) {
     __u02 = _st45_enter_nvm_write( ___st45I2C , __u01 ) ;
     if ( 10 != __u02 ) EXi( __u02 ) ;
 
+    if(1) FP1( " writing ================= start \n" );
     // _i2c_tx_debug = 99 ;
     __u02 = _st45_nvm_write_8_bytes(___st45I2C, 0, (uint8_t*) &(__wBuf[0][0])) ;
     if ( 13 != __u02 ) EXi( __u02 ) ;
@@ -42,6 +43,7 @@ int _st45_nvm_write( ST45i2cST * ___st45I2C, uint8_t * ___wBufTo ) {
     if ( false == 
             _st45_exit_test_mode(___st45I2C) ) EXi( -41 ) ;
 
+    if(1) FP1( " writing ================= end \n" );
 
     return 0; //OK
 } // _st45_nvm_write

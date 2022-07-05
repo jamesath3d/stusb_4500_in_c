@@ -53,7 +53,9 @@ uint8_t* mainX2( ST45i2cST* ___st45I2C , uint8_t* ___oldConfigBuf ){
             12, 9,  15,  5.00      
             );
     _st45_dump_st45config(&_st45config_new, "want:");
+    if(1) _st45_dump_st45pdo( &_st45config_new, 3, "========================== _st45config_new " );
     _st45_convert_config_to_nvm_buf( &_st45config_new ) ; 
+    if(1) _st45_dump_st45pdo( &_st45config_new, 3, "========================== _st45config_new after convert " );
     ST45_dump_buf2( &(_st45config_new . buf[0][0]) , "generated new NVM content" );
     _st45_cmp_buf2( (uint8_t*) _st45config_old . buf , (uint8_t*) _st45config_new . buf , "old vs want:");
 
@@ -87,7 +89,7 @@ int main( int ___argc, char ** ___argv ) {
     // _st45_enter_nvm_read
     // _st45_exit_test_mode
     // _i2c_tx_debug = 99 ;
-    if(1) 
+    if(0) 
         _st45_nvm_write( &_st45i2c , __clp02newGen ) ;
     // CUST_WriteSector
 

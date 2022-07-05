@@ -17,6 +17,9 @@ ST45config* _st45_gen_new_config( ST45config* ___st45config,
 
     ___st45config -> pdoAmount = 3 ;
 
+    if(0) FP(" pdo3 : V 0x%02X , %f \n" , ___st45config -> pdo[2] . Vu, ___st45config -> pdo[2] . Vf );
+    if(0) FP(" pdo3 : I 0x%02X , %f \n" , ___st45config -> pdo[2] . Iu, ___st45config -> pdo[2] . If );
+
     return ___st45config ;
 } // _st45_gen_new_config
 

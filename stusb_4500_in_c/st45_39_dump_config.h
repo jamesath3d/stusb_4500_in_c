@@ -4,6 +4,7 @@
 
 #include "st45_00_all.h"
 
+void _st45_dump_st45pdo( ST45config* ___nvmConfig , char ___pdoIdx , char* ___pr ) ;
 void _st45_dump_st45config( ST45config* ___nvmConfig , char * ___pr ) ;
 
 #endif
