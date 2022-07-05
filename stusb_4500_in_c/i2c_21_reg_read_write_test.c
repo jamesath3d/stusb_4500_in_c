@@ -14,6 +14,7 @@ inline void gap01(void){
 bool stusb4500_read_byte_test( ST45i2cST * __st45LP ){
     uint8_t * __ch ;
 
+    if ( NULL == __st45LP ) EXb( false );
     __ch = 
         _i2c_reg_read_one_byte( __st45LP, 0x06) ;
     if ( NULL == __ch ) return false ;
@@ -53,8 +54,14 @@ bool stusb4500_read_byte_test( ST45i2cST * __st45LP ){
     gap01();
 
     if ( (0x12 != __ch[0]) || (0x11 != __ch[2]) ) {
-        FP1( "Error found: Reg 0x06 get 0x12, Reg 0x08 get 0x11 ! ERROR ! \n");
-        _prDefaultRegsOfStusb4500();
+        FP( "Error found: Reg 0x06 get 0x12, Reg 0x08 get 0x11 ! ERROR ! \n"
+                "you can try to test the i2c use the following commands : \n\n"
+                "i2cdump -y %d %d \n"
+                "i2cdetect -y %d \n\n",
+                __st45LP -> i2cBusNo,
+                __st45LP -> i2cClientAddr,
+                __st45LP -> i2cBusNo
+           );
         EXb( false );
     }
 
