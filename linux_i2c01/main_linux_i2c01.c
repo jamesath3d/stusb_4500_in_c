@@ -60,6 +60,7 @@ uint8_t* mainX2( ST45i2cST* ___st45I2C , uint8_t* ___oldConfigBuf ){
     _st45_cmp_buf2( (uint8_t*) _st45config_old . buf , (uint8_t*) _st45config_new . buf , "old vs want:");
 
     _st45_analyze_buf_to_gen_nvm_config( &_st45config_check, (uint8_t*)_st45config_new . buf ) ;
+    if(1) _st45_dump_st45pdo( &_st45config_check, 3, "========================== _st45config_check " );
     _st45_dump_st45config(&_st45config_check, "reAnalyze: ");
 
     memcpy( __Buf58 , _st45config_new . buf, 40 ) ;
