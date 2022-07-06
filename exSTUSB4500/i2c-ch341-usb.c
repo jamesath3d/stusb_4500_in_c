@@ -1,1 +1,0 @@
-../i2c-ch341-usb_gschorcht/i2c-ch341-usb.c

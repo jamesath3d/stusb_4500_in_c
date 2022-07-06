@@ -1,4 +1,4 @@
-MODULE_NAME=i2c-ch341-usb
+MODULE_NAME=i2c_ch341_usb
 MODULE_VERSION=1.0.0
 
 define EOL
@@ -19,7 +19,7 @@ MODULE_INSTALLED =
 endif
 
 strip:= strip --strip-unneeded
-MODULE_NAME  = i2c-ch341-usb
+MODULE_NAME  = i2c_ch341_usb
 obj-m       := $(MODULE_NAME).o   
 
 all:
@@ -32,7 +32,7 @@ all:
 	@echo
 
 
-ko00:=i2c-ch341-usb
+ko00:=i2c_ch341_usb
 ko01:=$(ko00).$(KVERSION).ko
 koS:=ch341_buses i2c_ch341_usb ch341
 
@@ -98,6 +98,8 @@ h help:
 
 m:
 	vim Makefile
+v:
+	vim $(MODULE_NAME).c
 
 define help01
 https://github.com/gschorcht/i2c-ch341-usb
