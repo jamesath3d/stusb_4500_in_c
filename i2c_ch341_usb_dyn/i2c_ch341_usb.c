@@ -214,7 +214,7 @@ static int ch341_usb_transfer (struct STch341_dev *dev, int out_len, int in_len)
 
 // ----- board configuration layer begin ---------------------------------
 
-static int ch341_cfg_probe (struct STch341_dev* ___ch341_dev)
+static int _ch341_gpioCfg_probe (struct STch341_dev* ___ch341_dev)
 {
     struct STch341_pin_cfg* __stCfg;
     int i;
@@ -229,7 +229,7 @@ static int ch341_cfg_probe (struct STch341_dev* ___ch341_dev)
     ___ch341_dev->irq_base      = 0;
     ___ch341_dev->irq_hw        = -1;
 
-    // ========================================= ch341_cfg_probe
+    // ========================================= _ch341_gpioCfg_probe
     for (i = 0; i < CH341_GPIO_NUM_PINS; i++)
     {
         __stCfg = ch341_board_config + i;
@@ -252,7 +252,7 @@ static int ch341_cfg_probe (struct STch341_dev* ___ch341_dev)
             DEV_ERR(CH341_IF_ADDR3, "pin %d: must be an input", __stCfg->pin);
             return -EINVAL;
         }
-        // ========================================= ch341_cfg_probe
+        // ========================================= _ch341_gpioCfg_probe
 
         // --- read in pin configuration
 
@@ -268,7 +268,7 @@ static int ch341_cfg_probe (struct STch341_dev* ___ch341_dev)
         ___ch341_dev->gpio_irq_map  [___ch341_dev->gpio_num] = ___ch341_dev->irq_num;
         ___ch341_dev->irq_gpio_map  [___ch341_dev->irq_num]  = ___ch341_dev->gpio_num;
 
-        // ========================================= ch341_cfg_probe
+        // ========================================= _ch341_gpioCfg_probe
         if (__stCfg->hwirq)
         {
             if (___ch341_dev->irq_hw != -1)
@@ -286,18 +286,18 @@ static int ch341_cfg_probe (struct STch341_dev* ___ch341_dev)
             // if pin is INPUT, it has to be masked out in GPIO direction mask
             ___ch341_dev->gpio_mask &= ~___ch341_dev->gpio_bits[___ch341_dev->gpio_num];
 
-        // ========================================= ch341_cfg_probe
+        // ========================================= _ch341_gpioCfg_probe
         DEV_INFO (CH341_IF_ADDR3, "%s %s gpio=%d irq=%d %s",
                 __stCfg->mode == CH341_PIN_MODE_IN ? "input " : "output",
                 __stCfg->name, ___ch341_dev->gpio_num, ___ch341_dev->irq_num,
-                __stCfg->hwirq ? "(hwirq)" : "");
+                __stCfg->hwirq ? "(hwirq)" : "(noIrq)");
 
         ___ch341_dev->irq_num++;
         ___ch341_dev->gpio_num++;
     }
 
     return CH341_OK;
-} // ch341_cfg_probe
+} // _ch341_gpioCfg_probe
 
 static void ch341_cfg_remove (struct STch341_dev* ___ch341_dev)
 {
@@ -703,7 +703,7 @@ static int ch341_irq_probe (struct STch341_dev* ___ch341_dev)
         irq_clear_status_flags(___ch341_dev->irq_base + i, IRQ_NOREQUEST | IRQ_NOPROBE);
     }
 
-    DEV_DBG (CH341_IF_ADDR3, "done");
+    DEV_DBG (CH341_IF_ADDR3, "irq probe done");
 
     return CH341_OK;
 } // ch341_irq_probe
@@ -1291,7 +1291,7 @@ static int ch341_usb_probe (struct usb_interface* stUsb_if,
     // save the pointer to the new STch341_dev in USB interface device data
     usb_set_intfdata(stUsb_if, __ch341_dev);
 
-    if ((error = ch341_cfg_probe (__ch341_dev)) ||  // initialize board configuration
+    if ((error = _ch341_gpioCfg_probe (__ch341_dev)) ||  // initialize board configuration
             (error = ch341_i2c_probe (__ch341_dev)) ||  // initialize I2C adapter
             (error = ch341_irq_probe (__ch341_dev)) ||  // initialize IRQs
             (error = ch341_gpio_probe(__ch341_dev)))    // initialize GPIOs

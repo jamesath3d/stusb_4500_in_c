@@ -53,7 +53,7 @@ $(MODULE_NAME).ko: $(MODULE_NAME).c
 	make -C $(KERNEL_DIR) M=$(PWD) modules
 
 
-b build: $(MODULE_NAME).ko
+b build: $(MODULE_NAME).c
 	make -C $(KERNEL_DIR) M=$(PWD) modules
 	test -f $(ko00).unstrip.ko || ( \
         /bin/cp -f $(ko00).ko $(ko00).unstrip.ko ; \
