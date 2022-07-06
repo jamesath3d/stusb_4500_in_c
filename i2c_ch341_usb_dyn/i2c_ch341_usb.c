@@ -1306,7 +1306,8 @@ static int ch341_usb_probe (struct usb_interface* usb_if,
     DEV_INFO (CH341_IF_ADDR2, Module_para_desc 
             "\n /sys/class/i2c-dev/i2c-%d/name" 
             " /sys/module/" Module_nameS "/parameters/speed : %s\n"
-            " insmod/modprobe " Module_nameS " speed=0/1/2/3 poll_period=10 \n"
+            " depmod; modprobe " Module_nameS " speed=0/1/2/3 poll_period=10 \n"
+            " insmod ./" Module_nameS ".ko speed=0/1/2/3 poll_period=10 \n"
             , __ch341_dev->i2c_dev.nr
             , __ch341_dev->i2c_dev.name
             );
