@@ -179,26 +179,26 @@ struct STch341_dev
 
     // ------------------------------ struct STch341_dev
     // GPIO device description
-    struct gpio_chip         stGpio_chip;                              // chip descriptor for GPIOs
-    uint8_t                  gpio_num;                          // number of pins used as GPIOs
-    uint8_t                  gpio_mask;                         // configuratoin mask defines IN/OUT pins
-    uint8_t                  gpio_io_data;                      // current value of CH341 I/O register
-    struct task_struct *     stGpio_thread;                       // GPIO poll thread
-    struct STch341_pin_cfg*  stGpio_pins   [CH341_GPIO_NUM_PINS]; // pin configurations (gpio_num elements)
-    uint8_t                  gpio_bits   [CH341_GPIO_NUM_PINS]; // bit of I/O data byte (gpio_num elements)
-    uint8_t                  gpio_values [CH341_GPIO_NUM_PINS]; // current values (gpio_num elements)
-    char*                    gpio_names  [CH341_GPIO_NUM_PINS]; // pin names  (gpio_num elements)
-    int                      gpio_irq_map[CH341_GPIO_NUM_PINS]; // GPIO to IRQ map (gpio_num elements)
+    struct gpio_chip         stGpio_chip;                          // chip descriptor for GPIOs
+    uint8_t                  gpio_num;                             // number of pins used as GPIOs
+    uint8_t                  gpio_mask;                            // configuratoin mask defines IN/OUT pins
+    uint8_t                  gpio_io_data;                         // current value of CH341 I/O register
+    struct task_struct *     stGpio_thread;                        // GPIO poll thread
+    struct STch341_pin_cfg*  stGpio_pins    [CH341_GPIO_NUM_PINS]; // pin configurations (gpio_num elements)
+    uint8_t                  gpio_bits      [CH341_GPIO_NUM_PINS]; // bit of I/O data byte (gpio_num elements)
+    uint8_t                  gpio_values    [CH341_GPIO_NUM_PINS]; // current values (gpio_num elements)
+    char*                    gpio_names     [CH341_GPIO_NUM_PINS]; // pin names  (gpio_num elements)
+    int                      gpio_irq_map   [CH341_GPIO_NUM_PINS]; // GPIO to IRQ map (gpio_num elements)
 
     // IRQ device description
-    struct irq_chip   stIrq;                                // chip descriptor for IRQs
-    uint8_t           irq_num;                            // number of pins with IRQs
-    int               irq_base;                           // base IRQ allocated
-    struct irq_desc*  stIrq_descs    [CH341_GPIO_NUM_PINS]; // IRQ descriptors used (irq_num elements)
-    int               irq_types    [CH341_GPIO_NUM_PINS]; // IRQ types (irq_num elements)
-    bool              irq_enabled  [CH341_GPIO_NUM_PINS]; // IRQ enabled flag (irq_num elements)
-    int               irq_gpio_map [CH341_GPIO_NUM_PINS]; // IRQ to GPIO pin map (irq_num elements)
-    int               irq_hw;                             // IRQ for GPIO with hardware IRQ (default -1)
+    struct irq_chip     stIrq;                                 // chip descriptor for IRQs
+    uint8_t             irq_num;                               // number of pins with IRQs
+    int                 irq_base;                              // base IRQ allocated
+    struct irq_desc*    stIrq_descs     [CH341_GPIO_NUM_PINS]; // IRQ descriptors used (irq_num elements)
+    int                 irq_types       [CH341_GPIO_NUM_PINS]; // IRQ types (irq_num elements)
+    bool                irq_enabled     [CH341_GPIO_NUM_PINS]; // IRQ enabled flag (irq_num elements)
+    int                 irq_gpio_map    [CH341_GPIO_NUM_PINS]; // IRQ to GPIO pin map (irq_num elements)
+    int                 irq_hw;                                // IRQ for GPIO with hardware IRQ (default -1)
 }; // struct STch341_dev
 
 // ----- variables configurable during runtime ---------------------------
@@ -221,13 +221,13 @@ static int ch341_cfg_probe (struct STch341_dev* ___ch341_dev)
 
     Ck_false_Return_with (___ch341_dev, -EINVAL);
 
-    ___ch341_dev->gpio_mask   = 0x3f; // default
-    ___ch341_dev->gpio_num    = 0;
+    ___ch341_dev->gpio_mask     = 0x3f; // default
+    ___ch341_dev->gpio_num      = 0;
     ___ch341_dev->stGpio_thread = 0;
 
-    ___ch341_dev->irq_num     = 0;
-    ___ch341_dev->irq_base    = 0;
-    ___ch341_dev->irq_hw      = -1;
+    ___ch341_dev->irq_num       = 0;
+    ___ch341_dev->irq_base      = 0;
+    ___ch341_dev->irq_hw        = -1;
 
     // ========================================= ch341_cfg_probe
     for (i = 0; i < CH341_GPIO_NUM_PINS; i++)
@@ -257,16 +257,16 @@ static int ch341_cfg_probe (struct STch341_dev* ___ch341_dev)
         // --- read in pin configuration
 
         // if pin is not configured as CS signal, set GPIO configuration
-        ___ch341_dev->gpio_names  [___ch341_dev->gpio_num] = __stCfg->name;
+        ___ch341_dev->gpio_names    [___ch341_dev->gpio_num] = __stCfg->name;
         ___ch341_dev->stGpio_pins   [___ch341_dev->gpio_num] = __stCfg;
-        ___ch341_dev->gpio_irq_map[___ch341_dev->gpio_num] = -1; // no valid IRQ
+        ___ch341_dev->gpio_irq_map  [___ch341_dev->gpio_num] = -1; // no valid IRQ
 
         // map CH341 pin to bit D0...D7 in the CH341 I/O data byte
-        ___ch341_dev->gpio_bits[___ch341_dev->gpio_num] = (1 << (__stCfg->pin - 15));
+        ___ch341_dev->gpio_bits     [___ch341_dev->gpio_num] = (1 << (__stCfg->pin - 15));
 
         // GPIO pins can generate IRQs when set to input mode
-        ___ch341_dev->gpio_irq_map[___ch341_dev->gpio_num] = ___ch341_dev->irq_num;
-        ___ch341_dev->irq_gpio_map[___ch341_dev->irq_num]  = ___ch341_dev->gpio_num;
+        ___ch341_dev->gpio_irq_map  [___ch341_dev->gpio_num] = ___ch341_dev->irq_num;
+        ___ch341_dev->irq_gpio_map  [___ch341_dev->irq_num]  = ___ch341_dev->gpio_num;
 
         // ========================================= ch341_cfg_probe
         if (__stCfg->hwirq)
