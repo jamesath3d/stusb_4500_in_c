@@ -59,6 +59,7 @@ b build: $(MODULE_NAME).ko
         /bin/cp -f $(ko00).ko $(ko00).unstrip.ko ; \
         $(strip) $(ko00).ko )
 	test -f $(ko01) || cp $(ko00).ko $(ko01)
+	@ls -l *.ko
 
 
 c clean:

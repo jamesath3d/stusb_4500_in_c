@@ -39,6 +39,10 @@ mid:=\
 src01=$(proj).c $(foreach aa1,$(mid),$(aa1).c)
 bin01=$(proj).$(KVERSION).bin
 
+a all: 
+	@echo
+	@ls -l *.bin 2>/dev/null
+
 $(bin01): $(src01)
 	@echo
 	gcc $(GccOpt) -o $@ $^
@@ -46,8 +50,8 @@ $(bin01): $(src01)
 	$(strip) $@ 
 	ls -l $@*
 
-a all: $(bin01)
-	@echo
+b build: $(bin01)
+	@ls -l *.bin 2>/dev/null
 
 e8:
 	@echo; echo; echo; echo; echo; echo; echo; echo;
