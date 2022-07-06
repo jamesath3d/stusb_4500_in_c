@@ -183,18 +183,18 @@ struct STch341_dev
     uint8_t                  gpio_num;                          // number of pins used as GPIOs
     uint8_t                  gpio_mask;                         // configuratoin mask defines IN/OUT pins
     uint8_t                  gpio_io_data;                      // current value of CH341 I/O register
-    struct task_struct *     gpio_thread;                       // GPIO poll thread
-    struct STch341_pin_cfg*  gpio_pins   [CH341_GPIO_NUM_PINS]; // pin configurations (gpio_num elements)
+    struct task_struct *     stGpio_thread;                       // GPIO poll thread
+    struct STch341_pin_cfg*  stGpio_pins   [CH341_GPIO_NUM_PINS]; // pin configurations (gpio_num elements)
     uint8_t                  gpio_bits   [CH341_GPIO_NUM_PINS]; // bit of I/O data byte (gpio_num elements)
     uint8_t                  gpio_values [CH341_GPIO_NUM_PINS]; // current values (gpio_num elements)
     char*                    gpio_names  [CH341_GPIO_NUM_PINS]; // pin names  (gpio_num elements)
     int                      gpio_irq_map[CH341_GPIO_NUM_PINS]; // GPIO to IRQ map (gpio_num elements)
 
     // IRQ device description
-    struct irq_chip   irq;                                // chip descriptor for IRQs
+    struct irq_chip   stIrq;                                // chip descriptor for IRQs
     uint8_t           irq_num;                            // number of pins with IRQs
     int               irq_base;                           // base IRQ allocated
-    struct irq_desc*  irq_descs    [CH341_GPIO_NUM_PINS]; // IRQ descriptors used (irq_num elements)
+    struct irq_desc*  stIrq_descs    [CH341_GPIO_NUM_PINS]; // IRQ descriptors used (irq_num elements)
     int               irq_types    [CH341_GPIO_NUM_PINS]; // IRQ types (irq_num elements)
     bool              irq_enabled  [CH341_GPIO_NUM_PINS]; // IRQ enabled flag (irq_num elements)
     int               irq_gpio_map [CH341_GPIO_NUM_PINS]; // IRQ to GPIO pin map (irq_num elements)
@@ -216,14 +216,14 @@ static int ch341_usb_transfer (struct STch341_dev *dev, int out_len, int in_len)
 
 static int ch341_cfg_probe (struct STch341_dev* ___ch341_dev)
 {
-    struct STch341_pin_cfg* cfg;
+    struct STch341_pin_cfg* __stCfg;
     int i;
 
     Ck_false_Return_with (___ch341_dev, -EINVAL);
 
     ___ch341_dev->gpio_mask   = 0x3f; // default
     ___ch341_dev->gpio_num    = 0;
-    ___ch341_dev->gpio_thread = 0;
+    ___ch341_dev->stGpio_thread = 0;
 
     ___ch341_dev->irq_num     = 0;
     ___ch341_dev->irq_base    = 0;
@@ -232,24 +232,24 @@ static int ch341_cfg_probe (struct STch341_dev* ___ch341_dev)
     // ========================================= ch341_cfg_probe
     for (i = 0; i < CH341_GPIO_NUM_PINS; i++)
     {
-        cfg = ch341_board_config + i;
+        __stCfg = ch341_board_config + i;
 
-        if (cfg->pin == 0)
+        if (__stCfg->pin == 0)
             continue;
 
         // --- check correct pin configuration ------------
 
         // is pin configurable at all
-        if (cfg->pin < 15 || cfg->pin > 22)
+        if (__stCfg->pin < 15 || __stCfg->pin > 22)
         {
-            DEV_ERR(CH341_IF_ADDR3, "pin %d: is not configurable", cfg->pin);
+            DEV_ERR(CH341_IF_ADDR3, "pin %d: is not configurable", __stCfg->pin);
             return -EINVAL;
         }
 
         // is pin configured correctly as input in case of pin 21 and 22
-        if ((cfg->pin == 21 || cfg->pin == 22) && cfg->mode != CH341_PIN_MODE_IN)
+        if ((__stCfg->pin == 21 || __stCfg->pin == 22) && __stCfg->mode != CH341_PIN_MODE_IN)
         {
-            DEV_ERR(CH341_IF_ADDR3, "pin %d: must be an input", cfg->pin);
+            DEV_ERR(CH341_IF_ADDR3, "pin %d: must be an input", __stCfg->pin);
             return -EINVAL;
         }
         // ========================================= ch341_cfg_probe
@@ -257,40 +257,40 @@ static int ch341_cfg_probe (struct STch341_dev* ___ch341_dev)
         // --- read in pin configuration
 
         // if pin is not configured as CS signal, set GPIO configuration
-        ___ch341_dev->gpio_names  [___ch341_dev->gpio_num] = cfg->name;
-        ___ch341_dev->gpio_pins   [___ch341_dev->gpio_num] = cfg;
+        ___ch341_dev->gpio_names  [___ch341_dev->gpio_num] = __stCfg->name;
+        ___ch341_dev->stGpio_pins   [___ch341_dev->gpio_num] = __stCfg;
         ___ch341_dev->gpio_irq_map[___ch341_dev->gpio_num] = -1; // no valid IRQ
 
         // map CH341 pin to bit D0...D7 in the CH341 I/O data byte
-        ___ch341_dev->gpio_bits[___ch341_dev->gpio_num] = (1 << (cfg->pin - 15));
+        ___ch341_dev->gpio_bits[___ch341_dev->gpio_num] = (1 << (__stCfg->pin - 15));
 
         // GPIO pins can generate IRQs when set to input mode
         ___ch341_dev->gpio_irq_map[___ch341_dev->gpio_num] = ___ch341_dev->irq_num;
         ___ch341_dev->irq_gpio_map[___ch341_dev->irq_num]  = ___ch341_dev->gpio_num;
 
         // ========================================= ch341_cfg_probe
-        if (cfg->hwirq)
+        if (__stCfg->hwirq)
         {
             if (___ch341_dev->irq_hw != -1)
             {
                 DEV_ERR(CH341_IF_ADDR3,
                         "pin %d: only one GPIO can be connected to the hardware IRQ",
-                        cfg->pin);
+                        __stCfg->pin);
                 return -EINVAL;
             }
 
             ___ch341_dev->irq_hw = ___ch341_dev->irq_num;
         }
 
-        if (cfg->mode == CH341_PIN_MODE_IN)
+        if (__stCfg->mode == CH341_PIN_MODE_IN)
             // if pin is INPUT, it has to be masked out in GPIO direction mask
             ___ch341_dev->gpio_mask &= ~___ch341_dev->gpio_bits[___ch341_dev->gpio_num];
 
         // ========================================= ch341_cfg_probe
         DEV_INFO (CH341_IF_ADDR3, "%s %s gpio=%d irq=%d %s",
-                cfg->mode == CH341_PIN_MODE_IN ? "input " : "output",
-                cfg->name, ___ch341_dev->gpio_num, ___ch341_dev->irq_num,
-                cfg->hwirq ? "(hwirq)" : "");
+                __stCfg->mode == CH341_PIN_MODE_IN ? "input " : "output",
+                __stCfg->name, ___ch341_dev->gpio_num, ___ch341_dev->irq_num,
+                __stCfg->hwirq ? "(hwirq)" : "");
 
         ___ch341_dev->irq_num++;
         ___ch341_dev->gpio_num++;
@@ -657,9 +657,9 @@ static int ch341_irq_check (struct STch341_dev* ___ch341_dev, uint8_t irq,
         //          irq, type, (old > new) ? "falling" : "rising");
 
 #if LINUX_VERSION_CODE >= KERNEL_VERSION(4,3,0)
-        handle_simple_irq (___ch341_dev->irq_descs[irq]);
+        handle_simple_irq (___ch341_dev->stIrq_descs[irq]);
 #else
-        handle_simple_irq (___ch341_dev->irq_base+irq, ___ch341_dev->irq_descs[irq]);
+        handle_simple_irq (___ch341_dev->irq_base+irq, ___ch341_dev->stIrq_descs[irq]);
 #endif
     }
 
@@ -675,10 +675,10 @@ static int ch341_irq_probe (struct STch341_dev* ___ch341_dev)
 
     DEV_DBG (CH341_IF_ADDR3, "start");
 
-    ___ch341_dev->irq.name         = "ch341";
-    ___ch341_dev->irq.irq_enable   = ch341_irq_enable;
-    ___ch341_dev->irq.irq_disable  = ch341_irq_disable;
-    ___ch341_dev->irq.irq_set_type = ch341_irq_set_type;
+    ___ch341_dev->stIrq.name         = "ch341";
+    ___ch341_dev->stIrq.irq_enable   = ch341_irq_enable;
+    ___ch341_dev->stIrq.irq_disable  = ch341_irq_disable;
+    ___ch341_dev->stIrq.irq_set_type = ch341_irq_set_type;
 
     if (!___ch341_dev->irq_num) return CH341_OK;
 
@@ -695,10 +695,10 @@ static int ch341_irq_probe (struct STch341_dev* ___ch341_dev)
 
     for (i = 0; i < ___ch341_dev->irq_num; i++)
     {
-        ___ch341_dev->irq_descs[i]   = irq_to_desc(___ch341_dev->irq_base + i);
+        ___ch341_dev->stIrq_descs[i]   = irq_to_desc(___ch341_dev->irq_base + i);
         ___ch341_dev->irq_enabled[i] = false;
 
-        irq_set_chip          (___ch341_dev->irq_base + i, &___ch341_dev->irq);
+        irq_set_chip          (___ch341_dev->irq_base + i, &___ch341_dev->stIrq);
         irq_set_chip_data     (___ch341_dev->irq_base + i, ___ch341_dev);
         irq_clear_status_flags(___ch341_dev->irq_base + i, IRQ_NOREQUEST | IRQ_NOPROBE);
     }
@@ -924,7 +924,7 @@ void ch341_gpio_set_multiple (struct gpio_chip *chip,
 
     // =========================================== ch341_gpio_set_multiple
     for (i = 0; i < __ch341_dev->gpio_num; i++)
-        if (*mask & (1 << i) && __ch341_dev->gpio_pins[i]->mode == CH341_PIN_MODE_OUT)
+        if (*mask & (1 << i) && __ch341_dev->stGpio_pins[i]->mode == CH341_PIN_MODE_OUT)
         {
             if (*bits & (1 << i))
                 __ch341_dev->gpio_io_data |= __ch341_dev->gpio_bits[i];
@@ -953,7 +953,7 @@ int ch341_gpio_get_direction (struct gpio_chip *chip, unsigned offset)
     Ck_false_Return_with (__ch341_dev, -EINVAL);
     Ck_false_Return_with (offset < __ch341_dev->gpio_num, -EINVAL);
 
-    mode = (__ch341_dev->gpio_pins[offset]->mode == CH341_PIN_MODE_IN) ? 1 : 0;
+    mode = (__ch341_dev->stGpio_pins[offset]->mode == CH341_PIN_MODE_IN) ? 1 : 0;
 
     DEV_DBG (CH341_IF_ADDR2, "gpio=%d dir=%d", offset, mode);
 
@@ -972,7 +972,7 @@ int ch341_gpio_set_direction (struct gpio_chip *chip, unsigned offset, bool inpu
     Ck_false_Return_with (offset < __ch341_dev->gpio_num, -EINVAL);
 
     // pin configured correctly if it is pin 21
-    if (__ch341_dev->gpio_pins[offset]->pin == 21 && !input)
+    if (__ch341_dev->stGpio_pins[offset]->pin == 21 && !input)
     {
         DEV_ERR(CH341_IF_ADDR2, "pin 21: must be an input");
         return -EINVAL;
@@ -981,10 +981,10 @@ int ch341_gpio_set_direction (struct gpio_chip *chip, unsigned offset, bool inpu
 
     DEV_INFO (CH341_IF_ADDR2, "gpio=%d direction=%s", offset, input ? "input" :  "output");
 
-    __ch341_dev->gpio_pins[offset]->mode = input ? CH341_PIN_MODE_IN : CH341_PIN_MODE_OUT;
+    __ch341_dev->stGpio_pins[offset]->mode = input ? CH341_PIN_MODE_IN : CH341_PIN_MODE_OUT;
 
     // mask in / mask out the according bit in direction mask
-    if (__ch341_dev->gpio_pins[offset]->mode == CH341_PIN_MODE_OUT)
+    if (__ch341_dev->stGpio_pins[offset]->mode == CH341_PIN_MODE_OUT)
         __ch341_dev->gpio_mask |= __ch341_dev->gpio_bits[offset];
     else
         __ch341_dev->gpio_mask &= ~__ch341_dev->gpio_bits[offset];
@@ -1108,7 +1108,7 @@ static int ch341_gpio_probe (struct STch341_dev* ___ch341_dev)
     }
     // ==================================== ch341_gpio_probe
 
-    ___ch341_dev->gpio_thread = kthread_run (&ch341_gpio_poll_function, ___ch341_dev, Module_nameS "-poll");
+    ___ch341_dev->stGpio_thread = kthread_run (&ch341_gpio_poll_function, ___ch341_dev, Module_nameS "-poll");
 
     DEV_DBG (CH341_IF_ADDR3, "done");
 
@@ -1124,10 +1124,10 @@ static void ch341_gpio_remove (struct STch341_dev* ___ch341_dev)
 
     Ck_false_Return (___ch341_dev);
 
-    if (___ch341_dev->gpio_thread)
+    if (___ch341_dev->stGpio_thread)
     {
-        kthread_stop(___ch341_dev->gpio_thread);
-        wake_up_process (___ch341_dev->gpio_thread);
+        kthread_stop(___ch341_dev->stGpio_thread);
+        wake_up_process (___ch341_dev->stGpio_thread);
     }
 
     // =================================== ch341_gpio_remove
