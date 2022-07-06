@@ -2,6 +2,10 @@
 Makefile.env
 ../tesT02/Makefile
 Makefile.env
+ch341-i2c-spi-gpio/ch341-core.c
+ch341-i2c-spi-gpio/ch341-gpio.c
+ch341-i2c-spi-gpio/ch341-i2c.c
+ch341-i2c-spi-gpio/ch341-spi.c
 ex03/i2cbusses_v4.2.c
 ex03/i2cget_v4.2.c
 ex03/smbus_v4.2.c
@@ -14,6 +18,7 @@ exSTUSB4500/usb-c__STUSB4500_USBPD_CUST_NVM_API.c
 exSTUSB4500/usb-c__STUSB4500_USBPD_CUST_NVM_API_001.c
 exSTUSB4500/usb-c__STUSB4500_main_NVM.c
 exSTUSB4500/usb-c__STUSB4500_main_NVM_001.c
+i2c-ch341-usb_gschorcht/i2c-ch341-usb.c
 linux_i2c01/Makefile
 linux_i2c01/main_linux_i2c01.c
 stusb_4500_in_c/USB_PD_defines.h
