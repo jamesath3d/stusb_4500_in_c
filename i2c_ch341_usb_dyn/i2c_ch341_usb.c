@@ -9,7 +9,7 @@
  *  i2c-ch341.c     Copyright (c) 2014 Marco Gittler
  *  i2c-tiny-usb.c  Copyright (c) 2006-2007 Till Harbaum (Till@Harbaum.org)
  * i2c-ch341-usb.c  Copyright (c) 2017 Gunar Schorcht (gunar@schorcht.net)
- * i2c-ch341-usb.c  Copyright (c) 2012 James.Y.D (deng.ya.nuo@gmail.com)
+ * i2c_ch341_usb.c  Copyright (c) 2012 James.Y.D (deng.ya.nuo@gmail.com)
  *
  * and extended by GPIO and interrupt handling capabilities.
  *
@@ -29,9 +29,9 @@
 #endif
 
 #define CH341_IF_ADDR (&(ch341_dev->usb_if->dev))
-#define DEV_ERR(d,f,...)  dev_err (d,"%s:%d: "f"\n", __FUNCTION__, __LINE__, ##__VA_ARGS__)
-#define DEV_DBG(d,f,...)  dev_dbg (d,"%s:%d: "f"\n", __FUNCTION__, __LINE__, ##__VA_ARGS__)
-#define DEV_INFO(d,f,...) dev_info(d,"%s:%d: "f"\n", __FUNCTION__, __LINE__, ##__VA_ARGS__)
+#define DEV_ERR(d,f,...)  dev_err (d,"%s:%d: " f "\n", __FUNCTION__, __LINE__, ##__VA_ARGS__)
+#define DEV_DBG(d,f,...)  dev_dbg (d,"%s:%d: " f "\n", __FUNCTION__, __LINE__, ##__VA_ARGS__)
+#define DEV_INFO(d,f,...) dev_info(d,"%s:%d: " f "\n", __FUNCTION__, __LINE__, ##__VA_ARGS__)
 
 // check for condition and return with or without err code if it fails
 #define Ck_false_Return_with(cond,err) if (!(cond)) return err;
@@ -67,6 +67,11 @@
   * msecs". This message is thrown if the defined CH341_POLL_PERIOD_MS is
   * shorter than the time required for one reading of the GPIOs.
   */
+#define xstr(s) str(s)
+#define str(s) #s
+#define Module_name i2c_ch341_usb
+#define Module_nameS xstr( Module_name )
+
 #define CH341_POLL_PERIOD_MS        10    // see above
 
 #define CH341_GPIO_NUM_PINS         8     // Number of GPIO pins, DO NOT CHANGE
@@ -78,6 +83,20 @@
 #define CH341_I2C_STANDARD_SPEED    1     // standard speed - 100kHz
 #define CH341_I2C_FAST_SPEED        2     // fast speed - 400kHz
 #define CH341_I2C_HIGH_SPEED        3     // high speed - 750kHz
+#define CH341_I2C_speed_0           CH341_I2C_LOW_SPEED
+#define CH341_I2C_speed_1           CH341_I2C_STANDARD_SPEED
+#define CH341_I2C_speed_2           CH341_I2C_FAST_SPEED
+#define CH341_I2C_speed_3           CH341_I2C_HIGH_SPEED
+#define CH341_I2C_speed_0_desc      "20kHz"
+#define CH341_I2C_speed_1_desc      "100kHz"
+#define CH341_I2C_speed_2_desc      "400kHz"
+#define CH341_I2C_speed_3_desc      "750kHz"
+#define Module_para_desc " I2C bus speed:" \
+    "   0 (" CH341_I2C_speed_0_desc \
+    "), 1 (" CH341_I2C_speed_1_desc \
+    "), 1 (" CH341_I2C_speed_2_desc \
+    "), 1 (" CH341_I2C_speed_3_desc \
+    ")"
 
 #define CH341_CMD_I2C_STREAM        0xAA  // I2C stream command
 #define CH341_CMD_UIO_STREAM        0xAB  // UIO stream command
@@ -293,7 +312,8 @@ static struct mutex ch341_lock;
 
 static int ch341_i2c_set_speed (struct ch341_device *ch341_dev)
 {
-    static char* ch341_i2c_speed_desc[] = { "20 kbps", "100 kbps", "400 kbps", "750 kbps" };
+    static char* ch341_i2c_speed_desc[] = { CH341_I2C_speed_0_desc, 
+        CH341_I2C_speed_1_desc, CH341_I2C_speed_2_desc, CH341_I2C_speed_3_desc };
     int result;
 
     Ck_false_Return_with (speed != speed_last, CH341_OK)
@@ -517,7 +537,7 @@ static int ch341_i2c_probe (struct ch341_device* ch341_dev)
     ch341_dev->i2c_dev.algo  = &ch341_i2c_algorithm;
     ch341_dev->i2c_dev.algo_data = ch341_dev;
     snprintf(ch341_dev->i2c_dev.name, sizeof(ch341_dev->i2c_dev.name),
-             "i2c-ch341-usb at bus %03d device %03d",
+             Module_nameS " at bus %03d device %03d",
              ch341_dev->usb_dev->bus->busnum, ch341_dev->usb_dev->devnum);
 
     ch341_dev->i2c_dev.dev.parent = &ch341_dev->usb_if->dev;
@@ -1086,7 +1106,7 @@ static int ch341_gpio_probe (struct ch341_device* ch341_dev)
     }
     // ==================================== ch341_gpio_probe
 
-    ch341_dev->gpio_thread = kthread_run (&ch341_gpio_poll_function, ch341_dev, "i2c-ch341-usb-poll");
+    ch341_dev->gpio_thread = kthread_run (&ch341_gpio_poll_function, ch341_dev, Module_nameS "-poll");
 
     DEV_DBG (CH341_IF_ADDR, "done");
 
@@ -1282,6 +1302,12 @@ static int ch341_usb_probe (struct usb_interface* usb_if,
     usb_submit_urb (ch341_dev->intr_urb, GFP_ATOMIC);
 
     DEV_INFO (CH341_IF_ADDR, "connected");
+    DEV_INFO (CH341_IF_ADDR, Module_para_desc 
+            "\n /sys/class/i2c-dev/i2c-%d/name" 
+            " /sys/module/" Module_nameS "/parameters/speed : %s\n"
+            , ch341_dev->i2c_dev.nr
+            , ch341_dev->i2c_dev.name
+            );
 
     return CH341_OK;
 } // ch341_usb_probe
@@ -1296,7 +1322,7 @@ static void ch341_usb_disconnect(struct usb_interface *usb_if)
 } // ch341_usb_disconnect
 
 static struct usb_driver ch341_usb_driver = {
-    .name       = "i2c-ch341-usb",
+    .name       = Module_nameS,
     .id_table   = ch341_usb_table,
     .probe      = ch341_usb_probe,
     .disconnect = ch341_usb_disconnect
@@ -1308,11 +1334,11 @@ module_usb_driver(ch341_usb_driver);
 
 MODULE_ALIAS("i2c:ch341");
 MODULE_AUTHOR("Gunar Schorcht <gunar@schorcht.net>");
-MODULE_DESCRIPTION("i2c-ch341-usb driver v1.0.0");
+MODULE_DESCRIPTION(Module_nameS " driver v1.0.0");
 MODULE_LICENSE("GPL");
 
 module_param(speed, uint, 0644);
-MODULE_PARM_DESC(speed, " I2C bus speed: 0 (20 kbps), 1 (100 kbps), 2 (400 kbps), 3 (750 kbps): ");
+MODULE_PARM_DESC(speed, Module_para_desc );
 
 module_param(poll_period, uint, 0644);
 MODULE_PARM_DESC(poll_period, "GPIO polling period in ms (default 10 ms)");
