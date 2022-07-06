@@ -28,7 +28,8 @@
 #define PRINTK(fmt,...)
 #endif
 
-#define CH341_IF_ADDR (&(ch341_dev->usb_if->dev))
+#define CH341_IF_ADDR3 (&(___ch341_dev->usb_if->dev))
+#define CH341_IF_ADDR2 (&(__ch341_dev->usb_if->dev))
 #define DEV_ERR(d,f,...)  dev_err (d,"%s:%d: " f "\n", __FUNCTION__, __LINE__, ##__VA_ARGS__)
 #define DEV_DBG(d,f,...)  dev_dbg (d,"%s:%d: " f "\n", __FUNCTION__, __LINE__, ##__VA_ARGS__)
 #define DEV_INFO(d,f,...) dev_info(d,"%s:%d: " f "\n", __FUNCTION__, __LINE__, ##__VA_ARGS__)
@@ -212,20 +213,20 @@ static int ch341_usb_transfer (struct ch341_device *dev, int out_len, int in_len
 
 // ----- board configuration layer begin ---------------------------------
 
-static int ch341_cfg_probe (struct ch341_device* ch341_dev)
+static int ch341_cfg_probe (struct ch341_device* ___ch341_dev)
 {
     struct ch341_pin_config* cfg;
     int i;
 
-    Ck_false_Return_with (ch341_dev, -EINVAL);
+    Ck_false_Return_with (___ch341_dev, -EINVAL);
 
-    ch341_dev->gpio_mask   = 0x3f; // default
-    ch341_dev->gpio_num    = 0;
-    ch341_dev->gpio_thread = 0;
+    ___ch341_dev->gpio_mask   = 0x3f; // default
+    ___ch341_dev->gpio_num    = 0;
+    ___ch341_dev->gpio_thread = 0;
 
-    ch341_dev->irq_num     = 0;
-    ch341_dev->irq_base    = 0;
-    ch341_dev->irq_hw      = -1;
+    ___ch341_dev->irq_num     = 0;
+    ___ch341_dev->irq_base    = 0;
+    ___ch341_dev->irq_hw      = -1;
 
     // ========================================= ch341_cfg_probe
     for (i = 0; i < CH341_GPIO_NUM_PINS; i++)
@@ -240,14 +241,14 @@ static int ch341_cfg_probe (struct ch341_device* ch341_dev)
         // is pin configurable at all
         if (cfg->pin < 15 || cfg->pin > 22)
         {
-            DEV_ERR(CH341_IF_ADDR, "pin %d: is not configurable", cfg->pin);
+            DEV_ERR(CH341_IF_ADDR3, "pin %d: is not configurable", cfg->pin);
             return -EINVAL;
         }
 
         // is pin configured correctly as input in case of pin 21 and 22
         if ((cfg->pin == 21 || cfg->pin == 22) && cfg->mode != CH341_PIN_MODE_IN)
         {
-            DEV_ERR(CH341_IF_ADDR, "pin %d: must be an input", cfg->pin);
+            DEV_ERR(CH341_IF_ADDR3, "pin %d: must be an input", cfg->pin);
             return -EINVAL;
         }
         // ========================================= ch341_cfg_probe
@@ -255,51 +256,51 @@ static int ch341_cfg_probe (struct ch341_device* ch341_dev)
         // --- read in pin configuration
 
         // if pin is not configured as CS signal, set GPIO configuration
-        ch341_dev->gpio_names  [ch341_dev->gpio_num] = cfg->name;
-        ch341_dev->gpio_pins   [ch341_dev->gpio_num] = cfg;
-        ch341_dev->gpio_irq_map[ch341_dev->gpio_num] = -1; // no valid IRQ
+        ___ch341_dev->gpio_names  [___ch341_dev->gpio_num] = cfg->name;
+        ___ch341_dev->gpio_pins   [___ch341_dev->gpio_num] = cfg;
+        ___ch341_dev->gpio_irq_map[___ch341_dev->gpio_num] = -1; // no valid IRQ
 
         // map CH341 pin to bit D0...D7 in the CH341 I/O data byte
-        ch341_dev->gpio_bits[ch341_dev->gpio_num] = (1 << (cfg->pin - 15));
+        ___ch341_dev->gpio_bits[___ch341_dev->gpio_num] = (1 << (cfg->pin - 15));
 
         // GPIO pins can generate IRQs when set to input mode
-        ch341_dev->gpio_irq_map[ch341_dev->gpio_num] = ch341_dev->irq_num;
-        ch341_dev->irq_gpio_map[ch341_dev->irq_num]  = ch341_dev->gpio_num;
+        ___ch341_dev->gpio_irq_map[___ch341_dev->gpio_num] = ___ch341_dev->irq_num;
+        ___ch341_dev->irq_gpio_map[___ch341_dev->irq_num]  = ___ch341_dev->gpio_num;
 
         // ========================================= ch341_cfg_probe
         if (cfg->hwirq)
         {
-            if (ch341_dev->irq_hw != -1)
+            if (___ch341_dev->irq_hw != -1)
             {
-                DEV_ERR(CH341_IF_ADDR,
+                DEV_ERR(CH341_IF_ADDR3,
                         "pin %d: only one GPIO can be connected to the hardware IRQ",
                         cfg->pin);
                 return -EINVAL;
             }
 
-            ch341_dev->irq_hw = ch341_dev->irq_num;
+            ___ch341_dev->irq_hw = ___ch341_dev->irq_num;
         }
 
         if (cfg->mode == CH341_PIN_MODE_IN)
             // if pin is INPUT, it has to be masked out in GPIO direction mask
-            ch341_dev->gpio_mask &= ~ch341_dev->gpio_bits[ch341_dev->gpio_num];
+            ___ch341_dev->gpio_mask &= ~___ch341_dev->gpio_bits[___ch341_dev->gpio_num];
 
         // ========================================= ch341_cfg_probe
-        DEV_INFO (CH341_IF_ADDR, "%s %s gpio=%d irq=%d %s",
+        DEV_INFO (CH341_IF_ADDR3, "%s %s gpio=%d irq=%d %s",
                   cfg->mode == CH341_PIN_MODE_IN ? "input " : "output",
-                  cfg->name, ch341_dev->gpio_num, ch341_dev->irq_num,
+                  cfg->name, ___ch341_dev->gpio_num, ___ch341_dev->irq_num,
                   cfg->hwirq ? "(hwirq)" : "");
 
-        ch341_dev->irq_num++;
-        ch341_dev->gpio_num++;
+        ___ch341_dev->irq_num++;
+        ___ch341_dev->gpio_num++;
     }
 
     return CH341_OK;
 } // ch341_cfg_probe
 
-static void ch341_cfg_remove (struct ch341_device* ch341_dev)
+static void ch341_cfg_remove (struct ch341_device* ___ch341_dev)
 {
-    Ck_false_Return (ch341_dev);
+    Ck_false_Return (___ch341_dev);
 
     return;
 } // ch341_cfg_remove
@@ -310,7 +311,7 @@ static void ch341_cfg_remove (struct ch341_device* ch341_dev)
 
 static struct mutex ch341_lock;
 
-static int ch341_i2c_set_speed (struct ch341_device *ch341_dev)
+static int ch341_i2c_set_speed (struct ch341_device *___ch341_dev)
 {
     static char* ch341_i2c_speed_desc[] = { CH341_I2C_speed_0_desc, 
         CH341_I2C_speed_1_desc, CH341_I2C_speed_2_desc, CH341_I2C_speed_3_desc };
@@ -320,26 +321,26 @@ static int ch341_i2c_set_speed (struct ch341_device *ch341_dev)
 
     if (speed < CH341_I2C_LOW_SPEED || speed > CH341_I2C_HIGH_SPEED)
     {
-        DEV_ERR (CH341_IF_ADDR, "parameter speed can only have values from 0 to 3");
+        DEV_ERR (CH341_IF_ADDR3, "parameter speed can only have values from 0 to 3");
         speed = speed_last;
         return -EINVAL;
     }
 
-    DEV_INFO (CH341_IF_ADDR, "Change i2c bus speed to %s", ch341_i2c_speed_desc[speed]);
+    DEV_INFO (CH341_IF_ADDR3, "Change i2c bus speed to %s", ch341_i2c_speed_desc[speed]);
 
     mutex_lock (&ch341_lock);
 
     // ==================================== ch341_i2c_set_speed
-    ch341_dev->out_buf[0] = CH341_CMD_I2C_STREAM;
-    ch341_dev->out_buf[1] = CH341_CMD_I2C_STM_SET | speed;
-    ch341_dev->out_buf[2] = CH341_CMD_I2C_STM_END;
-    result = ch341_usb_transfer (ch341_dev, 3, 0);
+    ___ch341_dev->out_buf[0] = CH341_CMD_I2C_STREAM;
+    ___ch341_dev->out_buf[1] = CH341_CMD_I2C_STM_SET | speed;
+    ___ch341_dev->out_buf[2] = CH341_CMD_I2C_STM_END;
+    result = ch341_usb_transfer (___ch341_dev, 3, 0);
 
     mutex_unlock (&ch341_lock);
 
     if (result < 0)
     {
-        DEV_ERR (CH341_IF_ADDR, "failure setting speed %d\n", result);
+        DEV_ERR (CH341_IF_ADDR3, "failure setting speed %d\n", result);
         return result;
     }
 
@@ -348,47 +349,47 @@ static int ch341_i2c_set_speed (struct ch341_device *ch341_dev)
     return result;
 } // ch341_i2c_set_speed
 
-static int ch341_i2c_read_inputs (struct ch341_device* ch341_dev)
+static int ch341_i2c_read_inputs (struct ch341_device* ___ch341_dev)
 {
     int result;
 
-    if ((result = ch341_i2c_set_speed (ch341_dev)) < 0)
+    if ((result = ch341_i2c_set_speed (___ch341_dev)) < 0)
         return result;
 
     mutex_lock (&ch341_lock);
 
-    ch341_dev->out_buf[0] = CH341_CMD_UIO_STREAM;
-    ch341_dev->out_buf[1] = CH341_CMD_UIO_STM_DIR | ch341_dev->gpio_mask;
-    ch341_dev->out_buf[2] = CH341_CMD_UIO_STM_IN;
-    ch341_dev->out_buf[3] = CH341_CMD_UIO_STM_END;
+    ___ch341_dev->out_buf[0] = CH341_CMD_UIO_STREAM;
+    ___ch341_dev->out_buf[1] = CH341_CMD_UIO_STM_DIR | ___ch341_dev->gpio_mask;
+    ___ch341_dev->out_buf[2] = CH341_CMD_UIO_STM_IN;
+    ___ch341_dev->out_buf[3] = CH341_CMD_UIO_STM_END;
 
-    result = ch341_usb_transfer(ch341_dev, 4, 1);
+    result = ch341_usb_transfer(___ch341_dev, 4, 1);
 
-    ch341_dev->gpio_io_data &= ch341_dev->gpio_mask;
-    ch341_dev->gpio_io_data |= ch341_dev->in_buf[0] & ~ch341_dev->gpio_mask;
+    ___ch341_dev->gpio_io_data &= ___ch341_dev->gpio_mask;
+    ___ch341_dev->gpio_io_data |= ___ch341_dev->in_buf[0] & ~___ch341_dev->gpio_mask;
 
     mutex_unlock (&ch341_lock);
 
     return (result < 0) ? result : CH341_OK;
 } // ch341_i2c_read_inputs
 
-static int ch341_i2c_write_outputs (struct ch341_device* ch341_dev)
+static int ch341_i2c_write_outputs (struct ch341_device* ___ch341_dev)
 {
     int result;
 
-    if ((result = ch341_i2c_set_speed (ch341_dev)) < 0)
+    if ((result = ch341_i2c_set_speed (___ch341_dev)) < 0)
         return result;
 
     mutex_lock (&ch341_lock);
 
-    ch341_dev->out_buf[0] = CH341_CMD_UIO_STREAM;
-    ch341_dev->out_buf[1] = CH341_CMD_UIO_STM_DIR | ch341_dev->gpio_mask;
-    ch341_dev->out_buf[2] = CH341_CMD_UIO_STM_OUT | (ch341_dev->gpio_io_data & ch341_dev->gpio_mask);
-    ch341_dev->out_buf[3] = CH341_CMD_UIO_STM_END;
+    ___ch341_dev->out_buf[0] = CH341_CMD_UIO_STREAM;
+    ___ch341_dev->out_buf[1] = CH341_CMD_UIO_STM_DIR | ___ch341_dev->gpio_mask;
+    ___ch341_dev->out_buf[2] = CH341_CMD_UIO_STM_OUT | (___ch341_dev->gpio_io_data & ___ch341_dev->gpio_mask);
+    ___ch341_dev->out_buf[3] = CH341_CMD_UIO_STM_END;
 
-    // DEV_DBG(CH341_IF_ADDR, "%02x", ch341_dev->out_buf[2]);
+    // DEV_DBG(CH341_IF_ADDR3, "%02x", ___ch341_dev->out_buf[2]);
 
-    result = ch341_usb_transfer(ch341_dev, 4, 0);
+    result = ch341_usb_transfer(___ch341_dev, 4, 0);
 
     mutex_unlock (&ch341_lock);
 
@@ -397,7 +398,7 @@ static int ch341_i2c_write_outputs (struct ch341_device* ch341_dev)
 
 static int ch341_i2c_transfer (struct i2c_adapter *adpt, struct i2c_msg *msgs, int num)
 {
-    struct ch341_device* ch341_dev;
+    struct ch341_device* __ch341_dev;
     int result;
     int i, j, k;
 
@@ -408,14 +409,14 @@ static int ch341_i2c_transfer (struct i2c_adapter *adpt, struct i2c_msg *msgs, i
     Ck_false_Return_with (msgs, EIO);
     Ck_false_Return_with (num > 0, EIO);
 
-    ch341_dev = (struct ch341_device *)adpt->algo_data;
+    __ch341_dev = (struct ch341_device *)adpt->algo_data;
 
-    Ck_false_Return_with (ch341_dev, EIO);
+    Ck_false_Return_with (__ch341_dev, EIO);
 
     mutex_lock (&ch341_lock);
 
-    ob = ch341_dev->out_buf;
-    ib = ch341_dev->in_buf;
+    ob = __ch341_dev->out_buf;
+    ib = __ch341_dev->in_buf;
 
     // =================================== ch341_i2c_transfer
     for (i = 0; i < num; i++)
@@ -423,14 +424,14 @@ static int ch341_i2c_transfer (struct i2c_adapter *adpt, struct i2c_msg *msgs, i
         // size larger than endpoint max transfer size
         if ((msgs[i].len + (i == num-1 ? 6 : 5) > 32))
         {
-            DEV_ERR (CH341_IF_ADDR, "size of data is too large for existing USB endpoints");
+            DEV_ERR (CH341_IF_ADDR2, "size of data is too large for existing USB endpoints");
             result = -EIO;
             break;
         }
 
         if (msgs[i].flags & I2C_M_TEN)
         {
-            DEV_ERR (CH341_IF_ADDR, "10 bit i2c addresses not supported");
+            DEV_ERR (CH341_IF_ADDR2, "10 bit i2c addresses not supported");
             result = -EINVAL;
             break;
         }
@@ -461,7 +462,7 @@ static int ch341_i2c_transfer (struct i2c_adapter *adpt, struct i2c_msg *msgs, i
             ob[k++] = CH341_CMD_I2C_STM_END;
 
             // wirte address byte and read data
-            result = ch341_usb_transfer(ch341_dev, k, msgs[i].len);
+            result = ch341_usb_transfer(__ch341_dev, k, msgs[i].len);
 
             // if data were read
             if (result > 0)
@@ -496,7 +497,7 @@ static int ch341_i2c_transfer (struct i2c_adapter *adpt, struct i2c_msg *msgs, i
             // =================================== ch341_i2c_transfer
 
             // write address byte and data
-            result = ch341_usb_transfer (ch341_dev, k, 0);
+            result = ch341_usb_transfer (__ch341_dev, k, 0);
         }
 
         if (result < 0)
@@ -523,50 +524,50 @@ static const struct i2c_algorithm ch341_i2c_algorithm =
     .functionality = ch341_i2c_func,
 }; // const struct i2c_algorithm ch341_i2c_algorithm
 
-static int ch341_i2c_probe (struct ch341_device* ch341_dev)
+static int ch341_i2c_probe (struct ch341_device* ___ch341_dev)
 {
     int result;
 
-    Ck_false_Return_with (ch341_dev, -EINVAL);
+    Ck_false_Return_with (___ch341_dev, -EINVAL);
 
-    DEV_DBG (CH341_IF_ADDR, "start");
+    DEV_DBG (CH341_IF_ADDR3, "start");
 
     // setup i2c adapter description
-    ch341_dev->i2c_dev.owner = THIS_MODULE;
-    ch341_dev->i2c_dev.class = 0; // I2C_CLASS_HWMON;
-    ch341_dev->i2c_dev.algo  = &ch341_i2c_algorithm;
-    ch341_dev->i2c_dev.algo_data = ch341_dev;
-    snprintf(ch341_dev->i2c_dev.name, sizeof(ch341_dev->i2c_dev.name),
+    ___ch341_dev->i2c_dev.owner = THIS_MODULE;
+    ___ch341_dev->i2c_dev.class = 0; // I2C_CLASS_HWMON;
+    ___ch341_dev->i2c_dev.algo  = &ch341_i2c_algorithm;
+    ___ch341_dev->i2c_dev.algo_data = ___ch341_dev;
+    snprintf(___ch341_dev->i2c_dev.name, sizeof(___ch341_dev->i2c_dev.name),
              Module_nameS " at bus %03d device %03d",
-             ch341_dev->usb_dev->bus->busnum, ch341_dev->usb_dev->devnum);
+             ___ch341_dev->usb_dev->bus->busnum, ___ch341_dev->usb_dev->devnum);
 
-    ch341_dev->i2c_dev.dev.parent = &ch341_dev->usb_if->dev;
+    ___ch341_dev->i2c_dev.dev.parent = &___ch341_dev->usb_if->dev;
 
     // finally attach to i2c layer
-    if ((result = i2c_add_adapter(&ch341_dev->i2c_dev)) < 0)
+    if ((result = i2c_add_adapter(&___ch341_dev->i2c_dev)) < 0)
         return result;
 
     // ===================================== ch341_i2c_probe
-    DEV_INFO (CH341_IF_ADDR, "created i2c device /dev/i2c-%d", ch341_dev->i2c_dev.nr);
+    DEV_INFO (CH341_IF_ADDR3, "created i2c device /dev/i2c-%d", ___ch341_dev->i2c_dev.nr);
 
     mutex_init (&ch341_lock);
 
     // set ch341 i2c speed
     speed_last = CH341_I2C_FAST_SPEED+1;
-    if ((result = ch341_i2c_set_speed (ch341_dev)) < 0)
+    if ((result = ch341_i2c_set_speed (___ch341_dev)) < 0)
         return result;
 
-    DEV_DBG (CH341_IF_ADDR, "done");
+    DEV_DBG (CH341_IF_ADDR3, "done");
 
     return CH341_OK;
 } // ch341_i2c_probe
 
-static void ch341_i2c_remove (struct ch341_device* ch341_dev)
+static void ch341_i2c_remove (struct ch341_device* ___ch341_dev)
 {
-    Ck_false_Return (ch341_dev);
+    Ck_false_Return (___ch341_dev);
 
-    if (ch341_dev->i2c_dev.nr)
-        i2c_del_adapter (&ch341_dev->i2c_dev);
+    if (___ch341_dev->i2c_dev.nr)
+        i2c_del_adapter (&___ch341_dev->i2c_dev);
 
     return;
 } // ch341_i2c_remove
@@ -577,22 +578,22 @@ static void ch341_i2c_remove (struct ch341_device* ch341_dev)
 
 void ch341_irq_enable_disable (struct irq_data *data, bool enable)
 {
-    struct ch341_device *ch341_dev;
+    struct ch341_device *__ch341_dev;
     int irq;
 
-    Ck_false_Return (data && (ch341_dev = irq_data_get_irq_chip_data(data)));
+    Ck_false_Return (data && (__ch341_dev = irq_data_get_irq_chip_data(data)));
 
     // calculate local IRQ
-    irq = data->irq - ch341_dev->irq_base;
+    irq = data->irq - __ch341_dev->irq_base;
 
-    // valid IRQ is in range 0 ... ch341_dev->irq_num-1, invalid IRQ is -1
-    if (irq < 0 || irq >= ch341_dev->irq_num) return;
+    // valid IRQ is in range 0 ... __ch341_dev->irq_num-1, invalid IRQ is -1
+    if (irq < 0 || irq >= __ch341_dev->irq_num) return;
 
     // enable local IRQ
-    ch341_dev->irq_enabled[irq] = enable;
+    __ch341_dev->irq_enabled[irq] = enable;
 
-    DEV_INFO (CH341_IF_ADDR, "irq=%d enabled=%d",
-              data->irq, ch341_dev->irq_enabled[irq] ? 1 : 0);
+    DEV_INFO (CH341_IF_ADDR2, "irq=%d enabled=%d",
+              data->irq, __ch341_dev->irq_enabled[irq] ? 1 : 0);
 } // ch341_irq_enable_disable
 
 void ch341_irq_enable (struct irq_data *data)
@@ -607,111 +608,111 @@ void ch341_irq_disable (struct irq_data *data)
 
 int ch341_irq_set_type (struct irq_data *data, unsigned int type)
 {
-    struct ch341_device *ch341_dev;
+    struct ch341_device *__ch341_dev;
     int irq;
 
-    Ck_false_Return_with (data && (ch341_dev = irq_data_get_irq_chip_data(data)), -EINVAL);
+    Ck_false_Return_with (data && (__ch341_dev = irq_data_get_irq_chip_data(data)), -EINVAL);
 
     // calculate local IRQ
-    irq = data->irq - ch341_dev->irq_base;
+    irq = data->irq - __ch341_dev->irq_base;
 
-    // valid IRQ is in range 0 ... ch341_dev->irq_num-1, invalid IRQ is -1
-    if (irq < 0 || irq >= ch341_dev->irq_num) return -EINVAL;
+    // valid IRQ is in range 0 ... __ch341_dev->irq_num-1, invalid IRQ is -1
+    if (irq < 0 || irq >= __ch341_dev->irq_num) return -EINVAL;
 
-    ch341_dev->irq_types[irq] = type;
+    __ch341_dev->irq_types[irq] = type;
 
-    DEV_INFO (CH341_IF_ADDR, "irq=%d flow_type=%d", data->irq, type);
+    DEV_INFO (CH341_IF_ADDR2, "irq=%d flow_type=%d", data->irq, type);
 
     return CH341_OK;
 } // ch341_irq_set_type
 
-static int ch341_irq_check (struct ch341_device* ch341_dev, uint8_t irq,
+static int ch341_irq_check (struct ch341_device* ___ch341_dev, uint8_t irq,
                             uint8_t old, uint8_t new, bool hardware)
 {
     int type;
 
     Ck_false_Return_with (old != new, CH341_OK)
-    Ck_false_Return_with (ch341_dev, -EINVAL);
-    Ck_false_Return_with (irq < ch341_dev->irq_num, -EINVAL);
+    Ck_false_Return_with (___ch341_dev, -EINVAL);
+    Ck_false_Return_with (irq < ___ch341_dev->irq_num, -EINVAL);
 
-    // valid IRQ is in range 0 ... ch341_dev->irq_num-1, invalid IRQ is -1
-    if (irq < 0 || irq >= ch341_dev->irq_num) return -EINVAL;
+    // valid IRQ is in range 0 ... ___ch341_dev->irq_num-1, invalid IRQ is -1
+    if (irq < 0 || irq >= ___ch341_dev->irq_num) return -EINVAL;
 
     // if IRQ is disabled, just return with success
-    if (!ch341_dev->irq_enabled[irq]) return CH341_OK;
+    if (!___ch341_dev->irq_enabled[irq]) return CH341_OK;
 
-    type = ch341_dev->irq_types[irq];
+    type = ___ch341_dev->irq_types[irq];
 
     // for software IRQs dont check if IRQ is the hardware IRQ for rising edges
-    if (!hardware && irq == ch341_dev->irq_hw && new > old)
+    if (!hardware && irq == ___ch341_dev->irq_hw && new > old)
         return CH341_OK;
 
     // ====================================== ch341_irq_check
     if ((type & IRQ_TYPE_EDGE_FALLING && old > new) ||
         (type & IRQ_TYPE_EDGE_RISING  && new > old))
     {
-        // DEV_DBG (CH341_IF_ADDR, "%s irq=%d %d %s",
+        // DEV_DBG (CH341_IF_ADDR3, "%s irq=%d %d %s",
         //          hardware ? "hardware" : "software",
         //          irq, type, (old > new) ? "falling" : "rising");
 
         #if LINUX_VERSION_CODE >= KERNEL_VERSION(4,3,0)
-        handle_simple_irq (ch341_dev->irq_descs[irq]);
+        handle_simple_irq (___ch341_dev->irq_descs[irq]);
         #else
-        handle_simple_irq (ch341_dev->irq_base+irq, ch341_dev->irq_descs[irq]);
+        handle_simple_irq (___ch341_dev->irq_base+irq, ___ch341_dev->irq_descs[irq]);
         #endif
     }
 
     return CH341_OK;
 } // ch341_irq_check
 
-static int ch341_irq_probe (struct ch341_device* ch341_dev)
+static int ch341_irq_probe (struct ch341_device* ___ch341_dev)
 {
     int i;
     int result;
 
-    Ck_false_Return_with (ch341_dev, -EINVAL);
+    Ck_false_Return_with (___ch341_dev, -EINVAL);
 
-    DEV_DBG (CH341_IF_ADDR, "start");
+    DEV_DBG (CH341_IF_ADDR3, "start");
 
-    ch341_dev->irq.name         = "ch341";
-    ch341_dev->irq.irq_enable   = ch341_irq_enable;
-    ch341_dev->irq.irq_disable  = ch341_irq_disable;
-    ch341_dev->irq.irq_set_type = ch341_irq_set_type;
+    ___ch341_dev->irq.name         = "ch341";
+    ___ch341_dev->irq.irq_enable   = ch341_irq_enable;
+    ___ch341_dev->irq.irq_disable  = ch341_irq_disable;
+    ___ch341_dev->irq.irq_set_type = ch341_irq_set_type;
 
-    if (!ch341_dev->irq_num) return CH341_OK;
+    if (!___ch341_dev->irq_num) return CH341_OK;
 
-    if ((result = irq_alloc_descs(-1, 0, ch341_dev->irq_num, 0)) < 0)
+    if ((result = irq_alloc_descs(-1, 0, ___ch341_dev->irq_num, 0)) < 0)
     {
-        DEV_ERR (CH341_IF_ADDR, "failed to allocate IRQ descriptors");
+        DEV_ERR (CH341_IF_ADDR3, "failed to allocate IRQ descriptors");
         return result;
     }
     // ================================= ch341_irq_probe
 
-    ch341_dev->irq_base = result;
+    ___ch341_dev->irq_base = result;
 
-    DEV_DBG (CH341_IF_ADDR, "irq_base=%d", ch341_dev->irq_base);
+    DEV_DBG (CH341_IF_ADDR3, "irq_base=%d", ___ch341_dev->irq_base);
 
-    for (i = 0; i < ch341_dev->irq_num; i++)
+    for (i = 0; i < ___ch341_dev->irq_num; i++)
     {
-        ch341_dev->irq_descs[i]   = irq_to_desc(ch341_dev->irq_base + i);
-        ch341_dev->irq_enabled[i] = false;
+        ___ch341_dev->irq_descs[i]   = irq_to_desc(___ch341_dev->irq_base + i);
+        ___ch341_dev->irq_enabled[i] = false;
 
-        irq_set_chip          (ch341_dev->irq_base + i, &ch341_dev->irq);
-        irq_set_chip_data     (ch341_dev->irq_base + i, ch341_dev);
-        irq_clear_status_flags(ch341_dev->irq_base + i, IRQ_NOREQUEST | IRQ_NOPROBE);
+        irq_set_chip          (___ch341_dev->irq_base + i, &___ch341_dev->irq);
+        irq_set_chip_data     (___ch341_dev->irq_base + i, ___ch341_dev);
+        irq_clear_status_flags(___ch341_dev->irq_base + i, IRQ_NOREQUEST | IRQ_NOPROBE);
     }
 
-    DEV_DBG (CH341_IF_ADDR, "done");
+    DEV_DBG (CH341_IF_ADDR3, "done");
 
     return CH341_OK;
 } // ch341_irq_probe
 
-static void ch341_irq_remove (struct ch341_device* ch341_dev)
+static void ch341_irq_remove (struct ch341_device* ___ch341_dev)
 {
-    Ck_false_Return (ch341_dev);
+    Ck_false_Return (___ch341_dev);
 
-    if (ch341_dev->irq_base)
-        irq_free_descs (ch341_dev->irq_base, ch341_dev->irq_num);
+    if (___ch341_dev->irq_base)
+        irq_free_descs (___ch341_dev->irq_base, ___ch341_dev->irq_num);
 
     return;
 } // ch341_irq_remove
@@ -720,7 +721,7 @@ static void ch341_irq_remove (struct ch341_device* ch341_dev)
 
 // ----- gpio layer begin ------------------------------------------------
 
-void ch341_gpio_read_inputs (struct ch341_device* ch341_dev)
+void ch341_gpio_read_inputs (struct ch341_device* ___ch341_dev)
 {
     uint8_t old_io_data;
     uint8_t old_value;
@@ -728,47 +729,47 @@ void ch341_gpio_read_inputs (struct ch341_device* ch341_dev)
     uint8_t gpio;
     int i;
 
-    Ck_false_Return (ch341_dev);
+    Ck_false_Return (___ch341_dev);
 
-    // DEV_DBG (CH341_IF_ADDR, "start");
+    // DEV_DBG (CH341_IF_ADDR3, "start");
 
     // save old value
-    old_io_data = ch341_dev->gpio_io_data;
+    old_io_data = ___ch341_dev->gpio_io_data;
 
     // read current values
-    ch341_i2c_read_inputs (ch341_dev);
+    ch341_i2c_read_inputs (___ch341_dev);
 
     // ============================================ ch341_gpio_read_inputs
-    for (i = 0; i < ch341_dev->irq_num; i++)
+    for (i = 0; i < ___ch341_dev->irq_num; i++)
     {
         // determine local GPIO for each IRQ
-        gpio = ch341_dev->irq_gpio_map[i];
+        gpio = ___ch341_dev->irq_gpio_map[i];
 
         // determin old an new value of the bit
-        old_value = (old_io_data & ch341_dev->gpio_bits[gpio]) ? 1 : 0;
-        new_value = (ch341_dev->gpio_io_data & ch341_dev->gpio_bits[gpio]) ? 1 : 0;
+        old_value = (old_io_data & ___ch341_dev->gpio_bits[gpio]) ? 1 : 0;
+        new_value = (___ch341_dev->gpio_io_data & ___ch341_dev->gpio_bits[gpio]) ? 1 : 0;
 
         // check for interrupt
-        ch341_irq_check (ch341_dev, i, old_value, new_value, false);
+        ch341_irq_check (___ch341_dev, i, old_value, new_value, false);
     }
 
-    // DEV_DBG (CH341_IF_ADDR, "done");
+    // DEV_DBG (CH341_IF_ADDR3, "done");
 } // ch341_gpio_read_inputs
 
 // #define CH341_POLL_WITH_SLEEP
 
 static int ch341_gpio_poll_function (void* argument)
 {
-    struct ch341_device* ch341_dev = (struct ch341_device*)argument;
+    struct ch341_device* __ch341_dev = (struct ch341_device*)argument;
     unsigned int next_poll_ms = jiffies_to_msecs(jiffies);
     unsigned int jiffies_ms;
     int drift_ms = 0;
     int corr_ms  = 0;
     int sleep_ms = 0;
 
-    Ck_false_Return_with (ch341_dev, -EINVAL);
+    Ck_false_Return_with (__ch341_dev, -EINVAL);
 
-    DEV_DBG (CH341_IF_ADDR, "start");
+    DEV_DBG (CH341_IF_ADDR2, "start");
 
     while (!kthread_should_stop())
     {
@@ -780,7 +781,7 @@ static int ch341_gpio_poll_function (void* argument)
         if (poll_period == 0)
         {
             poll_period = CH341_POLL_PERIOD_MS;
-            DEV_ERR (CH341_IF_ADDR,
+            DEV_ERR (CH341_IF_ADDR2,
                      "Poll period 0 ms is invalid, set back to the default of %d ms",
                      CH341_POLL_PERIOD_MS);
         }
@@ -788,28 +789,28 @@ static int ch341_gpio_poll_function (void* argument)
         if (drift_ms < 0)
         {
             // period was to short, increase corr_ms by 1 ms
-            // DEV_DBG (CH341_IF_ADDR, "polling GPIO is %u ms too early", -drift_ms);
+            // DEV_DBG (CH341_IF_ADDR2, "polling GPIO is %u ms too early", -drift_ms);
             corr_ms = (corr_ms > 0) ? corr_ms - 1 : 0;
         }
         else if (drift_ms > 0 && drift_ms < poll_period)
         {
             // period was to long, decrease corr_ms by 1 ms
-            // DEV_DBG (CH341_IF_ADDR, "polling GPIO is %u ms too late", drift_ms);
+            // DEV_DBG (CH341_IF_ADDR2, "polling GPIO is %u ms too late", drift_ms);
             corr_ms = (corr_ms < poll_period) ? corr_ms + 1 : 0;
         }
         // ========================== ch341_gpio_poll_function
 
         next_poll_ms = jiffies_ms + poll_period;
 
-        // DEV_DBG (CH341_IF_ADDR, "read CH341 GPIOs");
-        ch341_gpio_read_inputs (ch341_dev);
+        // DEV_DBG (CH341_IF_ADDR2, "read CH341 GPIOs");
+        ch341_gpio_read_inputs (__ch341_dev);
 
         jiffies_ms = jiffies_to_msecs(jiffies);
 
         // if GPIO read took longer than poll period, do not sleep
         if (jiffies_ms > next_poll_ms)
         {
-            DEV_ERR (CH341_IF_ADDR,
+            DEV_ERR (CH341_IF_ADDR2,
                      "GPIO poll period is too short by at least %u msecs",
                      jiffies_ms - next_poll_ms);
         }
@@ -830,7 +831,7 @@ static int ch341_gpio_poll_function (void* argument)
     __set_current_state(TASK_RUNNING);
     #endif
 
-    DEV_DBG (CH341_IF_ADDR, "stop");
+    DEV_DBG (CH341_IF_ADDR2, "stop");
 
     return 0;
 } // ch341_gpio_poll_function
@@ -838,19 +839,19 @@ static int ch341_gpio_poll_function (void* argument)
 int ch341_gpio_get (struct gpio_chip *chip, unsigned offset)
 {
     #if LINUX_VERSION_CODE >= KERNEL_VERSION(4,5,0)
-    struct ch341_device* ch341_dev = (struct ch341_device*)gpiochip_get_data(chip);
+    struct ch341_device* __ch341_dev = (struct ch341_device*)gpiochip_get_data(chip);
     #else
-    struct ch341_device* ch341_dev = container_of(chip, struct ch341_device, gpio);
+    struct ch341_device* __ch341_dev = container_of(chip, struct ch341_device, gpio);
     #endif
     int value;
 
-    Ck_false_Return_with (ch341_dev, -EINVAL);
-    Ck_false_Return_with (offset < ch341_dev->gpio_num, -EINVAL);
+    Ck_false_Return_with (__ch341_dev, -EINVAL);
+    Ck_false_Return_with (offset < __ch341_dev->gpio_num, -EINVAL);
 
-    value = (ch341_dev->gpio_io_data & ch341_dev->gpio_bits[offset]) ? 1 : 0;
+    value = (__ch341_dev->gpio_io_data & __ch341_dev->gpio_bits[offset]) ? 1 : 0;
 
-    // DEV_DBG (CH341_IF_ADDR, "offset=%u value=%d io_data=%02x",
-    //          offset, value, ch341_dev->gpio_io_data);
+    // DEV_DBG (CH341_IF_ADDR2, "offset=%u value=%d io_data=%02x",
+    //          offset, value, __ch341_dev->gpio_io_data);
 
     return value;
 } // ch341_gpio_get
@@ -860,26 +861,26 @@ int ch341_gpio_get_multiple (struct gpio_chip *chip,
                              unsigned long *mask, unsigned long *bits)
 {
     #if LINUX_VERSION_CODE >= KERNEL_VERSION(4,5,0)
-    struct ch341_device* ch341_dev = (struct ch341_device*)gpiochip_get_data(chip);
+    struct ch341_device* __ch341_dev = (struct ch341_device*)gpiochip_get_data(chip);
     #else
-    struct ch341_device* ch341_dev = container_of(chip, struct ch341_device, gpio);
+    struct ch341_device* __ch341_dev = container_of(chip, struct ch341_device, gpio);
     #endif
     int i;
 
-    Ck_false_Return_with (ch341_dev, -EINVAL);
+    Ck_false_Return_with (__ch341_dev, -EINVAL);
     Ck_false_Return_with (mask, -EINVAL);
     Ck_false_Return_with (bits, -EINVAL);
 
     // ================================= ch341_gpio_get_multiple
-    for (i = 0; i < ch341_dev->gpio_num; i++)
+    for (i = 0; i < __ch341_dev->gpio_num; i++)
         if (*mask & (1 << i))
         {
             *bits &= ~(1 << i);
-            *bits |= (((ch341_dev->gpio_io_data & ch341_dev->gpio_bits[i]) ? 1 : 0) << i);
+            *bits |= (((__ch341_dev->gpio_io_data & __ch341_dev->gpio_bits[i]) ? 1 : 0) << i);
         }
 
-    // DEV_DBG (CH341_IF_ADDR, "mask=%08lx bit=%08lx io_data=%02x",
-    //          *mask, *bits, ch341_dev->gpio_io_data);
+    // DEV_DBG (CH341_IF_ADDR2, "mask=%08lx bit=%08lx io_data=%02x",
+    //          *mask, *bits, __ch341_dev->gpio_io_data);
 
     return CH341_OK;
 } // ch341_gpio_get_multiple
@@ -887,53 +888,53 @@ int ch341_gpio_get_multiple (struct gpio_chip *chip,
 void ch341_gpio_set (struct gpio_chip *chip, unsigned offset, int value)
 {
     #if LINUX_VERSION_CODE >= KERNEL_VERSION(4,5,0)
-    struct ch341_device* ch341_dev = (struct ch341_device*)gpiochip_get_data(chip);
+    struct ch341_device* __ch341_dev = (struct ch341_device*)gpiochip_get_data(chip);
     #else
-    struct ch341_device* ch341_dev = container_of(chip, struct ch341_device, gpio);
+    struct ch341_device* __ch341_dev = container_of(chip, struct ch341_device, gpio);
     #endif
 
-    Ck_false_Return (ch341_dev);
-    Ck_false_Return (offset < ch341_dev->gpio_num);
+    Ck_false_Return (__ch341_dev);
+    Ck_false_Return (offset < __ch341_dev->gpio_num);
 
     if (value)
-        ch341_dev->gpio_io_data |= ch341_dev->gpio_bits[offset];
+        __ch341_dev->gpio_io_data |= __ch341_dev->gpio_bits[offset];
     else
-        ch341_dev->gpio_io_data &= ~ch341_dev->gpio_bits[offset];
+        __ch341_dev->gpio_io_data &= ~__ch341_dev->gpio_bits[offset];
 
-    // DEV_DBG (CH341_IF_ADDR, "offset=%u value=%d io_data=%02x",
-    //          offset, value, ch341_dev->gpio_io_data);
+    // DEV_DBG (CH341_IF_ADDR2, "offset=%u value=%d io_data=%02x",
+    //          offset, value, __ch341_dev->gpio_io_data);
 
-    ch341_i2c_write_outputs (ch341_dev);
+    ch341_i2c_write_outputs (__ch341_dev);
 } // ch341_gpio_set
 
 void ch341_gpio_set_multiple (struct gpio_chip *chip,
                               unsigned long *mask, unsigned long *bits)
 {
     #if LINUX_VERSION_CODE >= KERNEL_VERSION(4,5,0)
-    struct ch341_device* ch341_dev = (struct ch341_device*)gpiochip_get_data(chip);
+    struct ch341_device* __ch341_dev = (struct ch341_device*)gpiochip_get_data(chip);
     #else
-    struct ch341_device* ch341_dev = container_of(chip, struct ch341_device, gpio);
+    struct ch341_device* __ch341_dev = container_of(chip, struct ch341_device, gpio);
     #endif
     int i;
 
-    Ck_false_Return (ch341_dev);
+    Ck_false_Return (__ch341_dev);
     Ck_false_Return (mask);
     Ck_false_Return (bits);
 
     // =========================================== ch341_gpio_set_multiple
-    for (i = 0; i < ch341_dev->gpio_num; i++)
-        if (*mask & (1 << i) && ch341_dev->gpio_pins[i]->mode == CH341_PIN_MODE_OUT)
+    for (i = 0; i < __ch341_dev->gpio_num; i++)
+        if (*mask & (1 << i) && __ch341_dev->gpio_pins[i]->mode == CH341_PIN_MODE_OUT)
         {
             if (*bits & (1 << i))
-                ch341_dev->gpio_io_data |= ch341_dev->gpio_bits[i];
+                __ch341_dev->gpio_io_data |= __ch341_dev->gpio_bits[i];
             else
-                ch341_dev->gpio_io_data &= ~ch341_dev->gpio_bits[i];
+                __ch341_dev->gpio_io_data &= ~__ch341_dev->gpio_bits[i];
         }
 
-    // DEV_DBG (CH341_IF_ADDR, "mask=%08lx bit=%08lx io_data=%02x",
-    //          *mask, *bits, ch341_dev->gpio_io_data);
+    // DEV_DBG (CH341_IF_ADDR2, "mask=%08lx bit=%08lx io_data=%02x",
+    //          *mask, *bits, __ch341_dev->gpio_io_data);
 
-    ch341_i2c_write_outputs (ch341_dev);
+    ch341_i2c_write_outputs (__ch341_dev);
 
     return;
 } // ch341_gpio_set_multiple
@@ -942,18 +943,18 @@ void ch341_gpio_set_multiple (struct gpio_chip *chip,
 int ch341_gpio_get_direction (struct gpio_chip *chip, unsigned offset)
 {
     #if LINUX_VERSION_CODE >= KERNEL_VERSION(4,5,0)
-    struct ch341_device* ch341_dev = (struct ch341_device*)gpiochip_get_data(chip);
+    struct ch341_device* __ch341_dev = (struct ch341_device*)gpiochip_get_data(chip);
     #else
-    struct ch341_device* ch341_dev = container_of(chip, struct ch341_device, gpio);
+    struct ch341_device* __ch341_dev = container_of(chip, struct ch341_device, gpio);
     #endif
     int mode;
 
-    Ck_false_Return_with (ch341_dev, -EINVAL);
-    Ck_false_Return_with (offset < ch341_dev->gpio_num, -EINVAL);
+    Ck_false_Return_with (__ch341_dev, -EINVAL);
+    Ck_false_Return_with (offset < __ch341_dev->gpio_num, -EINVAL);
 
-    mode = (ch341_dev->gpio_pins[offset]->mode == CH341_PIN_MODE_IN) ? 1 : 0;
+    mode = (__ch341_dev->gpio_pins[offset]->mode == CH341_PIN_MODE_IN) ? 1 : 0;
 
-    DEV_DBG (CH341_IF_ADDR, "gpio=%d dir=%d", offset, mode);
+    DEV_DBG (CH341_IF_ADDR2, "gpio=%d dir=%d", offset, mode);
 
     return mode;
 } // ch341_gpio_get_direction
@@ -961,31 +962,31 @@ int ch341_gpio_get_direction (struct gpio_chip *chip, unsigned offset)
 int ch341_gpio_set_direction (struct gpio_chip *chip, unsigned offset, bool input)
 {
     #if LINUX_VERSION_CODE >= KERNEL_VERSION(4,5,0)
-    struct ch341_device* ch341_dev = (struct ch341_device*)gpiochip_get_data(chip);
+    struct ch341_device* __ch341_dev = (struct ch341_device*)gpiochip_get_data(chip);
     #else
-    struct ch341_device* ch341_dev = container_of(chip, struct ch341_device, gpio);
+    struct ch341_device* __ch341_dev = container_of(chip, struct ch341_device, gpio);
     #endif
 
-    Ck_false_Return_with (ch341_dev, -EINVAL);
-    Ck_false_Return_with (offset < ch341_dev->gpio_num, -EINVAL);
+    Ck_false_Return_with (__ch341_dev, -EINVAL);
+    Ck_false_Return_with (offset < __ch341_dev->gpio_num, -EINVAL);
 
     // pin configured correctly if it is pin 21
-    if (ch341_dev->gpio_pins[offset]->pin == 21 && !input)
+    if (__ch341_dev->gpio_pins[offset]->pin == 21 && !input)
     {
-        DEV_ERR(CH341_IF_ADDR, "pin 21: must be an input");
+        DEV_ERR(CH341_IF_ADDR2, "pin 21: must be an input");
         return -EINVAL;
     }
     // =========================================== ch341_gpio_set_direction
 
-    DEV_INFO (CH341_IF_ADDR, "gpio=%d direction=%s", offset, input ? "input" :  "output");
+    DEV_INFO (CH341_IF_ADDR2, "gpio=%d direction=%s", offset, input ? "input" :  "output");
 
-    ch341_dev->gpio_pins[offset]->mode = input ? CH341_PIN_MODE_IN : CH341_PIN_MODE_OUT;
+    __ch341_dev->gpio_pins[offset]->mode = input ? CH341_PIN_MODE_IN : CH341_PIN_MODE_OUT;
 
     // mask in / mask out the according bit in direction mask
-    if (ch341_dev->gpio_pins[offset]->mode == CH341_PIN_MODE_OUT)
-        ch341_dev->gpio_mask |= ch341_dev->gpio_bits[offset];
+    if (__ch341_dev->gpio_pins[offset]->mode == CH341_PIN_MODE_OUT)
+        __ch341_dev->gpio_mask |= __ch341_dev->gpio_bits[offset];
     else
-        ch341_dev->gpio_mask &= ~ch341_dev->gpio_bits[offset];
+        __ch341_dev->gpio_mask &= ~__ch341_dev->gpio_bits[offset];
 
     return CH341_OK;
 } // ch341_gpio_set_direction
@@ -1009,41 +1010,41 @@ int ch341_gpio_direction_output (struct gpio_chip *chip, unsigned offset, int va
 int ch341_gpio_to_irq (struct gpio_chip *chip, unsigned offset)
 {
     #if LINUX_VERSION_CODE >= KERNEL_VERSION(4,5,0)
-    struct ch341_device* ch341_dev = (struct ch341_device*)gpiochip_get_data(chip);
+    struct ch341_device* __ch341_dev = (struct ch341_device*)gpiochip_get_data(chip);
     #else
-    struct ch341_device* ch341_dev = container_of(chip, struct ch341_device, gpio);
+    struct ch341_device* __ch341_dev = container_of(chip, struct ch341_device, gpio);
     #endif
     int irq;
 
-    Ck_false_Return_with (ch341_dev, -EINVAL);
-    Ck_false_Return_with (offset < ch341_dev->gpio_num, -EINVAL);
+    Ck_false_Return_with (__ch341_dev, -EINVAL);
+    Ck_false_Return_with (offset < __ch341_dev->gpio_num, -EINVAL);
 
-    // valid IRQ is in range 0 ... ch341_dev->irq_num, invalid IRQ is -1
-    irq = ch341_dev->gpio_irq_map[offset];
-    irq = (irq >= 0 ? ch341_dev->irq_base + irq : 0);
+    // valid IRQ is in range 0 ... __ch341_dev->irq_num, invalid IRQ is -1
+    irq = __ch341_dev->gpio_irq_map[offset];
+    irq = (irq >= 0 ? __ch341_dev->irq_base + irq : 0);
 
-    DEV_DBG (CH341_IF_ADDR, "gpio=%d irq=%d", offset, irq);
+    DEV_DBG (CH341_IF_ADDR2, "gpio=%d irq=%d", offset, irq);
 
     return irq;
 } // ch341_gpio_direction_output
 
 
-static int ch341_gpio_probe (struct ch341_device* ch341_dev)
+static int ch341_gpio_probe (struct ch341_device* ___ch341_dev)
 {
-    struct gpio_chip *gpio = &ch341_dev->gpio;
+    struct gpio_chip *gpio = &___ch341_dev->gpio;
     int result;
     int i, j = 0;
 
-    Ck_false_Return_with (ch341_dev, -EINVAL);
+    Ck_false_Return_with (___ch341_dev, -EINVAL);
 
-    DEV_DBG (CH341_IF_ADDR, "start");
+    DEV_DBG (CH341_IF_ADDR3, "start");
 
     gpio->label     = "ch341";
 
     #if LINUX_VERSION_CODE >= KERNEL_VERSION(4,5,0)
-    gpio->parent = &ch341_dev->usb_dev->dev;
+    gpio->parent = &___ch341_dev->usb_dev->dev;
     #else
-    gpio->dev    = &ch341_dev->usb_dev->dev;
+    gpio->dev    = &___ch341_dev->usb_dev->dev;
     #endif
 
     // ==================================== ch341_gpio_probe
@@ -1052,10 +1053,10 @@ static int ch341_gpio_probe (struct ch341_device* ch341_dev)
     gpio->free   = NULL;
 
     gpio->base   = -1;   // request dynamic ID allocation
-    gpio->ngpio  = ch341_dev->gpio_num;
+    gpio->ngpio  = ___ch341_dev->gpio_num;
 
     gpio->can_sleep = 1;
-    gpio->names     = (void*)ch341_dev->gpio_names;
+    gpio->names     = (void*)___ch341_dev->gpio_names;
 
     #if LINUX_VERSION_CODE >= KERNEL_VERSION(3,9,0)
     gpio->get_direction     = ch341_gpio_get_direction;
@@ -1075,18 +1076,18 @@ static int ch341_gpio_probe (struct ch341_device* ch341_dev)
     gpio->to_irq            = ch341_gpio_to_irq;
 
     #if LINUX_VERSION_CODE >= KERNEL_VERSION(4,5,0)
-    if ((result = gpiochip_add_data (gpio, ch341_dev)))
+    if ((result = gpiochip_add_data (gpio, ___ch341_dev)))
     #else
     if ((result = gpiochip_add (gpio)))
     #endif
     {
-        DEV_ERR (CH341_IF_ADDR, "failed to register GPIOs: %d", result);
+        DEV_ERR (CH341_IF_ADDR3, "failed to register GPIOs: %d", result);
         // in case of error, reset gpio->base to avoid crashes during free
         gpio->base   = -1;
         return result;
     }
 
-    DEV_DBG (CH341_IF_ADDR, "registered GPIOs from %d to %d",
+    DEV_DBG (CH341_IF_ADDR3, "registered GPIOs from %d to %d",
              gpio->base, gpio->base + gpio->ngpio - 1);
 
     // ==================================== ch341_gpio_probe
@@ -1096,48 +1097,48 @@ static int ch341_gpio_probe (struct ch341_device* ch341_dev)
         if ((result = gpio_request(gpio->base + j, ch341_board_config[i].name)) ||
             (result = gpio_export (gpio->base + j, ch341_board_config[i].pin != 21 ? true : false)))
         {
-            DEV_ERR (CH341_IF_ADDR, "failed to export GPIO %s: %d",
+            DEV_ERR (CH341_IF_ADDR3, "failed to export GPIO %s: %d",
                      ch341_board_config[i].name, result);
             // reduce number of GPIOs to avoid crashes during free in case of error
-            ch341_dev->gpio_num = j ? j-1 : 0;
+            ___ch341_dev->gpio_num = j ? j-1 : 0;
             return result;
         }
         j++;
     }
     // ==================================== ch341_gpio_probe
 
-    ch341_dev->gpio_thread = kthread_run (&ch341_gpio_poll_function, ch341_dev, Module_nameS "-poll");
+    ___ch341_dev->gpio_thread = kthread_run (&ch341_gpio_poll_function, ___ch341_dev, Module_nameS "-poll");
 
-    DEV_DBG (CH341_IF_ADDR, "done");
+    DEV_DBG (CH341_IF_ADDR3, "done");
 
     return 0;
 } // ch341_gpio_probe
 
-static void ch341_gpio_remove (struct ch341_device* ch341_dev)
+static void ch341_gpio_remove (struct ch341_device* ___ch341_dev)
 {
     int i;
     #if LINUX_VERSION_CODE < KERNEL_VERSION(3,17,0)
     int result;
     #endif
 
-    Ck_false_Return (ch341_dev);
+    Ck_false_Return (___ch341_dev);
 
-    if (ch341_dev->gpio_thread)
+    if (___ch341_dev->gpio_thread)
     {
-        kthread_stop(ch341_dev->gpio_thread);
-        wake_up_process (ch341_dev->gpio_thread);
+        kthread_stop(___ch341_dev->gpio_thread);
+        wake_up_process (___ch341_dev->gpio_thread);
     }
 
     // =================================== ch341_gpio_remove
-    if (ch341_dev->gpio.base > 0)
+    if (___ch341_dev->gpio.base > 0)
     {
-        for (i = 0; i < ch341_dev->gpio_num; ++i)
-           gpio_free(ch341_dev->gpio.base + i);
+        for (i = 0; i < ___ch341_dev->gpio_num; ++i)
+           gpio_free(___ch341_dev->gpio.base + i);
 
         #if LINUX_VERSION_CODE >= KERNEL_VERSION(3,17,0)
-        gpiochip_remove(&ch341_dev->gpio);
+        gpiochip_remove(&___ch341_dev->gpio);
         #else
-        result = gpiochip_remove(&ch341_dev->gpio);
+        result = gpiochip_remove(&___ch341_dev->gpio);
         #endif
     }
 
@@ -1155,18 +1156,18 @@ static const struct usb_device_id ch341_usb_table[] = {
 
 MODULE_DEVICE_TABLE(usb, ch341_usb_table);
 
-static int ch341_usb_transfer(struct ch341_device *ch341_dev, int out_len, int in_len)
+static int ch341_usb_transfer(struct ch341_device *___ch341_dev, int out_len, int in_len)
 {
     int retval;
     int actual;
 
-    // DEV_DBG (CH341_IF_ADDR, "bulk_out %d bytes, bulk_in %d bytes",
+    // DEV_DBG (CH341_IF_ADDR3, "bulk_out %d bytes, bulk_in %d bytes",
     //          out_len, (in_len == 0) ? 0 : CH341_USB_MAX_BULK_SIZE);
 
-    retval = usb_bulk_msg(ch341_dev->usb_dev,
-                          usb_sndbulkpipe(ch341_dev->usb_dev,
-                                          usb_endpoint_num(ch341_dev->ep_out)),
-                          ch341_dev->out_buf, out_len,
+    retval = usb_bulk_msg(___ch341_dev->usb_dev,
+                          usb_sndbulkpipe(___ch341_dev->usb_dev,
+                                          usb_endpoint_num(___ch341_dev->ep_out)),
+                          ___ch341_dev->out_buf, out_len,
                           &actual, 2000);
     if (retval < 0)
         return retval;
@@ -1175,11 +1176,11 @@ static int ch341_usb_transfer(struct ch341_device *ch341_dev, int out_len, int i
     if (in_len == 0)
         return actual;
 
-    memset(ch341_dev->in_buf, 0, sizeof(ch341_dev->in_buf));
-    retval = usb_bulk_msg(ch341_dev->usb_dev,
-                          usb_rcvbulkpipe(ch341_dev->usb_dev,
-                                          usb_endpoint_num(ch341_dev->ep_in)),
-                          ch341_dev->in_buf, CH341_USB_MAX_BULK_SIZE,
+    memset(___ch341_dev->in_buf, 0, sizeof(___ch341_dev->in_buf));
+    retval = usb_bulk_msg(___ch341_dev->usb_dev,
+                          usb_rcvbulkpipe(___ch341_dev->usb_dev,
+                                          usb_endpoint_num(___ch341_dev->ep_in)),
+                          ___ch341_dev->in_buf, CH341_USB_MAX_BULK_SIZE,
                           &actual, 2000);
 
     if (retval < 0)
@@ -1190,42 +1191,42 @@ static int ch341_usb_transfer(struct ch341_device *ch341_dev, int out_len, int i
 
 static void ch341_usb_complete_intr_urb (struct urb *urb)
 {
-    struct ch341_device *ch341_dev;
+    struct ch341_device *__ch341_dev;
 
     Ck_false_Return (urb);
-    Ck_false_Return (ch341_dev = urb->context);
+    Ck_false_Return (__ch341_dev = urb->context);
 
     if (!urb->status)
     {
         // hardware IRQs are only generated for one IRQ and rising edges 0 -> 1
-        DEV_DBG (CH341_IF_ADDR, "%d", urb->status);
+        DEV_DBG (CH341_IF_ADDR2, "%d", urb->status);
 
         // because of asynchronous GPIO read, the GPIO value has to be set to 1
-        ch341_dev->gpio_io_data |= ch341_dev->gpio_bits[ch341_dev->irq_gpio_map[ch341_dev->irq_hw]];
+        __ch341_dev->gpio_io_data |= __ch341_dev->gpio_bits[__ch341_dev->irq_gpio_map[__ch341_dev->irq_hw]];
 
         // IRQ has to be triggered
-        ch341_irq_check (ch341_dev, ch341_dev->irq_hw, 0, 1, true);
+        ch341_irq_check (__ch341_dev, __ch341_dev->irq_hw, 0, 1, true);
 
         // submit next request
-        usb_submit_urb(ch341_dev->intr_urb, GFP_ATOMIC);
+        usb_submit_urb(__ch341_dev->intr_urb, GFP_ATOMIC);
     }
 } // ch341_usb_complete_intr_urb
 
-static void ch341_usb_free_device (struct ch341_device* ch341_dev)
+static void ch341_usb_free_device (struct ch341_device* ___ch341_dev)
 {
-    Ck_false_Return (ch341_dev)
+    Ck_false_Return (___ch341_dev)
 
-    ch341_gpio_remove (ch341_dev);
-    ch341_irq_remove  (ch341_dev);
-    ch341_i2c_remove  (ch341_dev);
-    ch341_cfg_remove  (ch341_dev);
+    ch341_gpio_remove (___ch341_dev);
+    ch341_irq_remove  (___ch341_dev);
+    ch341_i2c_remove  (___ch341_dev);
+    ch341_cfg_remove  (___ch341_dev);
 
-    if (ch341_dev->intr_urb) usb_free_urb (ch341_dev->intr_urb);
+    if (___ch341_dev->intr_urb) usb_free_urb (___ch341_dev->intr_urb);
 
-    usb_set_intfdata (ch341_dev->usb_if, NULL);
-    usb_put_dev (ch341_dev->usb_dev);
+    usb_set_intfdata (___ch341_dev->usb_if, NULL);
+    usb_put_dev (___ch341_dev->usb_dev);
 
-    kfree (ch341_dev);
+    kfree (___ch341_dev);
 } // ch341_usb_free_device
 
 static int ch341_usb_probe (struct usb_interface* usb_if,
@@ -1234,79 +1235,79 @@ static int ch341_usb_probe (struct usb_interface* usb_if,
     struct usb_device* usb_dev = usb_get_dev(interface_to_usbdev(usb_if));
     struct usb_endpoint_descriptor *epd;
     struct usb_host_interface *settings;
-    struct ch341_device* ch341_dev;
+    struct ch341_device* __ch341_dev;
     int i;
     int error;
 
     DEV_DBG (&usb_if->dev, "connect device");
 
     // create and initialize a new device data structure
-    if (!(ch341_dev = kzalloc(sizeof(struct ch341_device), GFP_KERNEL)))
+    if (!(__ch341_dev = kzalloc(sizeof(struct ch341_device), GFP_KERNEL)))
     {
         DEV_ERR (&usb_if->dev, "could not allocate device memor");
-        usb_put_dev (ch341_dev->usb_dev);
+        usb_put_dev (__ch341_dev->usb_dev);
         return -ENOMEM;
     }
     // =========================== ch341_usb_probe
 
     // save USB device data
-    ch341_dev->usb_dev = usb_dev;
-    ch341_dev->usb_if  = usb_if;
+    __ch341_dev->usb_dev = usb_dev;
+    __ch341_dev->usb_if  = usb_if;
 
     // find endpoints
     settings = usb_if->cur_altsetting;
-    DEV_DBG (CH341_IF_ADDR, "bNumEndpoints=%d", settings->desc.bNumEndpoints);
+    DEV_DBG (CH341_IF_ADDR2, "bNumEndpoints=%d", settings->desc.bNumEndpoints);
 
     for (i = 0; i < settings->desc.bNumEndpoints; i++)
     {
         epd = &settings->endpoint[i].desc;
 
-        DEV_DBG (CH341_IF_ADDR, "  endpoint=%d type=%d dir=%d addr=%0x", i,
+        DEV_DBG (CH341_IF_ADDR2, "  endpoint=%d type=%d dir=%d addr=%0x", i,
                  usb_endpoint_type(epd), usb_endpoint_dir_in(epd),
                  usb_endpoint_num(epd));
 
-        if (usb_endpoint_is_bulk_in (epd)) ch341_dev->ep_in   = epd; else
-        if (usb_endpoint_is_bulk_out(epd)) ch341_dev->ep_out  = epd; else
-        if (usb_endpoint_xfer_int   (epd)) ch341_dev->ep_intr = epd;
+        if (usb_endpoint_is_bulk_in (epd)) __ch341_dev->ep_in   = epd; else
+        if (usb_endpoint_is_bulk_out(epd)) __ch341_dev->ep_out  = epd; else
+        if (usb_endpoint_xfer_int   (epd)) __ch341_dev->ep_intr = epd;
     }
     // =========================== ch341_usb_probe
     // create URBs for handling interrupts
-    if (!(ch341_dev->intr_urb = usb_alloc_urb(0, GFP_KERNEL)))
+    if (!(__ch341_dev->intr_urb = usb_alloc_urb(0, GFP_KERNEL)))
     {
         DEV_ERR (&usb_if->dev, "failed to alloc URB");
-        ch341_usb_free_device (ch341_dev);
+        ch341_usb_free_device (__ch341_dev);
         return -ENOMEM;
     }
 
-    usb_fill_int_urb (ch341_dev->intr_urb, ch341_dev->usb_dev,
-                      usb_rcvintpipe(ch341_dev->usb_dev,
-                                     usb_endpoint_num(ch341_dev->ep_intr)),
-                      ch341_dev->intr_buf, CH341_USB_MAX_INTR_SIZE,
-                      ch341_usb_complete_intr_urb, ch341_dev,
-                      ch341_dev->ep_intr->bInterval);
+    usb_fill_int_urb (__ch341_dev->intr_urb, __ch341_dev->usb_dev,
+                      usb_rcvintpipe(__ch341_dev->usb_dev,
+                                     usb_endpoint_num(__ch341_dev->ep_intr)),
+                      __ch341_dev->intr_buf, CH341_USB_MAX_INTR_SIZE,
+                      ch341_usb_complete_intr_urb, __ch341_dev,
+                      __ch341_dev->ep_intr->bInterval);
     // =========================== ch341_usb_probe
 
     // save the pointer to the new ch341_device in USB interface device data
-    usb_set_intfdata(usb_if, ch341_dev);
+    usb_set_intfdata(usb_if, __ch341_dev);
 
-    if ((error = ch341_cfg_probe (ch341_dev)) ||  // initialize board configuration
-        (error = ch341_i2c_probe (ch341_dev)) ||  // initialize I2C adapter
-        (error = ch341_irq_probe (ch341_dev)) ||  // initialize IRQs
-        (error = ch341_gpio_probe(ch341_dev)))    // initialize GPIOs
+    if ((error = ch341_cfg_probe (__ch341_dev)) ||  // initialize board configuration
+        (error = ch341_i2c_probe (__ch341_dev)) ||  // initialize I2C adapter
+        (error = ch341_irq_probe (__ch341_dev)) ||  // initialize IRQs
+        (error = ch341_gpio_probe(__ch341_dev)))    // initialize GPIOs
     {
-        ch341_usb_free_device (ch341_dev);
+        ch341_usb_free_device (__ch341_dev);
         return error;
     }
     // =========================== ch341_usb_probe
 
-    usb_submit_urb (ch341_dev->intr_urb, GFP_ATOMIC);
+    usb_submit_urb (__ch341_dev->intr_urb, GFP_ATOMIC);
 
-    DEV_INFO (CH341_IF_ADDR, "connected");
-    DEV_INFO (CH341_IF_ADDR, Module_para_desc 
+    DEV_INFO (CH341_IF_ADDR2, "connected");
+    DEV_INFO (CH341_IF_ADDR2, Module_para_desc 
             "\n /sys/class/i2c-dev/i2c-%d/name" 
             " /sys/module/" Module_nameS "/parameters/speed : %s\n"
-            , ch341_dev->i2c_dev.nr
-            , ch341_dev->i2c_dev.name
+            , __ch341_dev->i2c_dev.nr
+            , __ch341_dev->i2c_dev.name
             );
 
     return CH341_OK;
@@ -1314,11 +1315,11 @@ static int ch341_usb_probe (struct usb_interface* usb_if,
 
 static void ch341_usb_disconnect(struct usb_interface *usb_if)
 {
-    struct ch341_device* ch341_dev = usb_get_intfdata(usb_if);
+    struct ch341_device* __ch341_dev = usb_get_intfdata(usb_if);
 
-    DEV_INFO (CH341_IF_ADDR, "disconnected");
+    DEV_INFO (CH341_IF_ADDR2, "disconnected");
 
-    ch341_usb_free_device (ch341_dev);
+    ch341_usb_free_device (__ch341_dev);
 } // ch341_usb_disconnect
 
 static struct usb_driver ch341_usb_driver = {
