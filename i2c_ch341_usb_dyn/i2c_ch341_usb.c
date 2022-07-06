@@ -73,7 +73,8 @@
 #define Module_name i2c_ch341_usb
 #define Module_nameS xstr( Module_name )
 
-#define CH341_POLL_PERIOD_MS        10    // see above
+//#define CH341_POLL_PERIOD_MS        10    // see above
+#define CH341_POLL_PERIOD_MS        100    // see above
 
 #define CH341_GPIO_NUM_PINS         8     // Number of GPIO pins, DO NOT CHANGE
 
