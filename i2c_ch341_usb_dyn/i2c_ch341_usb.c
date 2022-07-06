@@ -28,8 +28,8 @@
 #define PRINTK(fmt,...)
 #endif
 
-#define CH341_IF_ADDR3 (&(___ch341_dev->usb_if->dev))
-#define CH341_IF_ADDR2 (&(__ch341_dev->usb_if->dev))
+#define CH341_IF_ADDR3 (&(___ch341_dev->stUsb_if->dev))
+#define CH341_IF_ADDR2 (&(__ch341_dev->stUsb_if->dev))
 #define DEV_ERR(d,f,...)  dev_err (d,"%s:%d: " f "\n", __FUNCTION__, __LINE__, ##__VA_ARGS__)
 #define DEV_DBG(d,f,...)  dev_dbg (d,"%s:%d: " f "\n", __FUNCTION__, __LINE__, ##__VA_ARGS__)
 #define DEV_INFO(d,f,...) dev_info(d,"%s:%d: " f "\n", __FUNCTION__, __LINE__, ##__VA_ARGS__)
@@ -161,30 +161,30 @@ struct STch341_pin_cfg ch341_board_config[CH341_GPIO_NUM_PINS] =
 struct STch341_dev
 {
     // USB device description
-    struct usb_device*    usb_dev;  // usb device
-    struct usb_interface* usb_if;   // usb interface
+    struct usb_device*    stUsb_dev;  // usb device
+    struct usb_interface* stUsb_if;   // usb interface
 
-    struct usb_endpoint_descriptor *ep_in;     // usb endpoint bulk in
-    struct usb_endpoint_descriptor *ep_out;    // usb endpoint bulk out
-    struct usb_endpoint_descriptor *ep_intr;   // usb endpoint interrupt in
+    struct usb_endpoint_descriptor *stUep_in;     // usb endpoint bulk in
+    struct usb_endpoint_descriptor *stUep_out;    // usb endpoint bulk out
+    struct usb_endpoint_descriptor *stUep_intr;   // usb endpoint interrupt in
 
     uint8_t in_buf  [CH341_USB_MAX_BULK_SIZE]; // usb input buffer
     uint8_t out_buf [CH341_USB_MAX_BULK_SIZE]; // usb outpu buffer
     uint8_t intr_buf[CH341_USB_MAX_INTR_SIZE]; // usb interrupt buffer
 
-    struct urb* intr_urb;
+    struct urb* stIntr_urb;
 
     // I2C device description
     struct i2c_adapter stI2C_dev;   // i2c related things
 
     // ------------------------------ struct STch341_dev
     // GPIO device description
-    struct gpio_chip         gpio;                              // chip descriptor for GPIOs
+    struct gpio_chip         stGpio_chip;                              // chip descriptor for GPIOs
     uint8_t                  gpio_num;                          // number of pins used as GPIOs
     uint8_t                  gpio_mask;                         // configuratoin mask defines IN/OUT pins
     uint8_t                  gpio_io_data;                      // current value of CH341 I/O register
     struct task_struct *     gpio_thread;                       // GPIO poll thread
-    struct STch341_pin_cfg* gpio_pins   [CH341_GPIO_NUM_PINS]; // pin configurations (gpio_num elements)
+    struct STch341_pin_cfg*  gpio_pins   [CH341_GPIO_NUM_PINS]; // pin configurations (gpio_num elements)
     uint8_t                  gpio_bits   [CH341_GPIO_NUM_PINS]; // bit of I/O data byte (gpio_num elements)
     uint8_t                  gpio_values [CH341_GPIO_NUM_PINS]; // current values (gpio_num elements)
     char*                    gpio_names  [CH341_GPIO_NUM_PINS]; // pin names  (gpio_num elements)
@@ -540,9 +540,9 @@ static int ch341_i2c_probe (struct STch341_dev* ___ch341_dev)
     ___ch341_dev->stI2C_dev.algo_data = ___ch341_dev;
     snprintf(___ch341_dev->stI2C_dev.name, sizeof(___ch341_dev->stI2C_dev.name),
             Module_nameS " at bus %03d device %03d",
-            ___ch341_dev->usb_dev->bus->busnum, ___ch341_dev->usb_dev->devnum);
+            ___ch341_dev->stUsb_dev->bus->busnum, ___ch341_dev->stUsb_dev->devnum);
 
-    ___ch341_dev->stI2C_dev.dev.parent = &___ch341_dev->usb_if->dev;
+    ___ch341_dev->stI2C_dev.dev.parent = &___ch341_dev->stUsb_if->dev;
 
     // finally attach to i2c layer
     if ((result = i2c_add_adapter(&___ch341_dev->stI2C_dev)) < 0)
@@ -727,7 +727,7 @@ void ch341_gpio_read_inputs (struct STch341_dev* ___ch341_dev)
     uint8_t old_io_data;
     uint8_t old_value;
     uint8_t new_value;
-    uint8_t gpio;
+    uint8_t __gpio;
     int i;
 
     Ck_false_Return (___ch341_dev);
@@ -744,11 +744,11 @@ void ch341_gpio_read_inputs (struct STch341_dev* ___ch341_dev)
     for (i = 0; i < ___ch341_dev->irq_num; i++)
     {
         // determine local GPIO for each IRQ
-        gpio = ___ch341_dev->irq_gpio_map[i];
+        __gpio = ___ch341_dev->irq_gpio_map[i];
 
         // determin old an new value of the bit
-        old_value = (old_io_data & ___ch341_dev->gpio_bits[gpio]) ? 1 : 0;
-        new_value = (___ch341_dev->gpio_io_data & ___ch341_dev->gpio_bits[gpio]) ? 1 : 0;
+        old_value = (old_io_data & ___ch341_dev->gpio_bits[__gpio]) ? 1 : 0;
+        new_value = (___ch341_dev->gpio_io_data & ___ch341_dev->gpio_bits[__gpio]) ? 1 : 0;
 
         // check for interrupt
         ch341_irq_check (___ch341_dev, i, old_value, new_value, false);
@@ -842,7 +842,7 @@ int ch341_gpio_get (struct gpio_chip *chip, unsigned offset)
 #if LINUX_VERSION_CODE >= KERNEL_VERSION(4,5,0)
     struct STch341_dev* __ch341_dev = (struct STch341_dev*)gpiochip_get_data(chip);
 #else
-    struct STch341_dev* __ch341_dev = container_of(chip, struct STch341_dev, gpio);
+    struct STch341_dev* __ch341_dev = container_of(chip, struct STch341_dev, stGpio_chip);
 #endif
     int value;
 
@@ -864,7 +864,7 @@ int ch341_gpio_get_multiple (struct gpio_chip *chip,
 #if LINUX_VERSION_CODE >= KERNEL_VERSION(4,5,0)
     struct STch341_dev* __ch341_dev = (struct STch341_dev*)gpiochip_get_data(chip);
 #else
-    struct STch341_dev* __ch341_dev = container_of(chip, struct STch341_dev, gpio);
+    struct STch341_dev* __ch341_dev = container_of(chip, struct STch341_dev, stGpio_chip);
 #endif
     int i;
 
@@ -891,7 +891,7 @@ void ch341_gpio_set (struct gpio_chip *chip, unsigned offset, int value)
 #if LINUX_VERSION_CODE >= KERNEL_VERSION(4,5,0)
     struct STch341_dev* __ch341_dev = (struct STch341_dev*)gpiochip_get_data(chip);
 #else
-    struct STch341_dev* __ch341_dev = container_of(chip, struct STch341_dev, gpio);
+    struct STch341_dev* __ch341_dev = container_of(chip, struct STch341_dev, stGpio_chip);
 #endif
 
     Ck_false_Return (__ch341_dev);
@@ -914,7 +914,7 @@ void ch341_gpio_set_multiple (struct gpio_chip *chip,
 #if LINUX_VERSION_CODE >= KERNEL_VERSION(4,5,0)
     struct STch341_dev* __ch341_dev = (struct STch341_dev*)gpiochip_get_data(chip);
 #else
-    struct STch341_dev* __ch341_dev = container_of(chip, struct STch341_dev, gpio);
+    struct STch341_dev* __ch341_dev = container_of(chip, struct STch341_dev, stGpio_chip);
 #endif
     int i;
 
@@ -946,7 +946,7 @@ int ch341_gpio_get_direction (struct gpio_chip *chip, unsigned offset)
 #if LINUX_VERSION_CODE >= KERNEL_VERSION(4,5,0)
     struct STch341_dev* __ch341_dev = (struct STch341_dev*)gpiochip_get_data(chip);
 #else
-    struct STch341_dev* __ch341_dev = container_of(chip, struct STch341_dev, gpio);
+    struct STch341_dev* __ch341_dev = container_of(chip, struct STch341_dev, stGpio_chip);
 #endif
     int mode;
 
@@ -965,7 +965,7 @@ int ch341_gpio_set_direction (struct gpio_chip *chip, unsigned offset, bool inpu
 #if LINUX_VERSION_CODE >= KERNEL_VERSION(4,5,0)
     struct STch341_dev* __ch341_dev = (struct STch341_dev*)gpiochip_get_data(chip);
 #else
-    struct STch341_dev* __ch341_dev = container_of(chip, struct STch341_dev, gpio);
+    struct STch341_dev* __ch341_dev = container_of(chip, struct STch341_dev, stGpio_chip);
 #endif
 
     Ck_false_Return_with (__ch341_dev, -EINVAL);
@@ -1013,7 +1013,7 @@ int ch341_gpio_to_irq (struct gpio_chip *chip, unsigned offset)
 #if LINUX_VERSION_CODE >= KERNEL_VERSION(4,5,0)
     struct STch341_dev* __ch341_dev = (struct STch341_dev*)gpiochip_get_data(chip);
 #else
-    struct STch341_dev* __ch341_dev = container_of(chip, struct STch341_dev, gpio);
+    struct STch341_dev* __ch341_dev = container_of(chip, struct STch341_dev, stGpio_chip);
 #endif
     int irq;
 
@@ -1032,7 +1032,7 @@ int ch341_gpio_to_irq (struct gpio_chip *chip, unsigned offset)
 
 static int ch341_gpio_probe (struct STch341_dev* ___ch341_dev)
 {
-    struct gpio_chip *gpio = &___ch341_dev->gpio;
+    struct gpio_chip *__stGpio = &___ch341_dev->stGpio_chip;
     int result;
     int i, j = 0;
 
@@ -1040,63 +1040,63 @@ static int ch341_gpio_probe (struct STch341_dev* ___ch341_dev)
 
     DEV_DBG (CH341_IF_ADDR3, "start");
 
-    gpio->label     = "ch341";
+    __stGpio->label     = "ch341";
 
 #if LINUX_VERSION_CODE >= KERNEL_VERSION(4,5,0)
-    gpio->parent = &___ch341_dev->usb_dev->dev;
+    __stGpio->parent = &___ch341_dev->stUsb_dev->dev;
 #else
-    gpio->dev    = &___ch341_dev->usb_dev->dev;
+    __stGpio->dev    = &___ch341_dev->stUsb_dev->dev;
 #endif
 
     // ==================================== ch341_gpio_probe
-    gpio->owner  = THIS_MODULE;
-    gpio->request= NULL;
-    gpio->free   = NULL;
+    __stGpio->owner  = THIS_MODULE;
+    __stGpio->request= NULL;
+    __stGpio->free   = NULL;
 
-    gpio->base   = -1;   // request dynamic ID allocation
-    gpio->ngpio  = ___ch341_dev->gpio_num;
+    __stGpio->base   = -1;   // request dynamic ID allocation
+    __stGpio->ngpio  = ___ch341_dev->gpio_num;
 
-    gpio->can_sleep = 1;
-    gpio->names     = (void*)___ch341_dev->gpio_names;
+    __stGpio->can_sleep = 1;
+    __stGpio->names     = (void*)___ch341_dev->gpio_names;
 
 #if LINUX_VERSION_CODE >= KERNEL_VERSION(3,9,0)
-    gpio->get_direction     = ch341_gpio_get_direction;
+    __stGpio->get_direction     = ch341_gpio_get_direction;
 #endif
-    gpio->direction_input   = ch341_gpio_direction_input;
-    gpio->direction_output  = ch341_gpio_direction_output;
-    gpio->get               = ch341_gpio_get;
+    __stGpio->direction_input   = ch341_gpio_direction_input;
+    __stGpio->direction_output  = ch341_gpio_direction_output;
+    __stGpio->get               = ch341_gpio_get;
 #if LINUX_VERSION_CODE >= KERNEL_VERSION(4,15,0)
-    gpio->get_multiple      = ch341_gpio_get_multiple;  // FIXME: NOT TESTED
+    __stGpio->get_multiple      = ch341_gpio_get_multiple;  // FIXME: NOT TESTED
 #endif
-    gpio->set               = ch341_gpio_set;
+    __stGpio->set               = ch341_gpio_set;
 #if LINUX_VERSION_CODE >= KERNEL_VERSION(3,19,0)
-    gpio->set_multiple      = ch341_gpio_set_multiple;  // FIXME: NOT TESTED
+    __stGpio->set_multiple      = ch341_gpio_set_multiple;  // FIXME: NOT TESTED
 #endif
     // ==================================== ch341_gpio_probe
 
-    gpio->to_irq            = ch341_gpio_to_irq;
+    __stGpio->to_irq            = ch341_gpio_to_irq;
 
 #if LINUX_VERSION_CODE >= KERNEL_VERSION(4,5,0)
-    if ((result = gpiochip_add_data (gpio, ___ch341_dev)))
+    if ((result = gpiochip_add_data (__stGpio, ___ch341_dev)))
 #else
-        if ((result = gpiochip_add (gpio)))
+        if ((result = gpiochip_add (__stGpio)))
 #endif
         {
             DEV_ERR (CH341_IF_ADDR3, "failed to register GPIOs: %d", result);
-            // in case of error, reset gpio->base to avoid crashes during free
-            gpio->base   = -1;
+            // in case of error, reset __stGpio->base to avoid crashes during free
+            __stGpio->base   = -1;
             return result;
         }
 
     DEV_DBG (CH341_IF_ADDR3, "registered GPIOs from %d to %d",
-            gpio->base, gpio->base + gpio->ngpio - 1);
+            __stGpio->base, __stGpio->base + __stGpio->ngpio - 1);
 
     // ==================================== ch341_gpio_probe
     for (i = 0; i < CH341_GPIO_NUM_PINS; i++)
     {
         // in case the pin as CS signal, it is an GPIO pin
-        if ((result = gpio_request(gpio->base + j, ch341_board_config[i].name)) ||
-                (result = gpio_export (gpio->base + j, ch341_board_config[i].pin != 21 ? true : false)))
+        if ((result = gpio_request(__stGpio->base + j, ch341_board_config[i].name)) ||
+                (result = gpio_export (__stGpio->base + j, ch341_board_config[i].pin != 21 ? true : false)))
         {
             DEV_ERR (CH341_IF_ADDR3, "failed to export GPIO %s: %d",
                     ch341_board_config[i].name, result);
@@ -1131,15 +1131,15 @@ static void ch341_gpio_remove (struct STch341_dev* ___ch341_dev)
     }
 
     // =================================== ch341_gpio_remove
-    if (___ch341_dev->gpio.base > 0)
+    if (___ch341_dev->stGpio_chip.base > 0)
     {
         for (i = 0; i < ___ch341_dev->gpio_num; ++i)
-            gpio_free(___ch341_dev->gpio.base + i);
+            gpio_free(___ch341_dev->stGpio_chip.base + i);
 
 #if LINUX_VERSION_CODE >= KERNEL_VERSION(3,17,0)
-        gpiochip_remove(&___ch341_dev->gpio);
+        gpiochip_remove(&___ch341_dev->stGpio_chip);
 #else
-        result = gpiochip_remove(&___ch341_dev->gpio);
+        result = gpiochip_remove(&___ch341_dev->stGpio_chip);
 #endif
     }
 
@@ -1165,9 +1165,9 @@ static int ch341_usb_transfer(struct STch341_dev *___ch341_dev, int out_len, int
     // DEV_DBG (CH341_IF_ADDR3, "bulk_out %d bytes, bulk_in %d bytes",
     //          out_len, (in_len == 0) ? 0 : CH341_USB_MAX_BULK_SIZE);
 
-    retval = usb_bulk_msg(___ch341_dev->usb_dev,
-            usb_sndbulkpipe(___ch341_dev->usb_dev,
-                usb_endpoint_num(___ch341_dev->ep_out)),
+    retval = usb_bulk_msg(___ch341_dev->stUsb_dev,
+            usb_sndbulkpipe(___ch341_dev->stUsb_dev,
+                usb_endpoint_num(___ch341_dev->stUep_out)),
             ___ch341_dev->out_buf, out_len,
             &actual, 2000);
     if (retval < 0)
@@ -1178,9 +1178,9 @@ static int ch341_usb_transfer(struct STch341_dev *___ch341_dev, int out_len, int
         return actual;
 
     memset(___ch341_dev->in_buf, 0, sizeof(___ch341_dev->in_buf));
-    retval = usb_bulk_msg(___ch341_dev->usb_dev,
-            usb_rcvbulkpipe(___ch341_dev->usb_dev,
-                usb_endpoint_num(___ch341_dev->ep_in)),
+    retval = usb_bulk_msg(___ch341_dev->stUsb_dev,
+            usb_rcvbulkpipe(___ch341_dev->stUsb_dev,
+                usb_endpoint_num(___ch341_dev->stUep_in)),
             ___ch341_dev->in_buf, CH341_USB_MAX_BULK_SIZE,
             &actual, 2000);
 
@@ -1209,7 +1209,7 @@ static void ch341_usb_complete_intr_urb (struct urb *urb)
         ch341_irq_check (__ch341_dev, __ch341_dev->irq_hw, 0, 1, true);
 
         // submit next request
-        usb_submit_urb(__ch341_dev->intr_urb, GFP_ATOMIC);
+        usb_submit_urb(__ch341_dev->stIntr_urb, GFP_ATOMIC);
     }
 } // ch341_usb_complete_intr_urb
 
@@ -1222,41 +1222,41 @@ static void ch341_usb_free_device (struct STch341_dev* ___ch341_dev)
     ch341_i2c_remove  (___ch341_dev);
     ch341_cfg_remove  (___ch341_dev);
 
-    if (___ch341_dev->intr_urb) usb_free_urb (___ch341_dev->intr_urb);
+    if (___ch341_dev->stIntr_urb) usb_free_urb (___ch341_dev->stIntr_urb);
 
-    usb_set_intfdata (___ch341_dev->usb_if, NULL);
-    usb_put_dev (___ch341_dev->usb_dev);
+    usb_set_intfdata (___ch341_dev->stUsb_if, NULL);
+    usb_put_dev (___ch341_dev->stUsb_dev);
 
     kfree (___ch341_dev);
 } // ch341_usb_free_device
 
-static int ch341_usb_probe (struct usb_interface* usb_if,
+static int ch341_usb_probe (struct usb_interface* stUsb_if,
         const struct usb_device_id* usb_id)
 {
-    struct usb_device* usb_dev = usb_get_dev(interface_to_usbdev(usb_if));
+    struct usb_device* stUsb_dev = usb_get_dev(interface_to_usbdev(stUsb_if));
     struct usb_endpoint_descriptor *epd;
     struct usb_host_interface *settings;
     struct STch341_dev* __ch341_dev;
     int i;
     int error;
 
-    DEV_DBG (&usb_if->dev, "connect device");
+    DEV_DBG (&stUsb_if->dev, "connect device");
 
     // create and initialize a new device data structure
     if (!(__ch341_dev = kzalloc(sizeof(struct STch341_dev), GFP_KERNEL)))
     {
-        DEV_ERR (&usb_if->dev, "could not allocate device memor");
-        usb_put_dev (__ch341_dev->usb_dev);
+        DEV_ERR (&stUsb_if->dev, "could not allocate device memor");
+        usb_put_dev (__ch341_dev->stUsb_dev);
         return -ENOMEM;
     }
     // =========================== ch341_usb_probe
 
     // save USB device data
-    __ch341_dev->usb_dev = usb_dev;
-    __ch341_dev->usb_if  = usb_if;
+    __ch341_dev->stUsb_dev = stUsb_dev;
+    __ch341_dev->stUsb_if  = stUsb_if;
 
     // find endpoints
-    settings = usb_if->cur_altsetting;
+    settings = stUsb_if->cur_altsetting;
     DEV_DBG (CH341_IF_ADDR2, "bNumEndpoints=%d", settings->desc.bNumEndpoints);
 
     for (i = 0; i < settings->desc.bNumEndpoints; i++)
@@ -1267,29 +1267,29 @@ static int ch341_usb_probe (struct usb_interface* usb_if,
                 usb_endpoint_type(epd), usb_endpoint_dir_in(epd),
                 usb_endpoint_num(epd));
 
-        if (usb_endpoint_is_bulk_in (epd)) __ch341_dev->ep_in   = epd; else
-            if (usb_endpoint_is_bulk_out(epd)) __ch341_dev->ep_out  = epd; else
-                if (usb_endpoint_xfer_int   (epd)) __ch341_dev->ep_intr = epd;
+        if (usb_endpoint_is_bulk_in (epd)) __ch341_dev->stUep_in   = epd; else
+            if (usb_endpoint_is_bulk_out(epd)) __ch341_dev->stUep_out  = epd; else
+                if (usb_endpoint_xfer_int   (epd)) __ch341_dev->stUep_intr = epd;
     }
     // =========================== ch341_usb_probe
     // create URBs for handling interrupts
-    if (!(__ch341_dev->intr_urb = usb_alloc_urb(0, GFP_KERNEL)))
+    if (!(__ch341_dev->stIntr_urb = usb_alloc_urb(0, GFP_KERNEL)))
     {
-        DEV_ERR (&usb_if->dev, "failed to alloc URB");
+        DEV_ERR (&stUsb_if->dev, "failed to alloc URB");
         ch341_usb_free_device (__ch341_dev);
         return -ENOMEM;
     }
 
-    usb_fill_int_urb (__ch341_dev->intr_urb, __ch341_dev->usb_dev,
-            usb_rcvintpipe(__ch341_dev->usb_dev,
-                usb_endpoint_num(__ch341_dev->ep_intr)),
+    usb_fill_int_urb (__ch341_dev->stIntr_urb, __ch341_dev->stUsb_dev,
+            usb_rcvintpipe(__ch341_dev->stUsb_dev,
+                usb_endpoint_num(__ch341_dev->stUep_intr)),
             __ch341_dev->intr_buf, CH341_USB_MAX_INTR_SIZE,
             ch341_usb_complete_intr_urb, __ch341_dev,
-            __ch341_dev->ep_intr->bInterval);
+            __ch341_dev->stUep_intr->bInterval);
     // =========================== ch341_usb_probe
 
     // save the pointer to the new STch341_dev in USB interface device data
-    usb_set_intfdata(usb_if, __ch341_dev);
+    usb_set_intfdata(stUsb_if, __ch341_dev);
 
     if ((error = ch341_cfg_probe (__ch341_dev)) ||  // initialize board configuration
             (error = ch341_i2c_probe (__ch341_dev)) ||  // initialize I2C adapter
@@ -1301,7 +1301,7 @@ static int ch341_usb_probe (struct usb_interface* usb_if,
     }
     // =========================== ch341_usb_probe
 
-    usb_submit_urb (__ch341_dev->intr_urb, GFP_ATOMIC);
+    usb_submit_urb (__ch341_dev->stIntr_urb, GFP_ATOMIC);
 
     DEV_INFO (CH341_IF_ADDR2, "connected");
     DEV_INFO (CH341_IF_ADDR2, Module_para_desc 
@@ -1316,9 +1316,9 @@ static int ch341_usb_probe (struct usb_interface* usb_if,
     return CH341_OK;
 } // ch341_usb_probe
 
-static void ch341_usb_disconnect(struct usb_interface *usb_if)
+static void ch341_usb_disconnect(struct usb_interface *stUsb_if)
 {
-    struct STch341_dev* __ch341_dev = usb_get_intfdata(usb_if);
+    struct STch341_dev* __ch341_dev = usb_get_intfdata(stUsb_if);
 
     DEV_INFO (CH341_IF_ADDR2, "disconnected");
 
