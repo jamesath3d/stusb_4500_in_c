@@ -16,15 +16,15 @@
 #define FP Fprintf
 #define P printf
 #define FP1(fmt) printf("%s: " fmt, __func__)
-#define EXi(rtI) {printf("Error met : %s line %d, return %d \n" , \
+#define EXi(rtI) {printf("stusb_4500_in_c/i2c_00_all.h Error_met_01 : %s line %d, return %d \n" , \
         __func__, __LINE__, rtI ); \
     exit( -1 ) ; \
     return rtI ; }
-#define EXb(rtB) {printf("Error met : %s line %d, return %s \n" , \
+#define EXb(rtB) {printf("stusb_4500_in_c/i2c_00_all.h Error_met_02 : %s line %d, return %s \n" , \
         __func__, __LINE__, (rtB?"true":"false") ); \
     exit( -1 ) ; \
     return rtB ; }
-#define EXlp(rtLP) {printf("Error met : %s line %d, return 0x%0X \n" , \
+#define EXlp(rtLP) {printf("stusb_4500_in_c/i2c_00_all.h Error_met_03 : %s line %d, return 0x%0X \n" , \
         __func__, __LINE__, 0 ); \
     exit( -1 ) ; \
     return rtLP ; }

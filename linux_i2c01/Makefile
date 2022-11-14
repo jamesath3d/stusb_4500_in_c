@@ -2,6 +2,7 @@
 PWD         := $(shell pwd)
 KVERSION    := $(shell uname -r)
 KERNEL_DIR  ?= /lib/modules/$(KVERSION)/build
+LINUX_HEADERS:=linux-headers-$(KVERSION)
 
 GccOpt:= -Wall -Werror -g -O3
 
