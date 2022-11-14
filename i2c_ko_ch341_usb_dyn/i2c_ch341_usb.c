@@ -96,8 +96,8 @@
 #define Module_para_desc " I2C bus speed:" \
     " 0 ("   CH341_I2C_speed_0_desc \
     "), 1 (" CH341_I2C_speed_1_desc \
-    "), 1 (" CH341_I2C_speed_2_desc \
-    "), 1 (" CH341_I2C_speed_3_desc \
+    "), 2 (" CH341_I2C_speed_2_desc \
+    "), 3 (" CH341_I2C_speed_3_desc \
     ")"
 
 #define CH341_CMD_I2C_STREAM        0xAA  // I2C stream command

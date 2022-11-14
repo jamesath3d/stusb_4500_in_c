@@ -11,6 +11,8 @@ PWD        := $(shell pwd)
 KVERSION   := $(shell uname -r)
 KERNEL_DIR  = /lib/modules/$(KVERSION)/build
 MODULE_DIR  = /lib/modules/$(KVERSION)
+LINUX_HEADERS:=linux-headers-$(KVERSION)
+$(if $(wildcard $(KERNEL_DIR)),,$(info )$(info $(KERNEL_DIR) not found)$(info apt install $(LINUX_HEADERS))$(info )$(error 81818181))
 
 ifneq ($(DKMS),)
 MODULE_INSTALLED := $(shell dkms status $(MODULE_NAME))
@@ -36,6 +38,7 @@ ko00:=i2c_ch341_usb
 ko01:=$(ko00).$(KVERSION).ko
 koS:=ch341_buses i2c_ch341_usb ch341
 
+run: remove insert
 r remove:
 	@echo ;
 	$(foreach aa1,$(koS),((lsmod |grep $(aa1)) && rmmod $(aa1) )|| echo>/dev/null$(EOL)) 
