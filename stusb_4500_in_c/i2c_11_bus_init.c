@@ -20,7 +20,11 @@ bool _i2c_bus_init( ST45i2cST * __st45LP , uint8_t ___i2cClientAddr){
             if ( NULL != __fh ) {
                 memset( __i2cLINE, 0 , i2cLineLen ) ;
                 if ( NULL != fgets( __i2cLINE, i2cLineLen-1 , __fh )) {
-                    if ( NULL != strstr( __i2cLINE , "CH341" ) ) {
+                    // /sys/class/i2c-adapter/i2c-8/name:i2c_ch341_usb at bus 001 device 052
+                    if ( 
+                            NULL != strstr( __i2cLINE , "_CH341_" ) ||
+                            NULL != strstr( __i2cLINE , "_ch341_" ) 
+                            ) {
                         FP( "8181991221 : found %s : %s\n" , __i2cSYS , __i2cLINE );
                         fclose( __fh ) ;
                         break ;
@@ -31,6 +35,7 @@ bool _i2c_bus_init( ST45i2cST * __st45LP , uint8_t ___i2cClientAddr){
         }
     }
     if ( __i2cBusNo < 0 ) {
+        FP( "\n %d \n     chmod 666 %s \n\n" , __rt , __i2cSYS ) ;
         EXb( false ) ;
     }
 

@@ -42,6 +42,8 @@ bin01=$(proj).$(KVERSION).bin
 
 a all: 
 	@echo
+	@echo "$${helpText}"
+	@echo
 	@ls -l *.bin 2>/dev/null
 
 $(bin01): $(src01)
@@ -63,11 +65,26 @@ e16: e8
 c clean :
 	@echo
 	rm -f $(bin01)
+m:
+	vim Makefile
 
 #r run : $(bin01)
-r run : e16 clean all run_only
-ro run_only: 
+run:=e16 clean build all run_only
+r run : $(run)
+ro : run_only
+run_only:=./$(bin01)
+run_only:
 	@echo
 	@echo
-	./$(bin01)
+	$($@)
+
+define helpText
+ ro -> run_only
+ r  -> run -> $(run)
+
+i2cdump -y 8 40
+i2cdetect -y 8
+
+endef
+export helpText
 

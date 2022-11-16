@@ -18,9 +18,13 @@ exSTUSB4500/usb-c__STUSB4500_USBPD_CUST_NVM_API.c
 exSTUSB4500/usb-c__STUSB4500_USBPD_CUST_NVM_API_001.c
 exSTUSB4500/usb-c__STUSB4500_main_NVM.c
 exSTUSB4500/usb-c__STUSB4500_main_NVM_001.c
-i2c_ch341_usb_dyn/i2c_ch341_usb.c
-linux_i2c01/Makefile
-linux_i2c01/main_linux_i2c01.c
+i2c_ko_ch341_usb_dyn/Makefile
+i2c_ko_ch341_usb_dyn/examples/gpio_input.c
+i2c_ko_ch341_usb_dyn/examples/gpio_output.c
+i2c_ko_ch341_usb_dyn/i2c_ch341_usb.c
+i2c_ko_ch341_usb_dyn/i2c_ch341_usb.mod.c
+linux_app_i2c01_write_stusb4500/Makefile
+linux_app_i2c01_write_stusb4500/main_linux_i2c01.c
 stusb_4500_in_c/USB_PD_defines.h
 stusb_4500_in_c/i2c_00_all.h
 stusb_4500_in_c/i2c_11_bus_init.c
